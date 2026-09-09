@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+	<!-- Version monochrome : hérite de la couleur du texte (currentColor) -->
+	<rect x="8" y="34" width="10" height="22" rx="4" fill="currentColor" />
+	<rect x="25" y="24" width="10" height="32" rx="4" fill="currentColor" />
+	<rect x="42" y="14" width="10" height="42" rx="4" fill="currentColor" />
+	<circle cx="47" cy="9" r="8" fill="currentColor" opacity="0.18" />
+	<circle cx="47" cy="9" r="5" fill="currentColor" />
+</svg>

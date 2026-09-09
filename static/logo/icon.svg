@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+	<defs>
+		<linearGradient id="cb-gradient" x1="4" y1="58" x2="56" y2="4" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#5865F2" />
+			<stop offset="1" stop-color="#8B5CF6" />
+		</linearGradient>
+	</defs>
+	<!-- Trois barres ascendantes : construction (silhouette d'immeubles) + progression -->
+	<rect x="8" y="34" width="10" height="22" rx="4" fill="url(#cb-gradient)" />
+	<rect x="25" y="24" width="10" height="32" rx="4" fill="url(#cb-gradient)" />
+	<rect x="42" y="14" width="10" height="42" rx="4" fill="url(#cb-gradient)" />
+	<!-- Nœud IA / signal en pointe de la barre la plus haute -->
+	<circle cx="47" cy="9" r="8" fill="url(#cb-gradient)" opacity="0.18" />
+	<circle cx="47" cy="9" r="5" fill="url(#cb-gradient)" />
+</svg>

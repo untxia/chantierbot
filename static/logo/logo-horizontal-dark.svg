@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 56" fill="none">
+	<defs>
+		<linearGradient id="cb-gradient-h-dark" x1="4" y1="50" x2="48" y2="6" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#5865F2" />
+			<stop offset="1" stop-color="#8B5CF6" />
+		</linearGradient>
+	</defs>
+	<!-- Icône -->
+	<rect x="7" y="30" width="8.5" height="19" rx="3.5" fill="url(#cb-gradient-h-dark)" />
+	<rect x="21.5" y="21" width="8.5" height="28" rx="3.5" fill="url(#cb-gradient-h-dark)" />
+	<rect x="36" y="12" width="8.5" height="37" rx="3.5" fill="url(#cb-gradient-h-dark)" />
+	<circle cx="40.25" cy="8" r="7" fill="url(#cb-gradient-h-dark)" opacity="0.25" />
+	<circle cx="40.25" cy="8" r="4.3" fill="url(#cb-gradient-h-dark)" />
+	<!-- Texte : usage sur fond sombre (Dark Navy) -->
+	<text x="60" y="37" font-family="Manrope, -apple-system, sans-serif" font-weight="800" font-size="24" fill="#F8FAFC">Chantier<tspan fill="url(#cb-gradient-h-dark)">Bot</tspan></text>
+</svg>

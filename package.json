@@ -3,18 +3,26 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
     "groq-sdk": "^0.3.0"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.15.3",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "autoprefixer": "^10.5.5",
+    "postcss": "^8.5.28",
     "svelte": "^4.2.0",
+    "svelte-check": "^4.7.6",
+    "tailwindcss": "^3.4.19",
     "typescript": "^5.3.2",
-    "vite": "^5.0.7",
-    "vite-plugin-svelte": "^3.0.1"
+    "vite": "^5.0.7"
   }
 }
