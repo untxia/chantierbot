@@ -1,0 +1,20 @@
+{
+  "name": "chantierbot",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "groq-sdk": "^0.3.0"
+  },
+  "devDependencies": {
+    "@sveltejs/kit": "^2.0.0",
+    "svelte": "^4.2.0",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.7",
+    "vite-plugin-svelte": "^3.0.1"
+  }
+}
