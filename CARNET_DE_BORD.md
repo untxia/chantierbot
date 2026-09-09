@@ -111,6 +111,17 @@ Demande explicite : construire toute la base de données pour les sections encor
 
 **Pas fait dans cette passe** (demande explicitement scopée à "la DB") : aucune page (`/planning`, `/fournisseurs`, `/relances`) n'a été branchée sur ces nouvelles tables — elles restent en placeholder "bientôt disponible" jusqu'à ce qu'on construise le CRUD et l'UI dessus.
 
+## 2026-09-10 — Déploiement Vercel
+
+Production en ligne : **https://chantierbot.vercel.app**
+
+- Ajout de `@sveltejs/adapter-vercel` en devDependency — `adapter-auto` détecte Vercel au build mais a besoin du paquet réellement installé pour ne pas planter. Vérifié en local en simulant l'environnement (`VERCEL=1 npm run build`).
+- `.vercel/` ajouté au `.gitignore` (sortie de build générée, comme `.svelte-kit/`).
+- Projet Vercel créé/lié au repo GitHub `untxia/chantierbot` — l'outil MCP Vercel a eu du mal à voir le projet après coup (`list_projects`/`get_project` renvoyaient vide/404 alors qu'il existait bel et bien, confirmé par l'URL du dashboard) : problème de synchronisation du connecteur, pas un vrai souci de config. Pas cherché à contourner, juste vérifié par les moyens du bord (curl direct sur l'URL publique).
+- **Piège rencontré** : les variables `PUBLIC_SUPABASE_URL`/`PUBLIC_SUPABASE_ANON_KEY` doivent être en visibilité **Config** sur Vercel, pas **Secret** — Vercel refuse le type "Secret" pour toute variable au préfixe reconnu comme public par le framework. `GROQ_API_KEY` reste en Secret (comportement correct, c'est la seule vraie clé privée).
+- Premier build a échoué (avant l'ajout des variables `PUBLIC_*`) car `$env/static/public` de SvelteKit fait planter le build si une variable référencée est absente. Un commit vide a suffi à redéclencher un build une fois les variables corrigées.
+- Validé en prod : les 9 routes principales répondent en 200, lecture ET écriture Supabase fonctionnelles (chantier de test créé puis supprimé via `execute_sql`).
+
 ---
 
 ## Roadmap ouverte

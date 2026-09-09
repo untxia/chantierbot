@@ -2,6 +2,8 @@
 
 Agent IA pour artisans : analyse de photos de chantier par vision IA, suivi multi-chantiers, prédiction des besoins de stock.
 
+**Production** : https://chantierbot.vercel.app — déployé automatiquement sur Vercel à chaque push sur `main`.
+
 ## Stack
 
 - **Frontend / Backend** : [SvelteKit](https://kit.svelte.dev/) (Svelte 4, TypeScript)
