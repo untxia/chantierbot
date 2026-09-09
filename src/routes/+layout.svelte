@@ -10,16 +10,16 @@
 	$: isDashboard = $page.url.pathname === '/';
 </script>
 
-<div class="flex min-h-screen">
+<div class="flex min-h-screen bg-background dark:bg-background-dark">
 	<Sidebar />
 
-	<div class="flex-1">
+	<div class="min-w-0 flex-1">
 		<header
 			class="flex items-center justify-between gap-2 px-4 pt-4 sm:px-8 sm:pt-6 {isDashboard && !$focusMode
-				? 'absolute inset-x-0 z-10'
+				? 'absolute inset-x-0 z-20'
 				: ''}"
 		>
-			<a href="/" class="md:hidden">
+			<a href="/" class="md:hidden" aria-label="Retour à l'accueil">
 				<img src="/logo/logo-horizontal-light.svg" alt="ChantierBot" class="h-7 w-auto {isDashboard ? '' : 'dark:hidden'}" />
 				{#if !isDashboard}
 					<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" class="hidden h-7 w-auto dark:block" />
@@ -30,7 +30,7 @@
 			</div>
 		</header>
 
-		<main class={isDashboard ? 'pb-24 md:pb-0' : 'mx-auto max-w-6xl p-4 pb-24 sm:p-8 md:pb-8'}>
+		<main class={isDashboard ? 'pb-24 md:pb-0' : 'page-shell'}>
 			<slot />
 		</main>
 	</div>
