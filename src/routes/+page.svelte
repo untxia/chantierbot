@@ -2,12 +2,12 @@
 	import { toast } from '$lib/stores/toast';
 	import { photoPublicUrl } from '$lib/services/supabase';
 	import HeroBackground from '$lib/components/HeroBackground.svelte';
+	import BackgroundPicker from '$lib/components/BackgroundPicker.svelte';
 	import StatusBadge from '$lib/components/StatusBadge.svelte';
 
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
 	let prompt = '';
 
 	function submitPrompt() {
@@ -24,8 +24,7 @@
 		if (minutes < 60) return `il y a ${minutes} min`;
 		const hours = Math.floor(minutes / 60);
 		if (hours < 24) return `il y a ${hours} h`;
-		const days = Math.floor(hours / 24);
-		return `il y a ${days} j`;
+		return `il y a ${Math.floor(hours / 24)} j`;
 	}
 
 	const hour = new Date().getHours();
@@ -37,129 +36,51 @@
 	<meta name="theme-color" content="#0B1020" />
 </svelte:head>
 
-<section class="relative overflow-hidden bg-dark-navy text-white">
+<section class="relative min-h-[620px] overflow-hidden bg-dark-navy text-white">
 	<HeroBackground />
 	<div class="absolute inset-0 bg-gradient-to-b from-dark-navy/30 via-dark-navy/45 to-dark-navy/80" aria-hidden="true"></div>
-
 	<div class="relative mx-auto max-w-6xl px-4 pb-12 pt-28 sm:px-8 sm:pb-14 sm:pt-32">
 		<div class="max-w-3xl">
-			<div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-md">
-				<span class="h-2 w-2 rounded-full bg-success shadow-[0_0_12px_rgba(34,197,94,0.8)]"></span>
-				ChantierBot · Assistant IA
-			</div>
+			<div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold backdrop-blur-md"><span class="h-2 w-2 rounded-full bg-success shadow-[0_0_12px_rgba(34,197,94,0.8)]"></span>ChantierBot · Assistant IA</div>
 			<h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl">{greeting} 👋</h1>
-			<p class="mt-2 text-lg font-medium text-white/85">
-				{data.recommendations.length > 0
-					? `${data.recommendations.length} recommandation${data.recommendations.length > 1 ? 's' : ''} IA à consulter.`
-					: 'Tout est à jour, aucune recommandation en attente.'}
-			</p>
-			<p class="mt-2 max-w-xl text-sm leading-relaxed text-white/65">
-				ChantierBot analyse vos photos et votre stock pour vous faire gagner du temps.
-			</p>
-
+			<p class="mt-2 text-lg font-medium text-white/85">{data.recommendations.length > 0 ? `${data.recommendations.length} recommandation${data.recommendations.length > 1 ? 's' : ''} IA à consulter.` : 'Tout est à jour, aucune recommandation en attente.'}</p>
+			<p class="mt-2 max-w-xl text-sm leading-relaxed text-white/65">ChantierBot analyse vos photos et votre stock pour vous faire gagner du temps.</p>
 			<form on:submit|preventDefault={submitPrompt} class="mt-7 flex max-w-2xl items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-2 pl-3 shadow-glass backdrop-blur-xl">
 				<span class="ai-orb">✨</span>
-				<input
-					type="text"
-					bind:value={prompt}
-					placeholder="Posez une question ou décrivez un besoin..."
-					class="min-w-0 flex-1 border-0 bg-transparent text-sm text-white placeholder:text-white/50 focus:outline-none"
-				/>
-				<button type="submit" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-sm transition-transform hover:-translate-y-px active:scale-95" aria-label="Envoyer">
-					➤
-				</button>
+				<input type="text" bind:value={prompt} placeholder="Posez une question ou décrivez un besoin..." class="min-w-0 flex-1 border-0 bg-transparent text-sm text-white placeholder:text-white/50 focus:outline-none" />
+				<button type="submit" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-sm transition-transform hover:-translate-y-px active:scale-95" aria-label="Envoyer">➤</button>
 			</form>
 		</div>
-
 		<div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-			<div class="card-glass">
-				<p class="text-2xl">🧱</p>
-				<p class="mt-1 text-2xl font-extrabold">{data.kpis.activeCount}</p>
-				<p class="text-xs text-white/60">Chantiers actifs</p>
-			</div>
-			<div class="card-glass">
-				<p class="text-2xl">✨</p>
-				<p class="mt-1 text-2xl font-extrabold">{data.recommendations.length}</p>
-				<p class="text-xs text-white/60">Recommandations IA</p>
-			</div>
-			<div class="card-glass">
-				<p class="text-2xl">📷</p>
-				<p class="mt-1 text-2xl font-extrabold">{data.kpis.photoCount}</p>
-				<p class="text-xs text-white/60">Photos analysées</p>
-			</div>
-			<div class="card-glass">
-				<p class="text-2xl">🕒</p>
-				<p class="mt-1 text-lg font-bold">{formatRelative(data.kpis.lastActivity)}</p>
-				<p class="text-xs text-white/60">Dernière activité</p>
-			</div>
+			<div class="card-glass"><p class="text-2xl">🧱</p><p class="mt-1 text-2xl font-extrabold">{data.kpis.activeCount}</p><p class="text-xs text-white/60">Chantiers actifs</p></div>
+			<div class="card-glass"><p class="text-2xl">✨</p><p class="mt-1 text-2xl font-extrabold">{data.recommendations.length}</p><p class="text-xs text-white/60">Recommandations IA</p></div>
+			<div class="card-glass"><p class="text-2xl">📷</p><p class="mt-1 text-2xl font-extrabold">{data.kpis.photoCount}</p><p class="text-xs text-white/60">Photos analysées</p></div>
+			<div class="card-glass"><p class="text-2xl">🕒</p><p class="mt-1 text-lg font-bold">{formatRelative(data.kpis.lastActivity)}</p><p class="text-xs text-white/60">Dernière activité</p></div>
 		</div>
 	</div>
 </section>
 
 <div class="mx-auto max-w-6xl px-4 py-10 sm:px-8 sm:py-12">
 	{#if data.recommendations.length > 0}
-		<div class="mb-4 flex items-end justify-between gap-4">
-			<div>
-				<p class="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Intelligence artificielle</p>
-				<h2 class="section-title">Recommandations IA ✨</h2>
-			</div>
-			<a href="/ia" class="text-sm font-bold text-primary transition-colors hover:text-secondary">Voir tout →</a>
-		</div>
+		<div class="mb-4 flex items-end justify-between gap-4"><div><p class="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Intelligence artificielle</p><h2 class="section-title">Recommandations IA ✨</h2></div><a href="/ia" class="text-sm font-bold text-primary transition-colors hover:text-secondary">Voir tout →</a></div>
 		<div class="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
 			{#each data.recommendations as reco (reco.id)}
-				<article class="card overflow-hidden p-0">
-					<img src={photoPublicUrl(reco.imagePath)} alt="" class="h-36 w-full object-cover" />
-					<div class="p-5">
-						{#if reco.chantier}
-							<p class="text-xs font-bold text-primary">{reco.chantier.name}</p>
-						{/if}
-						<p class="mt-1 font-bold">{reco.issue}</p>
-						<p class="mt-1 text-sm leading-relaxed text-ink-secondary dark:text-ink-dark-secondary line-clamp-2">{reco.description}</p>
-						{#if reco.chantier}
-							<a href="/chantiers/{reco.chantier.id}" class="btn-secondary mt-4 w-full">Voir le chantier</a>
-						{/if}
-					</div>
-				</article>
+				<article class="card overflow-hidden p-0"><img src={photoPublicUrl(reco.imagePath)} alt="" class="h-36 w-full object-cover" /><div class="p-5">{#if reco.chantier}<p class="text-xs font-bold text-primary">{reco.chantier.name}</p>{/if}<p class="mt-1 font-bold">{reco.issue}</p><p class="mt-1 line-clamp-2 text-sm leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">{reco.description}</p>{#if reco.chantier}<a href="/chantiers/{reco.chantier.id}" class="btn-secondary mt-4 w-full">Voir le chantier</a>{/if}</div></article>
 			{/each}
 		</div>
 	{/if}
 
-	<div class="mb-4 flex items-end justify-between gap-4">
-		<div>
-			<p class="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Pilotage</p>
-			<h2 class="section-title">Vos chantiers</h2>
-		</div>
-		<a href="/projets" class="text-sm font-bold text-primary transition-colors hover:text-secondary">Voir tout →</a>
-	</div>
-
+	<div class="mb-4 flex items-end justify-between gap-4"><div><p class="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">Pilotage</p><h2 class="section-title">Vos chantiers</h2></div><a href="/projets" class="text-sm font-bold text-primary transition-colors hover:text-secondary">Voir tout →</a></div>
 	{#if data.recentChantiers.length === 0}
-		<p class="text-ink-secondary dark:text-ink-dark-secondary">
-			Aucun chantier pour le moment. <a href="/projets" class="font-semibold text-primary hover:underline">Créez le premier.</a>
-		</p>
+		<p class="text-ink-secondary dark:text-ink-dark-secondary">Aucun chantier pour le moment. <a href="/projets" class="font-semibold text-primary hover:underline">Créez le premier.</a></p>
 	{:else}
 		<ul class="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
 			{#each data.recentChantiers as chantier (chantier.id)}
-				<li>
-					<a href="/chantiers/{chantier.id}" class="card block hover:border-primary/30">
-						<div class="mb-3 flex items-start justify-between gap-2">
-							<h3 class="font-bold">{chantier.name}</h3>
-							<StatusBadge status={chantier.status} />
-						</div>
-						<div class="mb-2 h-2 w-full overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
-							<div class="h-full rounded-full bg-brand-gradient" style="width: {chantier.progress}%"></div>
-						</div>
-						<p class="text-xs font-medium text-ink-secondary dark:text-ink-dark-secondary">
-							{chantier.progress}% · {chantier.photoCount} photo{chantier.photoCount > 1 ? 's' : ''}
-						</p>
-					</a>
-				</li>
+				<li><a href="/chantiers/{chantier.id}" class="card block hover:border-primary/30"><div class="mb-3 flex items-start justify-between gap-2"><h3 class="font-bold">{chantier.name}</h3><StatusBadge status={chantier.status} /></div><div class="mb-2 h-2 w-full overflow-hidden rounded-full bg-black/5 dark:bg-white/10"><div class="h-full rounded-full bg-brand-gradient" style="width: {chantier.progress}%"></div></div><p class="text-xs font-medium text-ink-secondary dark:text-ink-dark-secondary">{chantier.progress}% · {chantier.photoCount} photo{chantier.photoCount > 1 ? 's' : ''}</p></a></li>
 			{/each}
-			<li>
-				<a href="/projets" class="flex h-full min-h-[100px] flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-primary/25 bg-primary/[0.02] text-ink-secondary transition-all hover:border-primary/50 hover:bg-primary/5 hover:text-primary dark:border-primary/25">
-					<span class="text-2xl font-light">+</span>
-					<span class="text-sm font-bold">Nouveau chantier</span>
-				</a>
-			</li>
+			<li><a href="/projets" class="flex h-full min-h-[100px] flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-primary/25 bg-primary/[0.02] text-ink-secondary transition-all hover:border-primary/50 hover:bg-primary/5 hover:text-primary dark:border-primary/25"><span class="text-2xl font-light">+</span><span class="text-sm font-bold">Nouveau chantier</span></a></li>
 		</ul>
 	{/if}
+
+	<BackgroundPicker />
 </div>
