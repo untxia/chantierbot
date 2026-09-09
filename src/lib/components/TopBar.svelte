@@ -28,16 +28,19 @@
 
 <div class="flex items-center gap-2 {variant === 'dark' ? 'text-white' : 'text-ink dark:text-ink-dark'}">
 	<form on:submit|preventDefault={search} class="hidden sm:block">
-		<input
-			type="search"
-			bind:value={query}
-			placeholder="Rechercher un chantier..."
-			aria-label="Rechercher un chantier"
-			class="w-48 rounded-full border-0 bg-black/5 px-4 py-2 text-sm placeholder:text-current placeholder:opacity-60 focus:outline-none focus:ring-2 focus:ring-primary/40 {variant ===
-			'dark'
-				? 'bg-white/10 text-white'
-				: 'dark:bg-white/10 dark:text-ink-dark'}"
-		/>
+		<div class="relative">
+			<span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-60">⌕</span>
+			<input
+				type="search"
+				bind:value={query}
+				placeholder="Rechercher un chantier..."
+				aria-label="Rechercher un chantier"
+				class="w-56 rounded-full border border-transparent bg-black/5 py-2.5 pl-9 pr-4 text-sm placeholder:text-current placeholder:opacity-60 transition-colors focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 {variant ===
+				'dark'
+					? 'bg-white/10 text-white'
+					: 'dark:bg-white/10 dark:text-ink-dark'}"
+			/>
+		</div>
 	</form>
 
 	<ThemeToggle />
@@ -48,28 +51,26 @@
 			on:click={() => (langOpen = !langOpen)}
 			aria-haspopup="listbox"
 			aria-expanded={langOpen}
-			class="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium {variant === 'dark'
-				? 'bg-white/10'
-				: 'bg-black/5 dark:bg-white/10'}"
+			class="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold transition-colors {variant === 'dark'
+				? 'bg-white/10 hover:bg-white/15'
+				: 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'}"
 		>
-			🇫🇷 FR ▾
+			🇫🇷 FR <span class="text-xs opacity-60">▾</span>
 		</button>
 		{#if langOpen}
 			<ul
 				role="listbox"
-				class="absolute right-0 z-10 mt-1 w-40 overflow-hidden rounded-md border border-black/5 bg-surface py-1 text-sm text-ink shadow-card dark:border-white/10 dark:bg-surface-dark dark:text-ink-dark"
+				class="absolute right-0 z-30 mt-2 w-44 overflow-hidden rounded-xl border border-black/5 bg-surface py-1 text-sm text-ink shadow-card-hover dark:border-white/10 dark:bg-surface-dark dark:text-ink-dark"
 			>
 				{#each languages as lang}
 					<li>
 						<button
 							type="button"
 							on:click={() => pickLanguage(lang)}
-							class="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-black/5 dark:hover:bg-white/5 {!lang.available
-								? 'opacity-50'
-								: ''}"
+							class="flex w-full items-center justify-between px-3 py-2.5 text-left font-medium hover:bg-black/5 dark:hover:bg-white/5 {!lang.available ? 'opacity-50' : ''}"
 						>
-							{lang.label}
-							{#if !lang.available}<span class="text-xs">bientôt</span>{/if}
+							<span>{lang.label}</span>
+							{#if lang.available}<span class="text-xs font-bold text-success">✓</span>{:else}<span class="text-xs">bientôt</span>{/if}
 						</button>
 					</li>
 				{/each}
@@ -79,9 +80,9 @@
 
 	<a
 		href="/parametres"
-		class="flex h-9 w-9 items-center justify-center rounded-full font-semibold {variant === 'dark'
-			? 'bg-white/10'
-			: 'bg-black/5 dark:bg-white/10'}"
+		class="flex h-10 w-10 items-center justify-center rounded-full font-bold transition-colors {variant === 'dark'
+			? 'bg-white/10 hover:bg-white/15'
+			: 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'}"
 		aria-label="Mon compte"
 	>
 		👤
