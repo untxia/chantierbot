@@ -11,14 +11,14 @@ export default {
 				success: '#22C55E',
 				warning: '#F59E0B',
 				danger: '#EF4444',
+				background: {
+					DEFAULT: '#F7F8FC',
+					dark: '#080C18'
+				},
 				surface: {
 					DEFAULT: '#FFFFFF',
 					dark: '#111827',
 					'dark-secondary': '#182033'
-				},
-				background: {
-					DEFAULT: '#F7F8FC',
-					dark: '#080C18'
 				},
 				ink: {
 					DEFAULT: '#111827',
@@ -44,7 +44,9 @@ export default {
 				'brand-gradient': 'linear-gradient(135deg, #5865F2 0%, #8B5CF6 100%)'
 			},
 			boxShadow: {
-				card: '0 8px 30px rgba(15, 23, 42, 0.05)'
+				card: '0 8px 30px rgba(15, 23, 42, 0.05)',
+				'card-hover': '0 14px 38px rgba(15, 23, 42, 0.09)',
+				glass: '0 18px 50px rgba(2, 6, 23, 0.22)'
 			},
 			transitionDuration: {
 				fast: '150ms',
