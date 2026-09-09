@@ -102,7 +102,11 @@ tailwind.config.js                     tokens de la charte graphique (couleurs, 
 
 ## Base de données (Supabase)
 
-Tables : `chantiers` (avec `status`), `chantier_photos` (fk `chantier_id`), `stock_history` (fk `chantier_id` optionnelle).
+Tables actives (branchées à l'UI) : `chantiers` (avec `status`, `progress`, `client_id`), `chantier_photos` (fk `chantier_id`), `stock_history` (fk `chantier_id` optionnelle).
+
+Tables prêtes mais pas encore branchées à l'UI (schéma pour Planning/Fournisseurs/Relances) : `clients`, `rendez_vous`, `fournisseurs`, `commandes`, `commande_lignes`, `relances`.
+
+Une table `profiles` (liée à `auth.users`) existe déjà côté Supabase — scaffold prêt pour une future authentification, pas encore utilisé.
 
 RLS activée avec policies **publiques** (lecture/écriture ouvertes à quiconque a la clé publishable) car il n'y a pas encore d'authentification. **À restreindre par utilisateur dès que l'auth est ajoutée** — ne pas stocker de données sensibles avant ça.
 

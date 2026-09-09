@@ -96,12 +96,27 @@ Décision de phasage (validée avec l'utilisateur via question explicite) : **le
 - Sélecteur d'arrière-plan (mockup montre Chantier/Montagne/Mer/Import) — ressemble à un outil de démo/configurateur plutôt qu'une fonctionnalité confirmée, pas construit sans confirmation
 - Chat IA conversationnel réel, moteur de recommandations avec actions (commandes, relances), i18n complet, Planning/Fournisseurs/Relances/Rapports fonctionnels
 
+## 2026-09-09 — Schéma complet Planning / Fournisseurs / Relances
+
+Demande explicite : construire toute la base de données pour les sections encore en placeholder. Migration `add_planning_fournisseurs_relances_schema` appliquée :
+
+- **`clients`** (name, email, phone, address) — nouveau concept transverse, `chantiers.client_id` ajouté (nullable, `on delete set null`) pour rattacher un chantier à un client.
+- **`rendez_vous`** (Planning) : `chantier_id`, `client_id`, `title`, `scheduled_at`, `status` (`en_attente`/`confirme`/`annule`), `notes`.
+- **`fournisseurs`** (name, email, phone, category).
+- **`commandes`** : `fournisseur_id`, `chantier_id`, `status` (`en_attente`/`confirmee`/`livree`/`annulee`), `delivery_date`, `notes` — + **`commande_lignes`** pour le détail par article (item, quantity, unit), séparée pour permettre plusieurs lignes par commande.
+- **`relances`** : `type` (`client`/`fournisseur`), fk vers le bon type de cible, `chantier_id`, `message`, `channel` (`email`/`telephone`/`sms`), `due_date`, `status` (`a_faire`/`envoyee`/`resolue`).
+- Index sur toutes les clés étrangères, RLS activée avec policies publiques (même pattern que le reste — pas d'auth pour l'instant).
+
+**Découverte en vérifiant le schéma** : une table `public.profiles` existe déjà dans le projet Supabase (liée à `auth.users`, RLS activée, 0 ligne) — pas créée par moi, probablement un scaffold Supabase Auth déjà en place. Utile à savoir pour le futur chantier authentification : la base semble déjà prête à accueillir de vrais comptes.
+
+**Pas fait dans cette passe** (demande explicitement scopée à "la DB") : aucune page (`/planning`, `/fournisseurs`, `/relances`) n'a été branchée sur ces nouvelles tables — elles restent en placeholder "bientôt disponible" jusqu'à ce qu'on construise le CRUD et l'UI dessus.
+
 ---
 
 ## Roadmap ouverte
 
-- [ ] Authentification / notion de compte artisan — condition pour resserrer les policies RLS actuellement publiques
-- [ ] Planning (sync Google Calendar), Fournisseurs (carnet + commandes), Relances (auto), Rapports (export) — actuellement des pages placeholder
+- [ ] Authentification / notion de compte artisan — une table `profiles` liée à `auth.users` existe déjà côté Supabase, à exploiter. Condition pour resserrer les policies RLS actuellement publiques
+- [ ] Brancher les pages Planning / Fournisseurs / Relances / Rapports sur le schéma désormais prêt (`rendez_vous`, `fournisseurs`, `commandes`, `commande_lignes`, `relances`, `clients`)
 - [ ] Vrai moteur de recommandations IA actionnables (pas juste un flux passif d'analyses)
 - [ ] Assistant IA conversationnel (la barre de prompt sur le tableau de bord est un point d'entrée visuel, pas encore branché)
 - [ ] i18n complet (EN/ES/EU) — sélecteur déjà en place, juste désactivé
