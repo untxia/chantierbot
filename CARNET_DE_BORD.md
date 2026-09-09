@@ -76,14 +76,37 @@ Le dossier `doc/charte-graphique/` (tokens, composants UI, mascotte, architectur
 - **Notifications** : store `lib/stores/toast.ts` + `ToastHost.svelte` (succès/info/warning/erreur, fade+slide ~250ms comme demandé) — remplace les messages d'erreur silencieux/inline sur la création de chantier et l'upload photo.
 - **Mascotte** : `Mascot.svelte` — version simplifiée et bornée en scope (pas d'illustration complète 5 poses comme décrit dans `04_MASCOTTE_ET_ANIMATIONS.md`, qui demanderait un vrai travail d'illustration). Un seul personnage géométrique cohérent avec le logo, qui "bobote" pendant l'analyse et affiche un badge ✓/! au résultat, utilisé dans `photoUpload.svelte`. *Écran de chargement dédié avec pourcentage/messages non fait — à construire si besoin d'un flux plus long.*
 
+## 2026-09-09 — Refonte visuelle "look mockup" (tableau de bord héro, sidebar élargie)
+
+L'utilisateur a fourni un mockup marketing (`doc/charte-graphique/chantierbot-background-dashboard.png`, ajouté directement sur GitHub) : fond photo plein écran avec overlay sombre, cartes en verre dépoli, orbe IA, barre de prompt, cartes de "décisions recommandées", sidebar à 9 entrées, sélecteurs langue/thème/arrière-plan, aperçu mobile.
+
+Décision de phasage (validée avec l'utilisateur via question explicite) : **le look d'abord**, les fonctionnalités manquantes (Planning, Fournisseurs, Relances, moteur de recommandations, chat IA, i18n) restent des chantiers séparés à construire ensuite. Rien n'a été fabriqué/inventé pour coller au mockup — tout ce qui s'affiche vient de données réelles.
+
+- **Fond héro** : `HeroBackground.svelte` — dégradé + silhouette de skyline en SVG, **pas une photo réelle**. Choix délibéré : une vraie photo avec une personne (comme dans le mockup) pose un problème de droits/licence qu'il n'était pas raisonnable de résoudre en sourçant une image au hasard sur le web pour une app en prod. À remplacer par une vraie photo si l'utilisateur en fournit une avec les droits, ou en génère une.
+- **Thème clair/sombre devient bascule manuelle réelle** : `tailwind.config.js` passé de `darkMode: 'media'` à `'selector'`, store `lib/stores/theme.ts` + `ThemeToggle.svelte`, persisté en `localStorage`, bootstrap anti-flash inline dans `app.html`. Avant, seul le `prefers-color-scheme` système comptait.
+- **TopBar** (`TopBar.svelte`) : recherche (réelle — filtre `/projets?q=`), toggle thème, sélecteur de langue (FR actif, EN/ES/EU visibles mais désactivés avec toast "bientôt" — pas de fausse promesse d'i18n), icône compte générique (pas de faux nom/profil inventé, contrairement au mockup qui affiche "Chris · Artisan Pro" — honnête tant qu'il n'y a pas d'auth).
+- **Sidebar refaite** : 9 entrées comme le mockup (Tableau de bord, Chantiers, Stocks, Planning*, Fournisseurs*, Relances*, Assistant IA, Rapports*, Paramètres — `*` = pages "bientôt disponible", créées comme placeholders simples). Bouton "Focus chantier" **fonctionnel** (`lib/stores/focus-mode.ts`, masque la sidebar, persisté).
+- **Tableau de bord (`/`) refondu** : hero sombre en pleine largeur avec salutation, barre de prompt IA (visuelle — soumettre affiche un toast "bientôt", pas de faux chat), 4 cartes KPI en verre **toutes sourcées de vraies requêtes** (chantiers actifs, recommandations IA = nb photos avec au moins un problème détecté, photos analysées, dernière activité). Section "Recommandations IA" = les 3 dernières analyses avec un problème détecté, avec vrai lien vers le chantier (pas de fausses cartes "Valider la commande" comme le mockup, qui impliqueraient un moteur de décision inexistant).
+- **Progression de chantier** : colonne `progress` ajoutée (migration `add_chantier_progress`, 0-100), slider sur la page détail (`PATCH /api/chantiers/[id]`), barre de progression affichée sur les cartes chantier (Accueil + Chantiers), remplace l'ancien texte brut.
+- **Recherche** : `/projets?q=...` filtre par nom (`ilike`), reliée à la recherche de la TopBar.
+- Renommage : "Projets" → "Chantiers" dans la nav (aligné mockup), route `/projets` conservée pour ne pas casser les liens existants.
+
+**Ce qui n'a pas été fait, volontairement** :
+- Photo réelle en fond (raison de droits, voir plus haut)
+- Sélecteur d'arrière-plan (mockup montre Chantier/Montagne/Mer/Import) — ressemble à un outil de démo/configurateur plutôt qu'une fonctionnalité confirmée, pas construit sans confirmation
+- Chat IA conversationnel réel, moteur de recommandations avec actions (commandes, relances), i18n complet, Planning/Fournisseurs/Relances/Rapports fonctionnels
+
 ---
 
 ## Roadmap ouverte
 
 - [ ] Authentification / notion de compte artisan — condition pour resserrer les policies RLS actuellement publiques
-- [ ] Sync planning (Google Calendar) et relances fournisseurs automatiques — hors scope MVP actuel
+- [ ] Planning (sync Google Calendar), Fournisseurs (carnet + commandes), Relances (auto), Rapports (export) — actuellement des pages placeholder
+- [ ] Vrai moteur de recommandations IA actionnables (pas juste un flux passif d'analyses)
+- [ ] Assistant IA conversationnel (la barre de prompt sur le tableau de bord est un point d'entrée visuel, pas encore branché)
+- [ ] i18n complet (EN/ES/EU) — sélecteur déjà en place, juste désactivé
+- [ ] Fond héro : remplacer le SVG stylisé par une vraie photo si l'utilisateur en fournit une avec les droits
 - [ ] Écran de chargement dédié avec mascotte animée (marche/creuse/construit/vérifie/pouce levé) si un flux plus long que l'upload photo l'exige
-- [ ] Filtrer/rechercher dans `/projets` et `/ia` une fois le volume de données plus important
 
 ## Décisions à ne pas oublier
 

@@ -8,23 +8,40 @@
 	export let data: PageData;
 
 	let updatingStatus = false;
+	let progress = data.chantier.progress;
+	let updatingProgress = false;
+
+	async function patchChantier(update: Record<string, unknown>) {
+		const res = await fetch(`/api/chantiers/${data.chantier.id}`, {
+			method: 'PATCH',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(update)
+		});
+		if (!res.ok) throw new Error((await res.json()).error ?? 'Erreur serveur');
+	}
 
 	async function updateStatus(e: Event) {
-		const status = (e.target as HTMLSelectElement).value;
 		updatingStatus = true;
-
 		try {
-			const res = await fetch(`/api/chantiers/${data.chantier.id}`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ status })
-			});
-			if (!res.ok) throw new Error((await res.json()).error ?? 'Erreur serveur');
+			await patchChantier({ status: (e.target as HTMLSelectElement).value });
 			await invalidateAll();
 		} catch (err) {
 			toast.error(err instanceof Error ? err.message : 'Erreur inconnue');
 		} finally {
 			updatingStatus = false;
+		}
+	}
+
+	async function commitProgress() {
+		if (progress === data.chantier.progress) return;
+		updatingProgress = true;
+		try {
+			await patchChantier({ progress });
+			await invalidateAll();
+		} catch (err) {
+			toast.error(err instanceof Error ? err.message : 'Erreur inconnue');
+		} finally {
+			updatingProgress = false;
 		}
 	}
 </script>
@@ -33,9 +50,9 @@
 	<title>{data.chantier.name} — ChantierBot</title>
 </svelte:head>
 
-<a href="/projets" class="mb-4 inline-block text-sm text-ink-secondary hover:text-primary hover:underline dark:text-ink-dark-secondary">← Projets</a>
+<a href="/projets" class="mb-4 inline-block text-sm text-ink-secondary hover:text-primary hover:underline dark:text-ink-dark-secondary">← Chantiers</a>
 
-<div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+<div class="mb-2 flex flex-wrap items-center justify-between gap-3">
 	<h1 class="text-2xl font-bold">{data.chantier.name}</h1>
 	<select
 		value={data.chantier.status}
@@ -48,6 +65,21 @@
 		<option value="en_attente">En attente</option>
 		<option value="termine">Terminé</option>
 	</select>
+</div>
+
+<div class="mb-6 flex items-center gap-3">
+	<input
+		type="range"
+		min="0"
+		max="100"
+		step="5"
+		bind:value={progress}
+		on:change={commitProgress}
+		disabled={updatingProgress}
+		class="h-2 flex-1 accent-primary"
+		aria-label="Avancement du chantier"
+	/>
+	<span class="w-12 text-right text-sm font-semibold">{progress}%</span>
 </div>
 
 <PhotoUpload chantierId={data.chantier.id} />

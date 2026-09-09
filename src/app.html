@@ -10,6 +10,13 @@
     <meta property="og:type" content="website" />
     <link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
     <title>ChantierBot</title>
+    <script>
+      (function () {
+        var saved = localStorage.getItem('chantierbot-theme');
+        var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
     %sveltekit.head%
   </head>
   <body>

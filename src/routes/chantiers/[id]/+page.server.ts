@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ params }) => {
 	const { data: chantier, error: chantierError } = await supabase
 		.from('chantiers')
-		.select('id, name, status, created_at')
+		.select('id, name, status, progress, created_at')
 		.eq('id', params.id)
 		.single();
 
