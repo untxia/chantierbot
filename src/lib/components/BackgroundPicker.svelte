@@ -11,9 +11,7 @@
 
 	let selected = 'general';
 
-	if (typeof window !== 'undefined') {
-		selected = window.localStorage.getItem(STORAGE_KEY) || 'general';
-	}
+	if (typeof window !== 'undefined') selected = window.localStorage.getItem(STORAGE_KEY) || 'general';
 
 	function selectBackground(id: string) {
 		selected = id;
@@ -30,25 +28,14 @@
 		<h2 class="section-title">Choisissez votre fond</h2>
 		<p class="mt-1 text-sm text-ink-secondary dark:text-ink-dark-secondary">Votre choix est enregistré automatiquement sur cet appareil.</p>
 	</div>
-
 	<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
 		{#each backgrounds as background}
-			<button
-				type="button"
-				on:click={() => selectBackground(background.id)}
-				class="group overflow-hidden rounded-xl border text-left transition-all {selected === background.id ? 'border-primary ring-2 ring-primary/30 shadow-card-hover' : 'border-black/10 hover:border-primary/30 dark:border-white/10'}"
-				aria-pressed={selected === background.id}
-			>
+			<button type="button" on:click={() => selectBackground(background.id)} class="group overflow-hidden rounded-xl border text-left transition-all {selected === background.id ? 'border-primary ring-2 ring-primary/30 shadow-card-hover' : 'border-black/10 hover:border-primary/30 dark:border-white/10'}" aria-pressed={selected === background.id}>
 				<div class="relative aspect-video overflow-hidden bg-dark-navy">
 					<img src={background.src} alt="Fond {background.label}" class="h-full w-full object-cover transition-transform duration-normal group-hover:scale-105" />
-					{#if selected === background.id}
-						<span class="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow-sm">✓</span>
-					{/if}
+					{#if selected === background.id}<span class="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow-sm">✓</span>{/if}
 				</div>
-				<div class="bg-white px-3 py-2.5 dark:bg-surface-dark">
-					<p class="text-sm font-bold">{background.label}</p>
-					<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">{background.subtitle}</p>
-				</div>
+				<div class="bg-white px-3 py-2.5 dark:bg-surface-dark"><p class="text-sm font-bold">{background.label}</p><p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">{background.subtitle}</p></div>
 			</button>
 		{/each}
 	</div>
