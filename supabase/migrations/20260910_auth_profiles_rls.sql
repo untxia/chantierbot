@@ -16,6 +16,19 @@ alter table public.profiles add column if not exists phone text;
 alter table public.profiles add column if not exists avatar_url text;
 alter table public.profiles add column if not exists created_at timestamptz not null default now();
 alter table public.profiles add column if not exists updated_at timestamptz not null default now();
+alter table public.profiles add column if not exists username text;
+alter table public.profiles add column if not exists full_name text;
+alter table public.profiles add column if not exists website text;
+
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name = 'username') then
+    alter table public.profiles alter column username drop not null;
+  end if;
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name = 'full_name') then
+    alter table public.profiles alter column full_name drop not null;
+  end if;
+end $$;
 
 alter table public.clients add column if not exists user_id uuid;
 alter table public.chantiers add column if not exists user_id uuid;
@@ -44,11 +57,12 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, display_name, company_name)
-  values (new.id, nullif(new.raw_user_meta_data ->> 'display_name', ''), nullif(new.raw_user_meta_data ->> 'company_name', ''))
+  insert into public.profiles (id, display_name, company_name, full_name)
+  values (new.id, nullif(new.raw_user_meta_data ->> 'display_name', ''), nullif(new.raw_user_meta_data ->> 'company_name', ''), nullif(new.raw_user_meta_data ->> 'display_name', ''))
   on conflict (id) do update set
     display_name = coalesce(excluded.display_name, profiles.display_name),
     company_name = coalesce(excluded.company_name, profiles.company_name),
+    full_name = coalesce(excluded.full_name, profiles.full_name),
     updated_at = now();
   return new;
 end;
