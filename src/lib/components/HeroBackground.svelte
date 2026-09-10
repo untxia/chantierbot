@@ -11,7 +11,8 @@
 		peintre: '/assets/backgrounds/peintre.svg',
 		carreleur: '/assets/backgrounds/carreleur.svg',
 		couvreur: '/assets/backgrounds/couvreur.svg',
-		charpentier: '/assets/backgrounds/charpentier.svg'
+		charpentier: '/assets/backgrounds/charpentier.svg',
+		plaquiste: '/assets/backgrounds/plaquiste.svg'
 	};
 
 	let src = fallback;
@@ -29,8 +30,4 @@
 	}
 </script>
 
-<div
-	class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
-	style={`background-image: url('${src}')`}
-	aria-hidden="true"
-></div>
+<div class="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat" style={`background-image: url('${src}')`} aria-hidden="true"></div>
