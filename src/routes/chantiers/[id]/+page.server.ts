@@ -12,11 +12,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.single();
 	if (chantierError || !chantier) throw error(404, 'Chantier introuvable');
 
-	let client = null;
-	if (chantier.client_id) {
-		const { data } = await supabase.from('clients').select('id, name, email, phone, address').eq('id', chantier.client_id).single();
-		client = data;
-	}
+	const [{ data: clients }, clientResult] = await Promise.all([
+		supabase.from('clients').select('id, name, email, phone, address').order('name'),
+		chantier.client_id
+			? supabase.from('clients').select('id, name, email, phone, address').eq('id', chantier.client_id).single()
+			: Promise.resolve({ data: null })
+	]);
 
 	const { data: photos, error: photosError } = await supabase
 		.from('chantier_photos')
@@ -30,5 +31,5 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		return { ...photo, image_url: signed?.signedUrl ?? null };
 	}));
 
-	return { chantier, client, photos: photosWithUrls };
+	return { chantier, client: clientResult.data, clients: clients ?? [], photos: photosWithUrls };
 };
