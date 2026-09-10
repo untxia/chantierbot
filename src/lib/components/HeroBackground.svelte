@@ -8,11 +8,11 @@
 		paysagiste: '/assets/backgrounds/paysagiste.webp',
 		macon: '/assets/backgrounds/macon.webp',
 		electricien: '/assets/backgrounds/electricien.webp',
-		peintre: '/assets/backgrounds/peintre.svg',
-		carreleur: '/assets/backgrounds/carreleur.svg',
-		couvreur: '/assets/backgrounds/couvreur.svg',
-		charpentier: '/assets/backgrounds/charpentier.svg',
-		plaquiste: '/assets/backgrounds/plaquiste.svg'
+		peintre: '/assets/backgrounds/peintre.webp',
+		carreleur: '/assets/backgrounds/carreleur.webp',
+		couvreur: '/assets/backgrounds/couvreur.webp',
+		charpentier: '/assets/backgrounds/charpentier.webp',
+		plaquiste: '/assets/backgrounds/plaquiste.webp'
 	};
 
 	let src = fallback;
