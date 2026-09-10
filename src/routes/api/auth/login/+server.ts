@@ -18,6 +18,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 	if (error || !data.session) return json({ error: error?.message ?? 'Connexion impossible.' }, { status: 401 });
 
+	const { data: profile } = await client.from('profiles').select('disabled_at').eq('id', data.user.id).maybeSingle();
+	if (profile?.disabled_at) {
+		await client.auth.signOut();
+		return json({ error: 'Ce compte a été désactivé. Contacte un administrateur.' }, { status: 403 });
+	}
+
 	setAuthCookies(cookies, data.session.access_token, data.session.refresh_token);
 	return json({ user: data.user, session: data.session });
 };
