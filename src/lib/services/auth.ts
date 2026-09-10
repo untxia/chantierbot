@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { dev } from '$app/environment';
 import type { Cookies } from '@sveltejs/kit';
 
 const ACCESS_COOKIE = 'chantierbot-access-token';
@@ -8,13 +9,7 @@ const REFRESH_COOKIE = 'chantierbot-refresh-token';
 export const browserSupabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY);
 
 function cookieOptions() {
-	return {
-		path: '/',
-		httpOnly: true,
-		secure: process.env.NODE_ENV === 'production',
-		sameSite: 'lax' as const,
-		maxAge: 60 * 60 * 24 * 30
-	};
+	return { path: '/', httpOnly: true, secure: !dev, sameSite: 'lax' as const, maxAge: 60 * 60 * 24 * 30 };
 }
 
 export function setAuthCookies(cookies: Cookies, accessToken: string, refreshToken: string) {
@@ -31,19 +26,11 @@ export function clearAuthCookies(cookies: Cookies) {
 export async function getServerAuth(cookies: Cookies) {
 	const accessToken = cookies.get(ACCESS_COOKIE);
 	const refreshToken = cookies.get(REFRESH_COOKIE);
-	const client = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-		auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-	});
+	const client = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
 	if (!accessToken || !refreshToken) return { client, user: null, session: null };
-
 	const { data, error } = await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-	if (error || !data.user || !data.session) {
-		clearAuthCookies(cookies);
-		return { client, user: null, session: null };
-	}
-	if (data.session.access_token !== accessToken || data.session.refresh_token !== refreshToken) {
-		setAuthCookies(cookies, data.session.access_token, data.session.refresh_token);
-	}
+	if (error || !data.user || !data.session) { clearAuthCookies(cookies); return { client, user: null, session: null }; }
+	if (data.session.access_token !== accessToken || data.session.refresh_token !== refreshToken) setAuthCookies(cookies, data.session.access_token, data.session.refresh_token);
 	return { client, user: data.user, session: data.session };
 }
 
