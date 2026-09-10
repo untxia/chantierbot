@@ -1,13 +1,14 @@
 export interface NavItem {
 	href: string;
 	label: string;
-	icon: 'home' | 'folder' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'more';
+	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'more';
 	soon?: boolean;
 }
 
 export const navItems: NavItem[] = [
 	{ href: '/', label: 'Tableau de bord', icon: 'home' },
 	{ href: '/projets', label: 'Chantiers', icon: 'folder' },
+	{ href: '/clients', label: 'Clients', icon: 'users' },
 	{ href: '/analyses', label: 'Stocks', icon: 'box' },
 	{ href: '/planning', label: 'Planning', icon: 'calendar', soon: true },
 	{ href: '/fournisseurs', label: 'Fournisseurs', icon: 'truck', soon: true },
