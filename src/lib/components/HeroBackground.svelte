@@ -7,7 +7,11 @@
 		plombier: '/assets/backgrounds/plombier.webp',
 		paysagiste: '/assets/backgrounds/paysagiste.webp',
 		macon: '/assets/backgrounds/macon.webp',
-		electricien: '/assets/backgrounds/electricien.webp'
+		electricien: '/assets/backgrounds/electricien.webp',
+		peintre: '/assets/backgrounds/peintre.svg',
+		carreleur: '/assets/backgrounds/carreleur.svg',
+		couvreur: '/assets/backgrounds/couvreur.svg',
+		charpentier: '/assets/backgrounds/charpentier.svg'
 	};
 
 	let src = fallback;
