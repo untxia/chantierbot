@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { supabase } from '$lib/services/supabase';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
+	const supabase = locals.supabase;
 	const { data: chantier, error: chantierError } = await supabase
 		.from('chantiers')
 		.select('id, name, status, progress, created_at')
@@ -18,9 +18,5 @@ export const load: PageServerLoad = async ({ params }) => {
 		.order('created_at', { ascending: false });
 
 	if (photosError) throw photosError;
-
-	return {
-		chantier,
-		photos: photos ?? []
-	};
+	return { chantier, photos: photos ?? [] };
 };
