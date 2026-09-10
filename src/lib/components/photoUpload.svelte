@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import { uploadPhoto, photoPublicUrl } from '$lib/services/supabase';
+	import { uploadPhoto, photoSignedUrl } from '$lib/services/supabase';
 	import { toast } from '$lib/stores/toast';
 	import Mascot from './Mascot.svelte';
 	export let chantierId: string;
@@ -34,7 +34,7 @@
 		try {
 			const extension = file.name.split('.').pop() || 'jpg';
 			const path = await uploadPhoto(chantierId, file, extension);
-			const imageUrl = photoPublicUrl(path);
+			const imageUrl = await photoSignedUrl(path);
 			const res = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chantierId, imagePath: path, imageUrl, tradeId: getTradeId() }) });
 			const body = await res.json();
 			if (!res.ok) throw new Error(body.error ?? 'Erreur serveur');
