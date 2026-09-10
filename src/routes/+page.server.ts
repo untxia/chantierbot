@@ -1,7 +1,7 @@
-import { supabase } from '$lib/services/supabase';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	const supabase = locals.supabase;
 	const [
 		{ count: chantierCount },
 		{ count: activeCount },
