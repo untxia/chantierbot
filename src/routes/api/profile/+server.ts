@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 	if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
 	const { data, error } = await locals.supabase.from('profiles').select('id, display_name, company_name, trade_id, phone, avatar_url, created_at, updated_at').eq('id', locals.user.id).maybeSingle();
 	if (error) return json({ error: 'Impossible de charger le profil.' }, { status: 500 });
-	return json({ profile: data });
+	return json({ profile: data, email: locals.user.email ?? '' });
 };
 
 export const PATCH: RequestHandler = async ({ request, locals }) => {
