@@ -15,7 +15,8 @@ export const navItems: NavItem[] = [
 	{ href: '/relances', label: 'Relances', icon: 'phone', soon: true },
 	{ href: '/ia', label: 'Assistant IA', icon: 'sparkles' },
 	{ href: '/rapports', label: 'Rapports', icon: 'report', soon: true },
-	{ href: '/parametres', label: 'Paramètres', icon: 'settings' }
+	{ href: '/parametres', label: 'Paramètres', icon: 'settings' },
+	{ href: '/admin', label: 'Administration', icon: 'settings' }
 ];
 
 export const mobileNavItems: NavItem[] = [
