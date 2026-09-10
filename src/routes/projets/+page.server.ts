@@ -1,18 +1,14 @@
-import { supabase } from '$lib/services/supabase';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
 	const q = url.searchParams.get('q')?.trim() ?? '';
-
-	let query = supabase
+	let query = locals.supabase
 		.from('chantiers')
 		.select('id, name, status, progress, created_at, chantier_photos(count)')
 		.order('created_at', { ascending: false });
 
 	if (q) query = query.ilike('name', `%${q}%`);
-
 	const { data: chantiers, error } = await query;
-
 	if (error) throw error;
 
 	return {
