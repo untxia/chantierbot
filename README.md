@@ -4,19 +4,18 @@ Agent IA pour artisans : analyse de photos de chantier par vision IA, suivi mult
 
 **Production** : https://chantierbot.vercel.app — déployé automatiquement sur Vercel à chaque push sur `main`.
 
-## Nouveauté — Copilote IA métier
+## Nouveauté — Comptes artisans + sécurité multi-utilisateurs
 
-Le flux photo d'un chantier est maintenant spécialisé selon le métier sélectionné dans le fond personnalisé : **Plombier, Paysagiste, Maçon, Électricien, Peintre, Carreleur, Couvreur, Charpentier**.
+ChantierBot dispose maintenant du socle SaaS : **connexion / inscription Supabase Auth**, profil artisan, cookies de session serveur, clients, et préparation RLS complète.
 
-Flux : **📸 photo → 🤖 vision métier → 📋 travaux détectés → 📐 quantités indicatives → 💰 matériaux + main-d'œuvre → 📝 brouillon de devis → 🖨️ impression/PDF**.
-
-Les prix et quantités produits par l'IA sont indicatifs et doivent être vérifiés par l'artisan avant transmission au client.
+Le SQL `supabase/migrations/20260910_auth_profiles_rls.sql` doit être exécuté dans le SQL Editor Supabase avant de considérer la base comme verrouillée. Il remplace les anciennes policies publiques par des policies propriétaire (`auth.uid()`), ajoute `user_id` aux données métier et rend le bucket photo privé. `supabase/verify_auth_rls.sql` contient les requêtes de contrôle.
 
 ## Stack
 
 - **Frontend / Backend** : SvelteKit (Svelte 4, TypeScript)
 - **Style** : Tailwind CSS v3, charte graphique dans `doc/charte-graphique/`
 - **Base de données / stockage** : Supabase (Postgres + Storage)
+- **Authentification** : Supabase Auth (email + mot de passe)
 - **IA** : Groq API — vision (`qwen/qwen3.8-27b`) et texte (`openai/gpt-oss-120b`)
 - **Build** : Vite
 
@@ -52,27 +51,25 @@ Ne jamais commiter `.env.local` ni exposer `GROQ_API_KEY` au client.
 
 - **Accueil** (`/`) : dashboard, KPI, recommandations et chantiers récents.
 - **Projets** (`/projets`) : liste et création de chantier.
+- **Clients** (`/clients`) : création, recherche, modification et suppression de clients.
 - **Chantier** (`/chantiers/[id]`) : upload photo + analyse IA métier + estimation.
 - **IA** (`/ia`) : activité des analyses photo.
 - **Analyses** (`/analyses`) : suivi de stock + prédiction des ruptures.
 - **Rapports** (`/rapports`) : aperçu du dernier brouillon de devis IA + impression/PDF navigateur.
-- **Paramètres** (`/parametres`) : placeholder.
+- **Paramètres** (`/parametres`) : profil artisan et déconnexion.
+- **Connexion** (`/connexion`) : inscription et connexion.
 
-## Architecture clé
+## Authentification et RLS
 
-```text
-src/
-  lib/
-    config/trades.ts                  profils et spécialités par métier
-    components/photoUpload.svelte     photo → analyse → estimation → brouillon
-    services/groq.ts                  vision IA + génération d'estimation + stock
-  routes/
-    chantiers/[id]/                   détail chantier
-    rapports/                         brouillon de devis imprimable
-    api/analyze/                      analyse photo métier + persistance
-    api/predict/                      prédiction stock
-static/assets/backgrounds/             backgrounds métier
-```
+Le serveur lit la session depuis des cookies HTTP-only et injecte un client Supabase authentifié dans `event.locals`. Les pages et API métier utilisent ce client afin que les requêtes respectent RLS.
+
+Après application de la migration d'authentification :
+
+1. chaque compte possède une ligne `profiles` créée automatiquement par trigger ;
+2. `clients`, `chantiers`, `chantier_photos`, `stock_history`, `rendez_vous`, `fournisseurs`, `commandes`, `commande_lignes` et `relances` sont associés à `user_id` ;
+3. les rôles `anon` n'ont plus de droits sur ces tables ;
+4. les policies limitent lecture/écriture à `auth.uid()` ;
+5. le bucket `chantier-photos` devient privé et les photos sont servies via des URLs signées temporaires.
 
 ## Flux photo → IA → estimation
 
@@ -85,7 +82,7 @@ static/assets/backgrounds/             backgrounds métier
 
 ## Sécurité et limites
 
-- **Pas d'authentification** actuellement : la base est partagée. Les policies RLS doivent être restreintes par utilisateur avant une mise en production publique réelle.
+- Les données métier sont destinées à être isolées par utilisateur via Supabase RLS. **Appliquer la migration SQL d'authentification avant de partager l'application avec de vrais utilisateurs.**
 - Une photo ne permet pas de mesurer précisément toutes les dimensions : les quantités et prix IA sont des aides à l'estimation, pas une validation technique.
 - Les contraintes structurelles, sécurité, conformité, TVA, prix fournisseurs et taux de main-d'œuvre doivent être contrôlés par un professionnel.
 
