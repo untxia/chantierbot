@@ -1,11 +1,6 @@
-export type TradeId = 'general' | 'plombier' | 'paysagiste' | 'macon' | 'electricien' | 'peintre' | 'carreleur' | 'couvreur' | 'charpentier';
+export type TradeId = 'general' | 'plombier' | 'paysagiste' | 'macon' | 'electricien' | 'peintre' | 'carreleur' | 'couvreur' | 'charpentier' | 'plaquiste';
 
-export interface TradeProfile {
-	id: TradeId;
-	label: string;
-	focus: string[];
-	units: string[];
-}
+export interface TradeProfile { id: TradeId; label: string; focus: string[]; units: string[]; }
 
 export const TRADE_PROFILES: Record<TradeId, TradeProfile> = {
 	general: { id: 'general', label: 'Bâtiment général', focus: ['travaux visibles', 'matériaux', 'surfaces', 'état du chantier'], units: ['m²', 'ml', 'u', 'h'] },
@@ -16,7 +11,8 @@ export const TRADE_PROFILES: Record<TradeId, TradeProfile> = {
 	peintre: { id: 'peintre', label: 'Peintre', focus: ['murs', 'plafonds', 'préparation', 'sous-couche', 'couches de finition'], units: ['m²', 'l', 'u', 'h'] },
 	carreleur: { id: 'carreleur', label: 'Carreleur', focus: ['surface carrelée', 'dépose', 'colle', 'joints', 'plinthes'], units: ['m²', 'ml', 'kg', 'u', 'h'] },
 	couvreur: { id: 'couvreur', label: 'Couvreur', focus: ['surface de toiture', 'tuiles/ardoises', 'faîtage', 'rives', 'gouttières', 'étanchéité'], units: ['m²', 'ml', 'u', 'h'] },
-	charpentier: { id: 'charpentier', label: 'Charpentier', focus: ['pannes', 'chevrons', 'fermes', 'assemblages', 'bois visibles', 'contreventement'], units: ['m³', 'ml', 'u', 'h'] }
+	charpentier: { id: 'charpentier', label: 'Charpentier', focus: ['pannes', 'chevrons', 'fermes', 'assemblages', 'bois visibles', 'contreventement'], units: ['m³', 'ml', 'u', 'h'] },
+	plaquiste: { id: 'plaquiste', label: 'Plaquiste', focus: ['plaques de plâtre', 'rails', 'montants', 'joints', 'enduits', 'plafonds'], units: ['m²', 'ml', 'u', 'h'] }
 };
 
 export function getTradeProfile(id?: string | null): TradeProfile {
