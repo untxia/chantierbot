@@ -3,8 +3,14 @@ import type { RequestHandler } from './$types';
 
 const VALID_STATUSES = ['en_cours', 'termine', 'en_attente'];
 
+async function ownsChantier(locals: App.Locals, id: string) {
+	const { data } = await locals.supabase.from('chantiers').select('id').eq('id', id).single();
+	return Boolean(data);
+}
+
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
+	if (!(await ownsChantier(locals, params.id))) return json({ error: 'Chantier introuvable' }, { status: 404 });
 	const body = await request.json().catch(() => null);
 	const update: Record<string, unknown> = {};
 	if (body?.name !== undefined) {
@@ -17,9 +23,12 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (body?.start_date !== undefined) update.start_date = body.start_date || null;
 	if (body?.end_date !== undefined) update.end_date = body.end_date || null;
 	if (body?.budget !== undefined) {
-		const budget = Number(body.budget);
-		if (!Number.isFinite(budget) || budget < 0) return json({ error: 'Budget invalide' }, { status: 400 });
-		update.budget = budget;
+		if (body.budget === null || body.budget === '') update.budget = null;
+		else {
+			const budget = Number(body.budget);
+			if (!Number.isFinite(budget) || budget < 0) return json({ error: 'Budget invalide' }, { status: 400 });
+			update.budget = budget;
+		}
 	}
 	if (body?.status !== undefined) {
 		if (!VALID_STATUSES.includes(body.status)) return json({ error: 'Statut invalide' }, { status: 400 });
@@ -34,4 +43,12 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	const { data, error } = await locals.supabase.from('chantiers').update(update).eq('id', params.id).select().single();
 	if (error) return json({ error: 'Échec de la mise à jour' }, { status: 500 });
 	return json({ chantier: data });
+};
+
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+	if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
+	if (!(await ownsChantier(locals, params.id))) return json({ error: 'Chantier introuvable' }, { status: 404 });
+	const { error } = await locals.supabase.from('chantiers').delete().eq('id', params.id);
+	if (error) return json({ error: 'Impossible de supprimer le chantier' }, { status: 500 });
+	return new Response(null, { status: 204 });
 };
