@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { toast } from '$lib/stores/toast';
+	import { browserSupabase } from '$lib/services/auth';
 	import { TRADE_PROFILES } from '$lib/config/trades';
 
 	let displayName = '';
@@ -39,6 +40,7 @@
 
 	async function logout() {
 		loggingOut = true;
+		await browserSupabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
 		await fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined);
 		goto('/connexion');
 	}
