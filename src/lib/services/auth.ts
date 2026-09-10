@@ -11,7 +11,7 @@ function cookieOptions() {
 	return {
 		path: '/',
 		httpOnly: true,
-		secure: true,
+		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax' as const,
 		maxAge: 60 * 60 * 24 * 30
 	};
@@ -34,7 +34,6 @@ export async function getServerAuth(cookies: Cookies) {
 	const client = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
 	});
-
 	if (!accessToken || !refreshToken) return { client, user: null, session: null };
 
 	const { data, error } = await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
@@ -42,11 +41,9 @@ export async function getServerAuth(cookies: Cookies) {
 		clearAuthCookies(cookies);
 		return { client, user: null, session: null };
 	}
-
 	if (data.session.access_token !== accessToken || data.session.refresh_token !== refreshToken) {
 		setAuthCookies(cookies, data.session.access_token, data.session.refresh_token);
 	}
-
 	return { client, user: data.user, session: data.session };
 }
 
