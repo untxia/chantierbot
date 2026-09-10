@@ -45,11 +45,7 @@ set search_path = public
 as $$
 begin
   insert into public.profiles (id, display_name, company_name)
-  values (
-    new.id,
-    nullif(new.raw_user_meta_data ->> 'display_name', ''),
-    nullif(new.raw_user_meta_data ->> 'company_name', '')
-  )
+  values (new.id, nullif(new.raw_user_meta_data ->> 'display_name', ''), nullif(new.raw_user_meta_data ->> 'company_name', ''))
   on conflict (id) do update set
     display_name = coalesce(excluded.display_name, profiles.display_name),
     company_name = coalesce(excluded.company_name, profiles.company_name),
@@ -59,16 +55,12 @@ end;
 $$;
 
 drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-after insert on auth.users
-for each row execute procedure public.handle_new_user();
+create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
 
 do $$
 declare r record;
 begin
-  for r in select schemaname, tablename, policyname from pg_policies
-    where schemaname = 'public'
-      and tablename in ('profiles','clients','chantiers','chantier_photos','stock_history','rendez_vous','fournisseurs','commandes','commande_lignes','relances')
+  for r in select schemaname, tablename, policyname from pg_policies where schemaname = 'public' and tablename in ('profiles','clients','chantiers','chantier_photos','stock_history','rendez_vous','fournisseurs','commandes','commande_lignes','relances')
   loop execute format('drop policy if exists %I on %I.%I', r.policyname, r.schemaname, r.tablename); end loop;
 end $$;
 
@@ -136,21 +128,16 @@ create policy "relances_insert_own" on public.relances for insert to authenticat
 create policy "relances_update_own" on public.relances for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "relances_delete_own" on public.relances for delete to authenticated using ((select auth.uid()) = user_id);
 
+update storage.buckets set public = false where id = 'chantier-photos';
+
 do $$
 declare r record;
 begin
-  for r in select policyname from pg_policies
-    where schemaname = 'storage' and tablename = 'objects'
-      and (coalesce(qual, '') ilike '%chantier-photos%' or coalesce(with_check, '') ilike '%chantier-photos%')
+  for r in select policyname from pg_policies where schemaname = 'storage' and tablename = 'objects' and (coalesce(qual, '') ilike '%chantier-photos%' or coalesce(with_check, '') ilike '%chantier-photos%')
   loop execute format('drop policy if exists %I on storage.objects', r.policyname); end loop;
 end $$;
 
-create policy "chantier_photos_storage_select" on storage.objects for select to authenticated
-using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
-create policy "chantier_photos_storage_insert" on storage.objects for insert to authenticated
-with check (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
-create policy "chantier_photos_storage_update" on storage.objects for update to authenticated
-using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())))
-with check (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
-create policy "chantier_photos_storage_delete" on storage.objects for delete to authenticated
-using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
+create policy "chantier_photos_storage_select" on storage.objects for select to authenticated using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
+create policy "chantier_photos_storage_insert" on storage.objects for insert to authenticated with check (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
+create policy "chantier_photos_storage_update" on storage.objects for update to authenticated using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid()))) with check (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
+create policy "chantier_photos_storage_delete" on storage.objects for delete to authenticated using (bucket_id = 'chantier-photos' and exists (select 1 from public.chantiers c where c.id::text = (storage.foldername(name))[1] and c.user_id = (select auth.uid())));
