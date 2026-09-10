@@ -1,11 +1,17 @@
-<svelte:head>
-	<title>ChantierBot — Fournisseurs</title>
-</svelte:head>
-
-<h1 class="mb-6 text-2xl font-bold">Fournisseurs</h1>
-
-<div class="card">
-	<p class="text-ink-secondary dark:text-ink-dark-secondary">
-		Le carnet fournisseurs et les commandes automatiques arrivent bientôt.
-	</p>
-</div>
+<script lang="ts">
+ import { onMount } from 'svelte';
+ let fournisseurs:any[]=[]; let search=''; let open=false; let editing:any=null; let saving=false; let message='';
+ let form={name:'',email:'',phone:'',address:'',favorite:false,notes:''};
+ async function load(){const r=await fetch('/api/fournisseurs');const b=await r.json();fournisseurs=b.fournisseurs??[]}
+ onMount(load);
+ function create(){editing=null;form={name:'',email:'',phone:'',address:'',favorite:false,notes:''};open=true;message=''}
+ function edit(f:any){editing=f;form={name:f.name??'',email:f.email??'',phone:f.phone??'',address:f.address??'',favorite:!!f.favorite,notes:f.notes??''};open=true;message=''}
+ async function save(){saving=true;const r=await fetch('/api/fournisseurs',{method:editing?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(editing?{id:editing.id,...form}:form)});const b=await r.json();if(!r.ok){message=b.error??'Erreur';saving=false;return}open=false;await load();saving=false}
+ async function remove(f:any){if(!confirm(`Supprimer ${f.name} ?`))return;await fetch('/api/fournisseurs',{method:'DELETE',headers:{'content-type':'application/json'},body:JSON.stringify({id:f.id})});await load()}
+ $: filtered=fournisseurs.filter(f=>`${f.name} ${f.email??''} ${f.phone??''}`.toLowerCase().includes(search.toLowerCase()));
+</script>
+<svelte:head><title>ChantierBot — Fournisseurs</title></svelte:head>
+<div class="space-y-6"><div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-xs font-bold uppercase tracking-[.16em] text-primary">Achats</p><h1 class="text-3xl font-extrabold">Fournisseurs</h1><p class="mt-1 text-sm text-ink-secondary dark:text-ink-dark-secondary">Ton carnet fournisseurs, centralisé pour préparer tes commandes.</p></div><button class="btn-primary" on:click={create}>＋ Nouveau fournisseur</button></div>
+<div class="card"><div class="mb-4 flex gap-3"><input class="input flex-1" bind:value={search} placeholder="Rechercher un fournisseur…"/><span class="rounded-xl bg-primary/10 px-4 py-2 text-sm font-bold text-primary">{filtered.length}</span></div>{#if !filtered.length}<div class="py-12 text-center"><div class="text-4xl">🏢</div><h2 class="mt-3 font-bold">Aucun fournisseur</h2><p class="mt-1 text-sm text-ink-secondary">Ajoute ton premier fournisseur pour commencer.</p></div>{:else}<div class="grid gap-3 md:grid-cols-2">{#each filtered as f}<article class="rounded-2xl border border-black/5 p-4 hover:border-primary/30 dark:border-white/10"><div class="flex items-start gap-3"><div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-violet-500 text-xl text-white">🏢</div><div class="min-w-0 flex-1"><div class="flex items-center gap-2"><h2 class="truncate font-bold">{f.name}</h2>{#if f.favorite}<span>⭐</span>{/if}</div><p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">{f.email||'Email non renseigné'}</p><p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">{f.phone||'Téléphone non renseigné'}</p></div></div><div class="mt-4 flex gap-2"><button class="btn-secondary flex-1" on:click={()=>edit(f)}>Modifier</button><button class="rounded-xl px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" on:click={()=>remove(f)}>Supprimer</button></div></article>{/each}</div>{/if}</div></div>
+{#if open}<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4" on:click={(e)=>e.target===e.currentTarget&&(open=false)}><div class="w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900"><div class="flex justify-between"><div><p class="text-xs font-bold uppercase text-primary">{editing?'Modifier':'Nouveau'}</p><h2 class="text-2xl font-extrabold">Fournisseur</h2></div><button class="text-2xl text-slate-400" on:click={()=>open=false}>×</button></div><div class="mt-5 grid gap-4 sm:grid-cols-2"><label><span class="label">Nom *</span><input class="input" bind:value={form.name}/></label><label class="flex items-center gap-2 pt-7"><input type="checkbox" bind:checked={form.favorite}/> <span class="font-semibold">Favori ⭐</span></label><label><span class="label">Email</span><input class="input" type="email" bind:value={form.email}/></label><label><span class="label">Téléphone</span><input class="input" bind:value={form.phone}/></label><label class="sm:col-span-2"><span class="label">Adresse</span><input class="input" bind:value={form.address}/></label><label class="sm:col-span-2"><span class="label">Notes</span><textarea class="input min-h-24" bind:value={form.notes}></textarea></label></div>{#if message}<p class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{message}</p>{/if}<div class="mt-6 flex justify-end gap-3"><button class="btn-secondary" on:click={()=>open=false}>Annuler</button><button class="btn-primary" disabled={saving} on:click={save}>{saving?'Enregistrement…':editing?'Enregistrer':'Créer'}</button></div></div></div>{/if}
+<style>.input{width:100%;border:1px solid #e2e8f0;border-radius:.75rem;padding:.7rem .8rem;background:inherit;outline:none}.label{display:block;margin-bottom:.4rem;font-size:.8rem;font-weight:700;color:#64748b}:global(.dark) .input{border-color:#334155;background:#0f172a}</style>
