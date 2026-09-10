@@ -1,7 +1,7 @@
-import { supabase } from '$lib/services/supabase';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	const supabase = locals.supabase;
 	const [{ data: chantiers, error: chantiersError }, { data: history, error: historyError }] = await Promise.all([
 		supabase.from('chantiers').select('id, name').order('name'),
 		supabase
