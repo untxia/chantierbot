@@ -76,9 +76,9 @@
 			</div>
 
 			<div class="visual-copy">
-				<span class="eyebrow">COPILOTE IA POUR ARTISANS</span>
-				<h2>Moins d'administratif,<br /><strong>plus de chantiers.</strong></h2>
-				<p>L'IA au service de tes chantiers pour organiser, analyser et anticiper.</p>
+				<span class="eyebrow">VOTRE ALLIÉ SUR TOUS VOS CHANTIERS</span>
+				<h2>« Moins d'administratif,<br /><strong>plus de chantiers ! »</strong></h2>
+				<p>L'IA au service des artisans pour organiser, analyser et anticiper chaque étape.</p>
 			</div>
 
 			<div class="robot-card" aria-hidden="true">
@@ -93,10 +93,12 @@
 
 			<div class="feature-list">
 				<div><span>✓</span> Gère tes chantiers</div>
-				<div><span>✓</span> Analyse tes photos avec l'IA</div>
 				<div><span>✓</span> Planifie tes journées</div>
-				<div><span>✓</span> Anticipe tes stocks</div>
+				<div><span>✓</span> Optimise tes stocks</div>
+				<div><span>✓</span> Génére tes devis avec l'IA</div>
+				<div><span>✓</span> Gagne du temps</div>
 			</div>
+			<div class="handwritten">L'IA au service<br />des artisans !</div>
 		</div>
 
 		<div class="form-panel">
@@ -177,6 +179,16 @@
 					</div>
 				</div>
 
+				{#if mode === 'signup'}
+					<div class="password-hints">
+						<div class="hint-title">Votre mot de passe doit contenir :</div>
+						<div class="hint-row">✓ <span>Au moins 8 caractères</span></div>
+						<div class="hint-row">✓ <span>Une majuscule et une minuscule</span></div>
+						<div class="hint-row">✓ <span>Un chiffre</span></div>
+						<div class="hint-row">✓ <span>Un caractère spécial</span></div>
+					</div>
+				{/if}
+
 				{#if mode === 'login'}
 					<div class="form-meta">
 						<label class="remember"><input type="checkbox" /> <span>Se souvenir de moi</span></label>
@@ -192,7 +204,7 @@
 
 			<div class="security-note">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6l8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
-				<span>Tes données sont protégées et sécurisées.</span>
+				<span>Vos données sont sécurisées avec <strong>Supabase</strong></span>
 			</div>
 		</div>
 	</div>
@@ -213,8 +225,8 @@
 		justify-content: center;
 		padding: 32px;
 		background:
-			radial-gradient(circle at 18% 20%, rgba(246, 166, 35, .18), transparent 28%),
-			radial-gradient(circle at 86% 78%, rgba(35, 128, 255, .18), transparent 32%),
+			linear-gradient(90deg, rgba(4, 13, 24, .72), rgba(4, 13, 24, .9)),
+			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat,
 			linear-gradient(135deg, #07111f 0%, #0a1729 46%, #101827 100%);
 		font-family: inherit;
 		color: #f7f9fc;
@@ -239,12 +251,12 @@
 	.floating-window {
 		position: relative;
 		z-index: 2;
-		width: min(1100px, 100%);
-		min-height: 650px;
+		width: min(1080px, 100%);
+		min-height: 700px;
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		border: 1px solid rgba(255,255,255,.22);
-		border-radius: 30px;
+		border-radius: 28px;
 		overflow: hidden;
 		background: rgba(14, 26, 44, .68);
 		backdrop-filter: blur(24px) saturate(145%);
@@ -266,7 +278,9 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		background: linear-gradient(145deg, rgba(16,39,70,.86), rgba(8,19,34,.64));
+		background:
+			linear-gradient(145deg, rgba(8,28,52,.78), rgba(5,15,28,.86)),
+			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
 		border-right: 1px solid rgba(255,255,255,.1);
 		overflow: hidden;
 	}
@@ -377,7 +391,7 @@
 	.feature-list span { width: 21px; height: 21px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,174,43,.15); color: #ffb02a; font-weight: 900; }
 
 	.form-panel {
-		padding: 40px 46px;
+		padding: 42px 46px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -408,9 +422,11 @@
 	.mode-switch button.active {
 		color: white;
 		background: rgba(255,255,255,.1);
+		border: 1px solid rgba(255,176,43,.82);
+		box-shadow: 0 0 0 1px rgba(255,176,43,.16), 0 0 24px rgba(255,176,43,.14), 0 5px 18px rgba(0,0,0,.18);
 		box-shadow: 0 5px 18px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
 	}
-	.form-heading { margin: 30px 0 24px; }
+	.form-heading { margin: 26px 0 22px; }
 	.form-heading h1 { margin: 7px 0 7px; font-size: 29px; letter-spacing: -.03em; }
 	.form-heading p { margin: 0; color: rgba(239,246,255,.56); font-size: 13px; }
 	form { display: grid; gap: 17px; }
@@ -459,8 +475,45 @@
 	.submit-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 17px 32px rgba(245,154,28,.32), inset 0 1px 0 rgba(255,255,255,.4); }
 	.submit-button:disabled { opacity: .55; cursor: wait; }
 	.arrow { font-size: 22px; line-height: 1; }
-	.security-note { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; color: rgba(205,221,242,.42); font-size: 10px; }
+	.password-hints {
+		margin-top: -4px;
+		padding: 11px 13px;
+		border: 1px solid rgba(255,255,255,.08);
+		border-radius: 13px;
+		background: rgba(3,13,25,.34);
+		font-size: 10px;
+		color: rgba(239,246,255,.55);
+	}
+	.hint-title { color: rgba(239,246,255,.78); margin-bottom: 6px; font-weight: 700; }
+	.hint-row { color: #35df9a; line-height: 1.65; }
+	.hint-row span { color: rgba(239,246,255,.62); margin-left: 5px; }
+	.security-note { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; color: rgba(205,221,242,.42); font-size: 10px; }
+	.security-note strong { color: rgba(87,181,255,.9); font-weight: 600; }
 	.security-note svg { width: 16px; height: 16px; }
+	.handwritten {
+		position: absolute;
+		z-index: 2;
+		left: 46px;
+		bottom: 34px;
+		font-family: "Comic Sans MS", "Bradley Hand", cursive;
+		font-size: 18px;
+		font-style: italic;
+		line-height: 1.15;
+		color: rgba(255,255,255,.84);
+		transform: rotate(-7deg);
+		text-shadow: 0 2px 12px rgba(0,0,0,.35);
+	}
+	.handwritten::after {
+		content: '';
+		display: block;
+		width: 105px;
+		height: 3px;
+		margin: 7px 0 0 34px;
+		background: #ffad25;
+		transform: rotate(-3deg);
+		border-radius: 50%;
+		box-shadow: 0 0 12px rgba(255,173,37,.4);
+	}
 	.bottom-tag {
 		position: absolute;
 		z-index: 3;
