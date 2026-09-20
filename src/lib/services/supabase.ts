@@ -23,6 +23,10 @@ export interface ChantierPhotoRow {
 
 const PHOTOS_BUCKET = 'chantier-photos';
 
+export function photoPublicUrl(path: string): string {
+	return supabase.storage.from(PHOTOS_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
 export async function photoSignedUrl(path: string, expiresIn = 3600): Promise<string> {
 	const { data, error } = await supabase.storage.from(PHOTOS_BUCKET).createSignedUrl(path, expiresIn);
 	if (error || !data?.signedUrl) throw error ?? new Error('Impossible de générer l’URL de la photo.');
