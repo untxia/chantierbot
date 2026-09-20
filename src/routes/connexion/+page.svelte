@@ -19,6 +19,10 @@
 		passwordVisible = false;
 	}
 
+	function handlePasswordInput(event: Event) {
+		password = (event.currentTarget as HTMLInputElement).value;
+	}
+
 	async function submit() {
 		if (!email.trim() || !password) return;
 		loading = true;
@@ -153,7 +157,8 @@
 							type={passwordVisible ? 'text' : 'password'}
 							required
 							minlength="8"
-							bind:value={password}
+							value={password}
+							on:input={handlePasswordInput}
 							placeholder="8 caractères minimum"
 							autocomplete={mode === 'login' ? 'current-password' : 'new-password'}
 						/>
