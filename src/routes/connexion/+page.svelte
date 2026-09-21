@@ -272,8 +272,8 @@
 		padding: 34px;
 		box-sizing: border-box;
 		background:
-			linear-gradient(110deg, rgba(3,11,24,.18), rgba(3,11,24,.36)),
-			url('/assets/backgrounds/chantierbot-reference.webp') center / cover no-repeat;
+			linear-gradient(110deg, rgba(3,11,24,.06), rgba(3,11,24,.14)),
+			url('/assets/backgrounds/chantierbot-reference.webp') center center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
 	}
@@ -303,14 +303,14 @@
 		overflow: hidden;
 		border: 1px solid rgba(194,220,255,.52);
 		border-radius: 34px;
-		background: linear-gradient(125deg, rgba(15,34,57,.22), rgba(5,15,28,.38));
+		background: rgba(8,22,39,.12);
 		box-shadow:
 			0 45px 100px rgba(0,0,0,.55),
 			0 0 0 1px rgba(255,255,255,.06),
 			0 0 34px rgba(91,163,255,.11),
 			inset 0 1px 0 rgba(255,255,255,.22);
-		backdrop-filter: blur(2px) saturate(115%);
-		-webkit-backdrop-filter: blur(2px) saturate(115%);
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
 		transform: perspective(1800px) rotateX(1deg) rotateZ(-.2deg);
 	}
 
@@ -357,8 +357,8 @@
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(90deg, rgba(4,15,31,.04), rgba(4,15,31,.12)),
-			radial-gradient(circle at 52% 72%, rgba(255,170,35,.08), transparent 30%);
+			linear-gradient(90deg, rgba(4,15,31,.08), rgba(4,15,31,.18)),
+			radial-gradient(circle at 52% 72%, rgba(255,170,35,.10), transparent 30%);
 		pointer-events: none;
 	}
 
@@ -512,9 +512,9 @@
 		flex-direction: column;
 		justify-content: center;
 		background:
-			linear-gradient(145deg, rgba(12,31,57,.30), rgba(6,16,30,.48));
-		backdrop-filter: blur(4px) saturate(125%);
-		-webkit-backdrop-filter: blur(4px) saturate(125%);
+			linear-gradient(145deg, rgba(12,31,57,.56), rgba(6,16,30,.68));
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
 	}
 
 	.form-top {
