@@ -211,7 +211,7 @@
 								type={passwordVisible ? 'text' : 'password'}
 								required
 								value={confirmPassword}
-								on:input={(event) => (confirmPassword = (event.currentTarget as HTMLInputElement).value)}
+								on:input={handleConfirmPasswordInput}
 								placeholder="Confirmez votre mot de passe"
 								autocomplete="new-password"
 							/>
