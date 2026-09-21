@@ -265,6 +265,9 @@
 		position: relative;
 		min-height: 100vh;
 		min-height: 100svh;
+		width: 100vw;
+		max-width: none;
+		margin-left: calc(50% - 50vw);
 		overflow: hidden;
 		display: flex;
 		align-items: center;
@@ -273,7 +276,7 @@
 		box-sizing: border-box;
 		background:
 			linear-gradient(110deg, rgba(3,11,24,.06), rgba(3,11,24,.14)),
-			url('/assets/backgrounds/chantierbot-reference.webp') center center / cover no-repeat;
+			url('/assets/backgrounds/chantier-general.webp') center center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
 	}
@@ -295,8 +298,8 @@
 	.floating-window {
 		position: relative;
 		z-index: 2;
-		width: min(1080px, 100%);
-		height: min(780px, calc(100vh - 42px));
+		width: min(1180px, calc(100vw - 64px));
+		height: min(760px, calc(100vh - 56px));
 		min-height: 650px;
 		display: grid;
 		grid-template-columns: 46% 54%;
