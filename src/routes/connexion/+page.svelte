@@ -326,12 +326,12 @@
 	}
 	.visual-panel {
 		position: relative;
-		padding: 42px;
+		padding: 42px 46px 38px;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
+		justify-content: flex-start;
 		background:
-			linear-gradient(145deg, rgba(8,28,52,.78), rgba(5,15,28,.86)),
+			linear-gradient(145deg, rgba(8,28,52,.72), rgba(5,15,28,.84)),
 			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
 		border-right: 1px solid rgba(255,255,255,.1);
 		overflow: hidden;
