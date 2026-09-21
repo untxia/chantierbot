@@ -84,7 +84,7 @@
 		<div class="visual-panel">
 			<div class="visual-glow"></div>
 			<div class="brand-row">
-				<img src="/logo/logo-horizontal-light.svg" alt="ChantierBot" class="brand-logo" />
+				<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" class="brand-logo" />
 			</div>
 
 			<div class="visual-copy">
@@ -118,7 +118,7 @@
 		<div class="form-panel">
 			<div class="form-top">
 				<div class="mobile-logo">
-					<img src="/logo/logo-horizontal-light.svg" alt="ChantierBot" />
+					<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" />
 				</div>
 				<div class="secure-badge"><span></span> Espace sécurisé</div>
 			</div>
@@ -344,40 +344,40 @@
 		background: radial-gradient(ellipse, rgba(255,168,37,.18), transparent 68%);
 	}
 	.brand-row { position: relative; z-index: 2; }
-	.brand-logo { width: 180px; height: auto; }
-	.visual-copy { position: relative; z-index: 3; margin-top: 48px; max-width: 440px; }
+	.brand-logo { width: 205px; height: auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.18)); }
+	.visual-copy { position: relative; z-index: 4; margin-top: 34px; max-width: 445px; }
 	.visual-copy h2 {
-		margin: 0 0 12px;
-		font-size: clamp(34px, 3.7vw, 49px);
-		line-height: 1.02;
-		letter-spacing: -.04em;
+		margin: 0 0 14px;
+		font-size: clamp(32px, 3.45vw, 45px);
+		line-height: 1.03;
+		letter-spacing: -.042em;
 		color: #f8fbff;
 	}
-	.visual-copy h2 strong { color: #ffad25; text-shadow: 0 0 22px rgba(255,173,37,.14); }
-	.visual-copy p { max-width: 390px; color: rgba(239,246,255,.72); font-size: 14px; line-height: 1.55; }
+	.visual-copy h2 strong { color: #ffad25; text-shadow: 0 0 22px rgba(255,173,37,.16); }
+	.visual-copy p { max-width: 410px; margin: 0; color: rgba(239,246,255,.72); font-size: 13px; line-height: 1.55; }
 	.robot-card {
 		position: absolute;
-		z-index: 2;
+		z-index: 3;
 		left: 50%;
-		top: 250px;
-		width: 255px;
-		height: 310px;
-		transform: translateX(-50%) rotate(2deg);
-		filter: drop-shadow(0 30px 30px rgba(0,0,0,.42));
+		top: 326px;
+		width: 250px;
+		height: 275px;
+		transform: translateX(-50%) rotate(1deg);
+		filter: drop-shadow(0 32px 32px rgba(0,0,0,.48));
 	}
 	.robot-halo {
 		position: absolute;
-		inset: -20px;
+		inset: 4px -35px 0;
 		border-radius: 50%;
-		background: radial-gradient(circle, rgba(56,144,255,.3), transparent 66%);
-		filter: blur(10px);
+		background: radial-gradient(ellipse at center, rgba(52,145,255,.28), rgba(52,145,255,.08) 38%, transparent 70%);
+		filter: blur(13px);
 	}
 	.helmet {
 		position: absolute;
-		left: 62px;
-		top: 18px;
-		width: 92px;
-		height: 50px;
+		left: 67px;
+		top: 4px;
+		width: 116px;
+		height: 57px;
 		border-radius: 50px 50px 20px 20px;
 		background: linear-gradient(145deg,#ffc34a,#ec8e17);
 		color: #17263a;
@@ -386,13 +386,24 @@
 		place-items: center;
 		box-shadow: inset 0 5px 8px rgba(255,255,255,.35), 0 10px 20px rgba(0,0,0,.25);
 	}
+	.helmet::after {
+		content: '';
+		position: absolute;
+		left: -12px;
+		bottom: -9px;
+		width: 140px;
+		height: 18px;
+		border-radius: 50%;
+		background: linear-gradient(180deg, #f2a21f, #c87512);
+		box-shadow: 0 5px 10px rgba(0,0,0,.2);
+	}
 	.robot-face {
 		position: absolute;
-		left: 39px;
-		top: 57px;
-		width: 177px;
-		height: 137px;
-		border-radius: 45px;
+		left: 27px;
+		top: 51px;
+		width: 196px;
+		height: 142px;
+		border-radius: 47px;
 		background: linear-gradient(145deg,#f6f9ff,#9eacc2);
 		box-shadow: inset 0 -10px 20px rgba(52,69,92,.18);
 		display: flex;
@@ -403,9 +414,10 @@
 	.robot-face::before {
 		content: '';
 		position: absolute;
-		inset: 20px;
-		border-radius: 32px;
-		background: #0b1627;
+		inset: 18px;
+		border-radius: 34px;
+		background: radial-gradient(circle at 50% 20%, #13263f, #07111e 70%);
+
 		box-shadow: inset 0 0 18px rgba(52,154,255,.35);
 	}
 	.robot-face > span {
@@ -420,10 +432,10 @@
 	.robot-smile { position: absolute; z-index: 1; width: 34px; height: 14px; border-bottom: 3px solid #61c9ff; border-radius: 0 0 20px 20px; top: 77px; }
 	.robot-body {
 		position: absolute;
-		left: 31px;
-		top: 145px;
-		width: 155px;
-		height: 95px;
+		left: 38px;
+		top: 174px;
+		width: 174px;
+		height: 88px;
 		border-radius: 38px 38px 22px 22px;
 		background: linear-gradient(145deg,#e9eff7,#8492a7);
 		color: #27364b;
@@ -437,13 +449,13 @@
 	.feature-list {
 		position: absolute;
 		left: 46px;
-		bottom: 42px;
+		bottom: 74px;
 		z-index: 5;
 		display: grid;
 		gap: 11px;
 		margin: 0;
 	}
-	.feature-list div { display: flex; align-items: center; gap: 10px; color: rgba(239,246,255,.84); font-size: 13px; }
+	.feature-list div { display: flex; align-items: center; gap: 10px; color: rgba(239,246,255,.88); font-size: 12px; }
 	.feature-list span { width: 21px; height: 21px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,174,43,.15); color: #ffb02a; font-weight: 900; }
 
 	.form-panel {
@@ -588,7 +600,7 @@
 		position: absolute;
 		z-index: 6;
 		left: 46px;
-		bottom: 13px;
+		bottom: 12px;
 		font-family: "Comic Sans MS", "Bradley Hand", cursive;
 		font-size: 17px;
 		font-style: italic;
