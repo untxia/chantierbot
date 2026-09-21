@@ -277,7 +277,7 @@
 		padding: 34px;
 		box-sizing: border-box;
 		background:
-			linear-gradient(110deg, rgba(5,14,29,.56), rgba(5,14,29,.78)),
+			linear-gradient(110deg, rgba(3,11,24,.18), rgba(3,11,24,.36)),
 			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
@@ -288,9 +288,9 @@
 		position: absolute;
 		inset: 0;
 		background:
-			radial-gradient(circle at 16% 72%, rgba(255,168,36,.22), transparent 28%),
-			radial-gradient(circle at 78% 16%, rgba(53,142,255,.15), transparent 30%),
-			linear-gradient(180deg, rgba(3,12,25,.12), rgba(3,12,25,.38));
+			radial-gradient(circle at 16% 72%, rgba(255,168,36,.14), transparent 28%),
+			radial-gradient(circle at 78% 16%, rgba(53,142,255,.10), transparent 30%),
+			linear-gradient(180deg, rgba(3,12,25,.04), rgba(3,12,25,.18));
 		pointer-events: none;
 	}
 
@@ -300,22 +300,22 @@
 	.floating-window {
 		position: relative;
 		z-index: 2;
-		width: min(1050px, 100%);
-		height: min(770px, calc(100vh - 52px));
+		width: min(1080px, 100%);
+		height: min(780px, calc(100vh - 42px));
 		min-height: 650px;
 		display: grid;
-		grid-template-columns: 44% 56%;
+		grid-template-columns: 46% 54%;
 		overflow: hidden;
 		border: 1px solid rgba(194,220,255,.52);
 		border-radius: 34px;
-		background: linear-gradient(125deg, rgba(20,47,82,.72), rgba(8,21,39,.84));
+		background: linear-gradient(125deg, rgba(16,40,72,.38), rgba(5,17,34,.56));
 		box-shadow:
 			0 45px 100px rgba(0,0,0,.55),
 			0 0 0 1px rgba(255,255,255,.06),
 			0 0 34px rgba(91,163,255,.11),
 			inset 0 1px 0 rgba(255,255,255,.22);
-		backdrop-filter: blur(8px) saturate(125%);
-		-webkit-backdrop-filter: blur(8px) saturate(125%);
+		backdrop-filter: blur(5px) saturate(135%);
+		-webkit-backdrop-filter: blur(5px) saturate(135%);
 		transform: perspective(1800px) rotateX(1deg) rotateZ(-.2deg);
 	}
 
@@ -353,9 +353,8 @@
 		flex-direction: column;
 		overflow: hidden;
 		border-right: 1px solid rgba(192,216,247,.16);
-		background:
-			linear-gradient(180deg, rgba(5,22,46,.14), rgba(5,14,27,.56)),
-			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
+		background: linear-gradient(180deg, rgba(5,22,46,.10), rgba(5,14,27,.28));
+		backdrop-filter: blur(1px);
 	}
 
 	.visual-panel::before {
@@ -552,7 +551,9 @@
 		flex-direction: column;
 		justify-content: center;
 		background:
-			linear-gradient(145deg, rgba(12,31,57,.46), rgba(6,16,30,.78));
+			linear-gradient(145deg, rgba(12,31,57,.26), rgba(6,16,30,.52));
+		backdrop-filter: blur(4px) saturate(125%);
+		-webkit-backdrop-filter: blur(4px) saturate(125%);
 	}
 
 	.form-top {
