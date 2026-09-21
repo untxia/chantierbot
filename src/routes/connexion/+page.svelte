@@ -417,11 +417,12 @@
 		position: absolute;
 		z-index: 5;
 		left: 50%;
-		top: 190px;
-		width: 330px;
-		height: 410px;
-		transform: translateX(-50%);
-		filter: drop-shadow(0 34px 30px rgba(0,0,0,.46));
+		top: 184px;
+		width: 352px;
+		height: 430px;
+		transform: translateX(-50%) perspective(900px) rotateY(-4deg) rotateX(1deg);
+		transform-origin: center center;
+		filter: drop-shadow(0 38px 34px rgba(0,0,0,.5));
 	}
 
 	.robot-halo {
@@ -442,6 +443,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
+		filter: saturate(1.08) contrast(1.04);
 	}
 	.feature-list {
 		position: absolute;
