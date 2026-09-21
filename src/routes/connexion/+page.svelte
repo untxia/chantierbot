@@ -89,8 +89,7 @@
 			<div class="visual-glow"></div>
 			<div class="brand-row">
 				<div class="brand-stack">
-					<img src="/logo/chantierbot-3d.svg" alt="ChantierBot" class="brand-logo" />
-					<span>Votre allié sur tous vos chantiers</span>
+					<img src="/assets/branding/chantierbot-reference.webp" alt="ChantierBot" class="brand-logo" />
 				</div>
 			</div>
 
@@ -395,16 +394,13 @@
 	}
 
 	.brand-logo {
-		width: 285px;
+		width: 300px;
 		height: auto;
 		filter: brightness(1.08) drop-shadow(0 7px 16px rgba(0,0,0,.25));
 	}
 
 	.brand-stack span {
-		margin-left: 78px;
-		font-size: 10px;
-		color: rgba(241,247,255,.78);
-		letter-spacing: .01em;
+		margin-left: 0;
 	}
 
 	.close-button {
