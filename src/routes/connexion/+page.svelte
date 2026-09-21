@@ -98,11 +98,6 @@
 				<p>L'IA au service des artisans pour organiser, analyser et anticiper chaque étape.</p>
 			</div>
 
-			<div class="robot-card" aria-hidden="true">
-				<div class="robot-halo"></div>
-				<img src="/assets/robot/chantierbot-3d.svg" alt="" class="robot-image" />
-			</div>
-
 			<div class="feature-list">
 				<div><span>✓</span> Gère tes chantiers</div>
 				<div><span>✓</span> Planifie tes journées</div>
@@ -278,7 +273,7 @@
 		box-sizing: border-box;
 		background:
 			linear-gradient(110deg, rgba(3,11,24,.18), rgba(3,11,24,.36)),
-			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
+			url('/assets/backgrounds/chantierbot-reference.webp') center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
 	}
@@ -308,14 +303,14 @@
 		overflow: hidden;
 		border: 1px solid rgba(194,220,255,.52);
 		border-radius: 34px;
-		background: linear-gradient(125deg, rgba(16,40,72,.38), rgba(5,17,34,.56));
+		background: linear-gradient(125deg, rgba(15,34,57,.22), rgba(5,15,28,.38));
 		box-shadow:
 			0 45px 100px rgba(0,0,0,.55),
 			0 0 0 1px rgba(255,255,255,.06),
 			0 0 34px rgba(91,163,255,.11),
 			inset 0 1px 0 rgba(255,255,255,.22);
-		backdrop-filter: blur(5px) saturate(135%);
-		-webkit-backdrop-filter: blur(5px) saturate(135%);
+		backdrop-filter: blur(2px) saturate(115%);
+		-webkit-backdrop-filter: blur(2px) saturate(115%);
 		transform: perspective(1800px) rotateX(1deg) rotateZ(-.2deg);
 	}
 
@@ -353,8 +348,8 @@
 		flex-direction: column;
 		overflow: hidden;
 		border-right: 1px solid rgba(192,216,247,.16);
-		background: linear-gradient(180deg, rgba(5,22,46,.10), rgba(5,14,27,.28));
-		backdrop-filter: blur(1px);
+		background: transparent;
+		backdrop-filter: none;
 	}
 
 	.visual-panel::before {
@@ -362,8 +357,8 @@
 		position: absolute;
 		inset: 0;
 		background:
-			linear-gradient(90deg, rgba(4,15,31,.10), rgba(4,15,31,.30)),
-			radial-gradient(circle at 52% 72%, rgba(255,170,35,.18), transparent 30%);
+			linear-gradient(90deg, rgba(4,15,31,.04), rgba(4,15,31,.12)),
+			radial-gradient(circle at 52% 72%, rgba(255,170,35,.08), transparent 30%);
 		pointer-events: none;
 	}
 
@@ -449,40 +444,6 @@
 
 	.visual-copy p { display: none; }
 
-	.robot-card {
-		position: absolute;
-		z-index: 5;
-		left: 50%;
-		top: 184px;
-		width: 352px;
-		height: 430px;
-		transform: translateX(-50%) perspective(900px) rotateY(-4deg) rotateX(1deg);
-		transform-origin: center center;
-		filter:
-			drop-shadow(0 38px 34px rgba(0,0,0,.52))
-			drop-shadow(0 0 24px rgba(67,166,255,.10));
-	}
-
-	.robot-halo {
-		position: absolute;
-		left: 2%;
-		right: 2%;
-		top: 17%;
-		height: 67%;
-		border-radius: 50%;
-		background: radial-gradient(ellipse, rgba(63,160,255,.27), rgba(63,160,255,.08) 38%, transparent 72%);
-		filter: blur(13px);
-	}
-
-	.robot-image {
-		position: relative;
-		z-index: 2;
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		filter: saturate(1.08) contrast(1.04);
-	}
 	.feature-list {
 		position: absolute;
 		z-index: 6;
@@ -551,7 +512,7 @@
 		flex-direction: column;
 		justify-content: center;
 		background:
-			linear-gradient(145deg, rgba(12,31,57,.26), rgba(6,16,30,.52));
+			linear-gradient(145deg, rgba(12,31,57,.30), rgba(6,16,30,.48));
 		backdrop-filter: blur(4px) saturate(125%);
 		-webkit-backdrop-filter: blur(4px) saturate(125%);
 	}
