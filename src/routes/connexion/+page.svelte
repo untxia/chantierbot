@@ -552,17 +552,22 @@
 	.mode-switch {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 3px;
-		padding: 5px;
-		border: 1px solid rgba(155,188,229,.16);
-		border-radius: 17px;
-		background: rgba(4,15,30,.24);
+		gap: 4px;
+		width: 100%;
+		height: 58px;
+		padding: 4px;
+		box-sizing: border-box;
+		border: 1px solid rgba(155,188,229,.18);
+		border-radius: 16px;
+		background: rgba(4,15,30,.32);
 	}
 
 	.mode-switch button {
+		width: 100%;
+		height: 50px;
 		border: 0;
-		border-radius: 13px;
-		padding: 14px 10px;
+		border-radius: 12px;
+		padding: 0 10px;
 		background: transparent;
 		color: rgba(229,238,250,.58);
 		font: inherit;
@@ -579,7 +584,7 @@
 		box-shadow: 0 0 0 1px rgba(255,178,46,.2), 0 0 26px rgba(255,178,46,.19), inset 0 1px 0 rgba(255,255,255,.2);
 	}
 
-	.form-heading { margin: 29px 0 25px; }
+	.form-heading { margin: 25px 0 22px; }
 
 	.small-kicker {
 		display: block;
