@@ -89,7 +89,7 @@
 			<div class="visual-glow"></div>
 			<div class="brand-row">
 				<div class="brand-stack">
-					<img src="/assets/branding/chantierbot-reference.webp" alt="ChantierBot" class="brand-logo" />
+					<img src="/logo/chantierbot-3d.svg" alt="ChantierBot" class="brand-logo" />
 				</div>
 			</div>
 
@@ -276,7 +276,7 @@
 		box-sizing: border-box;
 		background:
 			linear-gradient(110deg, rgba(3,11,24,.06), rgba(3,11,24,.14)),
-			url('/assets/backgrounds/chantier-general.webp') center center / cover no-repeat;
+			url('/assets/backgrounds/chantierbot-reference.webp') center center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
 	}
@@ -298,9 +298,9 @@
 	.floating-window {
 		position: relative;
 		z-index: 2;
-		width: min(1180px, calc(100vw - 64px));
-		height: min(760px, calc(100vh - 56px));
-		min-height: 650px;
+		width: min(940px, calc(100vw - 64px));
+		height: min(680px, calc(100vh - 56px));
+		min-height: 620px;
 		display: grid;
 		grid-template-columns: 46% 54%;
 		overflow: hidden;
@@ -345,7 +345,7 @@
 	.visual-panel {
 		position: relative;
 		min-width: 0;
-		padding: 38px 44px 34px;
+		padding: 30px 38px 28px;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
@@ -391,8 +391,11 @@
 	}
 
 	.brand-logo {
-		width: 300px;
+		width: 285px;
 		height: auto;
+		max-height: 78px;
+		object-fit: contain;
+		object-position: left center;
 		filter: brightness(1.08) drop-shadow(0 7px 16px rgba(0,0,0,.25));
 	}
 
@@ -427,13 +430,13 @@
 	.visual-copy {
 		position: relative;
 		z-index: 6;
-		margin-top: 26px;
+		margin-top: 20px;
 		text-align: center;
 	}
 
 	.visual-copy h2 {
 		margin: 0;
-		font-size: clamp(27px, 3vw, 36px);
+		font-size: clamp(25px, 2.5vw, 32px);
 		line-height: 1.12;
 		letter-spacing: -.035em;
 		font-weight: 700;
@@ -450,8 +453,8 @@
 	.feature-list {
 		position: absolute;
 		z-index: 6;
-		left: 55px;
-		bottom: 57px;
+		left: 38px;
+		bottom: 42px;
 		display: grid;
 		gap: 10px;
 		margin: 0;
@@ -483,7 +486,7 @@
 		z-index: 7;
 		left: 50%;
 		bottom: 10px;
-		width: 180px;
+		width: 170px;
 		transform: translateX(-20%) rotate(-7deg);
 		font-family: "Comic Sans MS", "Bradley Hand", cursive;
 		font-size: 16px;
