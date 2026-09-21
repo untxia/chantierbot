@@ -98,15 +98,7 @@
 
 			<div class="robot-card" aria-hidden="true">
 				<div class="robot-halo"></div>
-				<div class="helmet"><span>CB</span></div>
-				<div class="helmet-brim"></div>
-				<div class="robot-face">
-					<span></span><span></span>
-					<div class="robot-smile"></div>
-				</div>
-				<div class="robot-body">
-					<div class="robot-chest">CB</div>
-				</div>
+				<img src="/assets/robot/chantierbot-3d.svg" alt="" class="robot-image" />
 			</div>
 
 			<div class="feature-list">
@@ -424,168 +416,33 @@
 	.robot-card {
 		position: absolute;
 		z-index: 5;
-		left: 49%;
-		top: 206px;
-		width: 300px;
-		height: 330px;
+		left: 50%;
+		top: 190px;
+		width: 330px;
+		height: 410px;
 		transform: translateX(-50%);
-		filter: drop-shadow(0 34px 30px rgba(0,0,0,.45));
+		filter: drop-shadow(0 34px 30px rgba(0,0,0,.46));
 	}
 
 	.robot-halo {
 		position: absolute;
-		left: 4%;
-		right: 4%;
-		top: 8%;
-		height: 76%;
+		left: 2%;
+		right: 2%;
+		top: 17%;
+		height: 67%;
 		border-radius: 50%;
-		background: radial-gradient(ellipse, rgba(71,160,255,.25), rgba(71,160,255,.08) 38%, transparent 72%);
-		filter: blur(16px);
+		background: radial-gradient(ellipse, rgba(63,160,255,.27), rgba(63,160,255,.08) 38%, transparent 72%);
+		filter: blur(17px);
 	}
 
-	.helmet {
-		position: absolute;
-		z-index: 4;
-		left: 91px;
-		top: 4px;
-		width: 125px;
-		height: 64px;
-		border-radius: 68px 68px 24px 24px;
-		background: linear-gradient(145deg, #ffd05b 0%, #ffb52e 48%, #d77d10 100%);
-		color: #26354a;
-		display: grid;
-		place-items: center;
-		font-size: 17px;
-		font-weight: 900;
-		box-shadow:
-			inset 0 7px 10px rgba(255,255,255,.38),
-			inset -8px -8px 14px rgba(133,70,0,.18),
-			0 10px 20px rgba(0,0,0,.3);
-	}
-
-	.helmet::before {
-		content: '';
-		position: absolute;
-		left: 50%;
-		top: -3px;
-		width: 15px;
-		height: 26px;
-		transform: translateX(-50%);
-		border-radius: 12px;
-		background: rgba(255,255,255,.23);
-	}
-
-	.helmet::after {
-		content: '';
-		position: absolute;
-		left: -13px;
-		bottom: -11px;
-		width: 151px;
-		height: 20px;
-		border-radius: 50%;
-		background: linear-gradient(180deg, #f5a82a, #c8720d);
-		box-shadow: 0 5px 12px rgba(0,0,0,.25);
-	}
-
-	.helmet-brim { display: none; }
-
-	.robot-face {
-		position: absolute;
-		z-index: 3;
-		left: 39px;
-		top: 54px;
-		width: 224px;
-		height: 157px;
-		border-radius: 55px;
-		background: linear-gradient(145deg, #fbfdff 0%, #dbe4ef 48%, #8c9aaf 100%);
-		box-shadow:
-			inset 0 -13px 22px rgba(46,63,88,.18),
-			inset 0 4px 9px rgba(255,255,255,.48),
-			0 7px 18px rgba(0,0,0,.24);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 47px;
-	}
-
-	.robot-face::before {
-		content: '';
-		position: absolute;
-		inset: 19px;
-		border-radius: 42px;
-		background: radial-gradient(circle at 50% 20%, #142c4b, #040d18 72%);
-		box-shadow:
-			inset 0 0 20px rgba(55,154,255,.32),
-			0 0 0 2px rgba(79,139,201,.2);
-	}
-
-	.robot-face > span {
+	.robot-image {
 		position: relative;
 		z-index: 2;
-		width: 24px;
-		height: 29px;
-		border-radius: 50%;
-		background: #8fdcff;
-		box-shadow: 0 0 18px #59c8ff, 0 0 35px rgba(74,185,255,.5);
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
 	}
-
-	.robot-smile {
-		position: absolute;
-		z-index: 2;
-		left: 50%;
-		top: 86px;
-		width: 48px;
-		height: 21px;
-		transform: translateX(-50%);
-		border-bottom: 4px solid #7bd6ff;
-		border-radius: 0 0 30px 30px;
-		box-shadow: 0 6px 13px rgba(70,189,255,.22);
-	}
-
-	.robot-body {
-		position: absolute;
-		z-index: 2;
-		left: 61px;
-		top: 187px;
-		width: 181px;
-		height: 106px;
-		border-radius: 43px 43px 27px 27px;
-		background: linear-gradient(145deg, #eaf1f8 0%, #c1ccd9 48%, #7b899c 100%);
-		border: 4px solid rgba(255,255,255,.28);
-		box-shadow:
-			inset 0 8px 12px rgba(255,255,255,.28),
-			inset 0 -13px 18px rgba(47,64,87,.15),
-			0 12px 20px rgba(0,0,0,.26);
-		display: grid;
-		place-items: center;
-	}
-
-	.robot-body::before {
-		content: '';
-		position: absolute;
-		left: 23px;
-		top: 18px;
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-		background: #3b4c61;
-		box-shadow: 123px 0 0 #3b4c61;
-	}
-
-	.robot-chest {
-		position: relative;
-		z-index: 2;
-		width: 45px;
-		height: 45px;
-		display: grid;
-		place-items: center;
-		border-radius: 12px;
-		background: linear-gradient(145deg, #f6c54a, #d88a19);
-		color: #26364a;
-		font-weight: 900;
-		box-shadow: inset 0 2px 4px rgba(255,255,255,.35);
-	}
-
 	.feature-list {
 		position: absolute;
 		z-index: 6;
