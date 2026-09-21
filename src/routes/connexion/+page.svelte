@@ -345,36 +345,32 @@
 	}
 	.brand-row { position: relative; z-index: 2; }
 	.brand-logo { width: 180px; height: auto; }
-	.visual-copy { position: relative; z-index: 2; margin-top: 30px; }
-	.eyebrow, .small-kicker {
-		font-size: 11px;
-		font-weight: 800;
-		letter-spacing: .16em;
-		color: #ffb12b;
-	}
+	.visual-copy { position: relative; z-index: 3; margin-top: 48px; max-width: 440px; }
 	.visual-copy h2 {
-		margin: 14px 0 12px;
-		font-size: clamp(30px, 3.4vw, 46px);
-		line-height: 1.04;
-		letter-spacing: -.035em;
+		margin: 0 0 12px;
+		font-size: clamp(34px, 3.7vw, 49px);
+		line-height: 1.02;
+		letter-spacing: -.04em;
+		color: #f8fbff;
 	}
-	.visual-copy h2 strong { color: #ffad25; }
-	.visual-copy p { max-width: 390px; color: rgba(239,246,255,.7); font-size: 15px; line-height: 1.7; }
+	.visual-copy h2 strong { color: #ffad25; text-shadow: 0 0 22px rgba(255,173,37,.14); }
+	.visual-copy p { max-width: 390px; color: rgba(239,246,255,.72); font-size: 14px; line-height: 1.55; }
 	.robot-card {
 		position: absolute;
-		right: 30px;
-		top: 170px;
-		width: 215px;
-		height: 250px;
-		transform: rotate(5deg);
-		filter: drop-shadow(0 30px 30px rgba(0,0,0,.38));
+		z-index: 2;
+		left: 50%;
+		top: 250px;
+		width: 255px;
+		height: 310px;
+		transform: translateX(-50%) rotate(2deg);
+		filter: drop-shadow(0 30px 30px rgba(0,0,0,.42));
 	}
 	.robot-halo {
 		position: absolute;
-		inset: 8px;
+		inset: -20px;
 		border-radius: 50%;
-		background: radial-gradient(circle, rgba(56,144,255,.32), transparent 66%);
-		filter: blur(5px);
+		background: radial-gradient(circle, rgba(56,144,255,.3), transparent 66%);
+		filter: blur(10px);
 	}
 	.helmet {
 		position: absolute;
@@ -392,36 +388,36 @@
 	}
 	.robot-face {
 		position: absolute;
-		left: 42px;
-		top: 54px;
-		width: 132px;
-		height: 105px;
-		border-radius: 38px;
+		left: 39px;
+		top: 57px;
+		width: 177px;
+		height: 137px;
+		border-radius: 45px;
 		background: linear-gradient(145deg,#f6f9ff,#9eacc2);
 		box-shadow: inset 0 -10px 20px rgba(52,69,92,.18);
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 25px;
+		gap: 35px;
 	}
 	.robot-face::before {
 		content: '';
 		position: absolute;
-		inset: 17px;
-		border-radius: 28px;
+		inset: 20px;
+		border-radius: 32px;
 		background: #0b1627;
 		box-shadow: inset 0 0 18px rgba(52,154,255,.35);
 	}
 	.robot-face > span {
 		position: relative;
 		z-index: 1;
-		width: 10px;
-		height: 17px;
+		width: 12px;
+		height: 19px;
 		border-radius: 50%;
 		background: #61c9ff;
 		box-shadow: 0 0 12px #61c9ff;
 	}
-	.robot-smile { position: absolute; z-index: 1; width: 28px; height: 12px; border-bottom: 3px solid #61c9ff; border-radius: 0 0 20px 20px; top: 59px; }
+	.robot-smile { position: absolute; z-index: 1; width: 34px; height: 14px; border-bottom: 3px solid #61c9ff; border-radius: 0 0 20px 20px; top: 77px; }
 	.robot-body {
 		position: absolute;
 		left: 31px;
@@ -438,8 +434,16 @@
 		letter-spacing: .13em;
 		border: 4px solid rgba(255,255,255,.28);
 	}
-	.feature-list { position: relative; z-index: 2; display: grid; gap: 12px; margin-top: 34px; }
-	.feature-list div { display: flex; align-items: center; gap: 10px; color: rgba(239,246,255,.78); font-size: 13px; }
+	.feature-list {
+		position: absolute;
+		left: 46px;
+		bottom: 42px;
+		z-index: 5;
+		display: grid;
+		gap: 11px;
+		margin: 0;
+	}
+	.feature-list div { display: flex; align-items: center; gap: 10px; color: rgba(239,246,255,.84); font-size: 13px; }
 	.feature-list span { width: 21px; height: 21px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,174,43,.15); color: #ffb02a; font-weight: 900; }
 
 	.form-panel {
@@ -582,13 +586,13 @@
 	.security-note svg { width: 16px; height: 16px; }
 	.handwritten {
 		position: absolute;
-		z-index: 2;
+		z-index: 6;
 		left: 46px;
-		bottom: 34px;
+		bottom: 13px;
 		font-family: "Comic Sans MS", "Bradley Hand", cursive;
-		font-size: 18px;
+		font-size: 17px;
 		font-style: italic;
-		line-height: 1.15;
+		line-height: 1.12;
 		color: rgba(255,255,255,.84);
 		transform: rotate(-7deg);
 		text-shadow: 0 2px 12px rgba(0,0,0,.35);
