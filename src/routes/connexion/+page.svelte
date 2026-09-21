@@ -315,8 +315,8 @@
 			0 0 0 1px rgba(255,255,255,.06),
 			0 0 34px rgba(91,163,255,.11),
 			inset 0 1px 0 rgba(255,255,255,.22);
-		backdrop-filter: blur(22px) saturate(135%);
-		-webkit-backdrop-filter: blur(22px) saturate(135%);
+		backdrop-filter: blur(8px) saturate(125%);
+		-webkit-backdrop-filter: blur(8px) saturate(125%);
 		transform: perspective(1800px) rotateX(1deg) rotateZ(-.2deg);
 	}
 
@@ -355,7 +355,7 @@
 		overflow: hidden;
 		border-right: 1px solid rgba(192,216,247,.16);
 		background:
-			linear-gradient(180deg, rgba(5,22,46,.20), rgba(5,14,27,.68)),
+			linear-gradient(180deg, rgba(5,22,46,.14), rgba(5,14,27,.56)),
 			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
 	}
 
@@ -377,7 +377,7 @@
 		width: 65%;
 		height: 45%;
 		background: radial-gradient(ellipse, rgba(255,166,37,.32), transparent 68%);
-		filter: blur(22px);
+		filter: blur(12px);
 		pointer-events: none;
 	}
 
@@ -476,7 +476,7 @@
 		height: 67%;
 		border-radius: 50%;
 		background: radial-gradient(ellipse, rgba(63,160,255,.27), rgba(63,160,255,.08) 38%, transparent 72%);
-		filter: blur(17px);
+		filter: blur(13px);
 	}
 
 	.robot-image {
