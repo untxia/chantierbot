@@ -88,19 +88,21 @@
 			</div>
 
 			<div class="visual-copy">
-				<span class="eyebrow">VOTRE ALLIÉ SUR TOUS VOS CHANTIERS</span>
 				<h2>« Moins d'administratif,<br /><strong>plus de chantiers ! »</strong></h2>
 				<p>L'IA au service des artisans pour organiser, analyser et anticiper chaque étape.</p>
 			</div>
 
 			<div class="robot-card" aria-hidden="true">
 				<div class="robot-halo"></div>
-				<div class="helmet">CB</div>
+				<div class="helmet"><span>CB</span></div>
+				<div class="helmet-brim"></div>
 				<div class="robot-face">
 					<span></span><span></span>
 					<div class="robot-smile"></div>
 				</div>
-				<div class="robot-body">CHANTIERBOT</div>
+				<div class="robot-body">
+					<div class="robot-chest">CB</div>
+				</div>
 			</div>
 
 			<div class="feature-list">
