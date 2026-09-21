@@ -88,7 +88,10 @@
 		<div class="visual-panel">
 			<div class="visual-glow"></div>
 			<div class="brand-row">
-				<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" class="brand-logo" />
+				<div class="brand-stack">
+					<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" class="brand-logo" />
+					<span>Votre allié sur tous vos chantiers</span>
+				</div>
 			</div>
 
 			<div class="visual-copy">
@@ -112,6 +115,7 @@
 		</div>
 
 		<div class="form-panel">
+			<button type="button" class="close-button" aria-label="Fermer" on:click={() => goto('/')}>×</button>
 			<div class="form-top">
 				<div class="mobile-logo">
 					<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" />
@@ -297,11 +301,11 @@
 	.floating-window {
 		position: relative;
 		z-index: 2;
-		width: min(1040px, 100%);
-		height: min(760px, calc(100vh - 68px));
+		width: min(1050px, 100%);
+		height: min(770px, calc(100vh - 52px));
 		min-height: 650px;
 		display: grid;
-		grid-template-columns: 46% 54%;
+		grid-template-columns: 44% 56%;
 		overflow: hidden;
 		border: 1px solid rgba(194,220,255,.52);
 		border-radius: 34px;
@@ -351,7 +355,7 @@
 		overflow: hidden;
 		border-right: 1px solid rgba(192,216,247,.16);
 		background:
-			linear-gradient(180deg, rgba(8,25,49,.30), rgba(5,15,28,.72)),
+			linear-gradient(180deg, rgba(5,22,46,.20), rgba(5,14,27,.68)),
 			url('/assets/backgrounds/chantier-general.webp') center / cover no-repeat;
 	}
 
@@ -384,10 +388,47 @@
 		align-items: center;
 	}
 
+	.brand-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
 	.brand-logo {
 		width: 214px;
 		height: auto;
-		filter: drop-shadow(0 7px 16px rgba(0,0,0,.25));
+		filter: brightness(1.08) drop-shadow(0 7px 16px rgba(0,0,0,.25));
+	}
+
+	.brand-stack span {
+		margin-left: 60px;
+		font-size: 10px;
+		color: rgba(241,247,255,.78);
+		letter-spacing: .01em;
+	}
+
+	.close-button {
+		position: absolute;
+		top: 22px;
+		right: 24px;
+		z-index: 20;
+		width: 35px;
+		height: 35px;
+		border: 1px solid rgba(220,235,255,.4);
+		border-radius: 50%;
+		background: rgba(9,23,42,.28);
+		color: rgba(245,250,255,.9);
+		font-size: 25px;
+		line-height: 30px;
+		cursor: pointer;
+		backdrop-filter: blur(8px);
+		transition: .2s ease;
+	}
+
+	.close-button:hover {
+		border-color: #ffb12c;
+		color: #ffb12c;
+		transform: rotate(90deg);
 	}
 
 	.visual-copy {
@@ -422,7 +463,9 @@
 		height: 430px;
 		transform: translateX(-50%) perspective(900px) rotateY(-4deg) rotateX(1deg);
 		transform-origin: center center;
-		filter: drop-shadow(0 38px 34px rgba(0,0,0,.5));
+		filter:
+			drop-shadow(0 38px 34px rgba(0,0,0,.52))
+			drop-shadow(0 0 24px rgba(67,166,255,.10));
 	}
 
 	.robot-halo {
