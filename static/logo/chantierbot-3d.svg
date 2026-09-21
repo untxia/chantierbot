@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 150" fill="none">
+<defs>
+  <linearGradient id="helmet" x1="25" y1="8" x2="105" y2="62" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFF1A8"/><stop offset=".45" stop-color="#FFC53D"/><stop offset="1" stop-color="#D77B0A"/>
+  </linearGradient>
+  <linearGradient id="shell" x1="12" y1="42" x2="105" y2="116" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#FFFFFF"/><stop offset=".45" stop-color="#DCE6F1"/><stop offset="1" stop-color="#78899E"/>
+  </linearGradient>
+  <linearGradient id="visor" x1="45" y1="50" x2="80" y2="110" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#173A60"/><stop offset=".55" stop-color="#071728"/><stop offset="1" stop-color="#020912"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+    <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".28"/>
+  </filter>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="3" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+
+<g transform="translate(8 7)" filter="url(#shadow)">
+  <!-- helmet -->
+  <path d="M20 50C20 22 40 7 66 7c28 0 48 17 48 45v10H20V50Z" fill="url(#helmet)"/>
+  <path d="M17 55c25-10 76-10 101 0v12c-21 12-79 12-101 0V55Z" fill="#D98712"/>
+  <path d="M62 7h9v18h-9z" rx="4.5" fill="#E79A1C"/>
+  <path d="M66 13c-4 5-5 9-5 14" stroke="#FFF4B0" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+  <!-- helmet house mark -->
+  <path d="M67 29 77 21l10 8v11H67V29Z" fill="#26384E"/>
+  <path d="M72 35h4v5h-4zM77 32h5v8h-5z" fill="#FFC33E"/>
+  <!-- head shell -->
+  <rect x="7" y="45" width="119" height="88" rx="35" fill="url(#shell)"/>
+  <rect x="16" y="54" width="101" height="70" rx="27" fill="url(#visor)"/>
+  <path d="M24 66c19-12 55-16 86-5" stroke="#8DDFFF" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
+  <!-- eyes -->
+  <path d="M34 85c2-9 14-9 16 0" stroke="#8BE0FF" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M81 85c2-9 14-9 16 0" stroke="#8BE0FF" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M57 101c6 6 13 6 19 0" stroke="#79D9FF" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- ears -->
+  <circle cx="9" cy="91" r="11" fill="#8192A7"/>
+  <circle cx="9" cy="91" r="6" fill="#1C3048"/>
+  <circle cx="9" cy="91" r="2.5" fill="#76D9FF" filter="url(#glow)"/>
+  <circle cx="125" cy="91" r="11" fill="#718398"/>
+  <circle cx="125" cy="91" r="6" fill="#1A2D44"/>
+</g>
+
+<g transform="translate(155 0)">
+  <text x="0" y="82" font-family="Inter,Arial,sans-serif" font-size="54" font-weight="800" letter-spacing="-2.2" fill="#F7FAFF">Chantier</text>
+  <text x="257" y="82" font-family="Inter,Arial,sans-serif" font-size="54" font-weight="800" letter-spacing="-2.2" fill="#FF9F1C">Bot</text>
+  <text x="2" y="112" font-family="Inter,Arial,sans-serif" font-size="17" font-weight="500" fill="#C9D8EA">Votre allié sur tous vos chantiers</text>
+</g>
+</svg>
