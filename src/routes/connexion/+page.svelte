@@ -11,6 +11,8 @@
 	let companyName = '';
 	let loading = false;
 	let passwordVisible = false;
+	let confirmPassword = '';
+	let acceptTerms = false;
 
 	$: redirectTo = $page.url.searchParams.get('redirect') || '/';
 
@@ -25,6 +27,16 @@
 
 	async function submit() {
 		if (!email.trim() || !password) return;
+		if (mode === 'signup') {
+			if (password !== confirmPassword) {
+				toast.error('Les mots de passe ne correspondent pas.');
+				return;
+			}
+			if (!acceptTerms) {
+				toast.error('Merci d’accepter les conditions d’utilisation.');
+				return;
+			}
+		}
 		loading = true;
 		try {
 			const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
@@ -120,8 +132,8 @@
 
 			<div class="form-heading">
 				<span class="small-kicker">{mode === 'login' ? 'BON RETOUR 👋' : 'BIENVENUE 🚀'}</span>
-				<h1>{mode === 'login' ? 'Ravi de te revoir !' : 'Crée ton espace chantier'}</h1>
-				<p>{mode === 'login' ? 'Connecte-toi pour retrouver tous tes chantiers.' : 'Quelques secondes pour commencer avec ChantierBot.'}</p>
+				<h1>{mode === 'login' ? 'Bon retour !' : 'Rejoignez ChantierBot !'}</h1>
+				<p>{mode === 'login' ? 'Connectez-vous pour retrouver vos chantiers.' : 'Créez votre compte et simplifiez la gestion de vos chantiers.'}</p>
 			</div>
 
 			<form on:submit|preventDefault={submit}>
@@ -189,6 +201,28 @@
 					</div>
 				{/if}
 
+				{#if mode === 'signup'}
+					<div class="field">
+						<label for="confirmPassword">Confirmer le mot de passe</label>
+						<div class="input-wrap password-wrap">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+							<input
+								id="confirmPassword"
+								type={passwordVisible ? 'text' : 'password'}
+								required
+								value={confirmPassword}
+								on:input={(event) => (confirmPassword = (event.currentTarget as HTMLInputElement).value)}
+								placeholder="Confirmez votre mot de passe"
+								autocomplete="new-password"
+							/>
+						</div>
+					</div>
+					<label class="terms-check">
+						<input type="checkbox" bind:checked={acceptTerms} />
+						<span>J’accepte les <a href="/conditions">conditions d’utilisation</a> et la <a href="/confidentialite">politique de confidentialité</a></span>
+					</label>
+				{/if}
+
 				{#if mode === 'login'}
 					<div class="form-meta">
 						<label class="remember"><input type="checkbox" /> <span>Se souvenir de moi</span></label>
@@ -197,10 +231,26 @@
 				{/if}
 
 				<button class="submit-button" disabled={loading} type="submit">
-					<span>{loading ? 'Connexion...' : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}</span>
+					<span>{loading ? (mode === 'login' ? 'Connexion...' : 'Création...') : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}</span>
 					<span class="arrow">→</span>
 				</button>
 			</form>
+
+			<div class="social-divider"><span></span> ou continuer avec <span></span></div>
+			<div class="social-buttons">
+				<button type="button" class="social-button" title="Connexion Google bientôt disponible">
+					<span class="google-mark">G</span> Google
+				</button>
+				<button type="button" class="social-button" title="Connexion Apple bientôt disponible">
+					<span class="apple-mark">●</span> Apple
+				</button>
+			</div>
+			<div class="switch-account">
+				{mode === 'login' ? 'Pas encore de compte ?' : 'Vous avez déjà un compte ?'}
+				<button type="button" on:click={() => switchMode(mode === 'login' ? 'signup' : 'login')}>
+					{mode === 'login' ? 'Créer un compte' : 'Se connecter'}
+				</button>
+			</div>
 
 			<div class="security-note">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6l8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
@@ -488,6 +538,44 @@
 	.hint-row { color: #35df9a; line-height: 1.65; }
 	.hint-row span { color: rgba(239,246,255,.62); margin-left: 5px; }
 	.security-note { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; color: rgba(205,221,242,.42); font-size: 10px; }
+	.terms-check {
+		display: flex;
+		align-items: flex-start;
+		gap: 9px;
+		font-size: 10px;
+		line-height: 1.45;
+		color: rgba(239,246,255,.62);
+		cursor: pointer;
+	}
+	.terms-check input { margin-top: 2px; accent-color: #ffad25; }
+	.terms-check a { color: #ffb02a; text-decoration: underline; }
+	.social-divider {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin: 18px 0 12px;
+		font-size: 10px;
+		color: rgba(205,221,242,.48);
+	}
+	.social-divider span { flex: 1; height: 1px; background: rgba(255,255,255,.09); }
+	.social-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+	.social-button {
+		height: 45px;
+		border: 1px solid rgba(182,204,231,.22);
+		border-radius: 12px;
+		background: rgba(255,255,255,.045);
+		color: rgba(239,246,255,.82);
+		font: inherit;
+		font-size: 12px;
+		font-weight: 700;
+		cursor: pointer;
+		transition: .2s ease;
+	}
+	.social-button:hover { border-color: rgba(255,176,43,.5); background: rgba(255,255,255,.07); }
+	.google-mark { color: #4285f4; font-weight: 900; font-size: 17px; margin-right: 6px; }
+	.apple-mark { color: white; font-size: 13px; margin-right: 6px; }
+	.switch-account { text-align: center; margin-top: 14px; color: rgba(205,221,242,.5); font-size: 10px; }
+	.switch-account button { border: 0; background: transparent; color: #ffb02a; font-weight: 800; cursor: pointer; padding: 0 0 0 4px; }
 	.security-note strong { color: rgba(87,181,255,.9); font-weight: 600; }
 	.security-note svg { width: 16px; height: 16px; }
 	.handwritten {
