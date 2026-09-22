@@ -299,8 +299,8 @@
 		position: relative;
 		z-index: 2;
 		width: min(940px, calc(100vw - 64px));
-		height: min(680px, calc(100vh - 56px));
-		min-height: 620px;
+		height: min(780px, calc(100vh - 36px));
+		min-height: 0;
 		display: grid;
 		grid-template-columns: 46% 54%;
 		overflow: hidden;
@@ -512,16 +512,23 @@
 		position: relative;
 		z-index: 4;
 		min-width: 0;
-		padding: 42px 46px 36px;
+		padding: 34px 46px 32px;
 		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		justify-content: flex-start;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255,176,43,.55) transparent;
 		background:
 			linear-gradient(145deg, rgba(12,31,57,.56), rgba(6,16,30,.68));
 		backdrop-filter: none;
 		-webkit-backdrop-filter: none;
 	}
+
+	.form-panel::-webkit-scrollbar { width: 6px; }
+	.form-panel::-webkit-scrollbar-track { background: transparent; }
+	.form-panel::-webkit-scrollbar-thumb { background: rgba(255,176,43,.45); border-radius: 999px; }
 
 	.form-top {
 		display: flex;
@@ -839,7 +846,7 @@
 		.auth-page { padding: 16px; }
 		.floating-window {
 			width: min(560px, 100%);
-			height: auto;
+			height: min(900px, calc(100svh - 24px));
 			min-height: 0;
 			grid-template-columns: 1fr;
 			transform: none;
