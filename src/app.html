@@ -15,7 +15,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="ChantierBot" />
     <title>ChantierBot</title>
-    <script>\n      if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+    <script>
+      if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
       (function () {
         var saved = localStorage.getItem('chantierbot-theme');
         var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
