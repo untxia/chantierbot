@@ -30,7 +30,16 @@
 	}
 
 	async function submit() {
-		if (!email.trim() || !password) return;
+		const normalizedEmail = email.trim().toLowerCase();
+		const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
+		if (!normalizedEmail || !password) {
+			toast.error('Renseigne ton adresse e-mail et ton mot de passe.');
+			return;
+		}
+		if (!emailPattern.test(normalizedEmail)) {
+			toast.error('Adresse e-mail invalide. Exemple : toi@entreprise.fr');
+			return;
+		}
 		if (mode === 'signup') {
 			if (password !== confirmPassword) {
 				toast.error('Les mots de passe ne correspondent pas.');
@@ -45,8 +54,8 @@
 		try {
 			const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
 			const payload = mode === 'login'
-				? { email, password }
-				: { email, password, displayName, companyName };
+				? { email: normalizedEmail, password }
+				: { email: normalizedEmail, password, displayName, companyName };
 			const response = await fetch(endpoint, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -154,7 +163,7 @@
 					<label for="email">Adresse e-mail</label>
 					<div class="input-wrap">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m3 7 9 7 9-7"/></svg>
-						<input id="email" type="email" required bind:value={email} placeholder="toi@entreprise.fr" autocomplete="email" />
+						<input id="email" type="email" required inputmode="email" spellcheck="false" bind:value={email} placeholder="toi@entreprise.fr" autocomplete="email" />
 					</div>
 				</div>
 
