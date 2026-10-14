@@ -40,3 +40,19 @@ Fichiers dans [`/static/logo`](../../static/logo) (servis directement par l'app 
 Le logo principal = version horizontale ; la version claire et la version sombre couvrent les usages sur fond clair/sombre ; `icon-mono.svg` sert de version monochrome (hérite de la couleur du texte via `currentColor`).
 
 Intégré dans l'app : en-tête (`src/routes/+layout.svelte`) et favicon (`src/app.html`).
+
+## Mise à jour 2026-10-14 — logo robot (en vigueur)
+
+Le logo en vigueur est le **robot ChantierBot** : casque de chantier jaune portant une maison, visière sombre aux yeux lumineux, accompagné du mot-symbole « Chantier**Bot** » (Barlow Condensed ExtraBold ; « Chantier » blanc ou bleu nuit, « Bot » orange `#FFB020`) extrudé en 3D, et du slogan *Votre allié sur tous vos chantiers*.
+
+| Usage | Fichier / composant |
+|---|---|
+| Logo horizontal 3D, fond sombre | `static/logo/chantierbot-3d.svg` |
+| Logo horizontal 3D, fond clair | `static/logo/chantierbot-3d-light.svg` |
+| Icône d'application / favicon | `static/favicon.svg` |
+| Robot complet (illustration) | `static/assets/robot/chantierbot-3d.svg` |
+| Dans l'interface (animé) | `RobotBot.svelte` (robot) et `Logo.svelte` (robot + mot-symbole) |
+
+Animations du robot (CSS, désactivées si « réduire les animations » est actif) : flottement, clignement des yeux, légère inclinaison de la tête, salut de la main, halo de l'oreille. Variante « working » : flottement accéléré.
+
+Les anciens logos « trois barres » (`icon.svg`, `logo-horizontal-*.svg`) restent dans `static/logo` mais ne sont plus utilisés dans l'interface.

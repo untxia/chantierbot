@@ -3,6 +3,7 @@
 	import { navItems } from './nav-items';
 	import { focusMode } from '$lib/stores/focus-mode';
 	import NavIcon from './NavIcon.svelte';
+	import RobotBot from './RobotBot.svelte';
 
 	$: currentPath = $page.url.pathname;
 	function isActive(href: string) {
@@ -13,7 +14,7 @@
 {#if !$focusMode}
 	<aside class="hidden w-64 shrink-0 flex-col border-r border-white/5 bg-dark-navy px-4 py-6 md:flex">
 		<a href="/" class="mb-8 flex items-center gap-3 px-2" aria-label="ChantierBot accueil">
-			<img src="/logo/icon.svg" alt="" class="h-9 w-9" />
+			<RobotBot variant="head" size={44} />
 			<div class="leading-tight">
 				<p class="font-extrabold tracking-tight text-white">Chantier<span class="text-secondary">Bot</span></p>
 				<p class="text-xs text-ink-dark-secondary">L'IA qui avance vos chantiers</p>

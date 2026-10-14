@@ -7,6 +7,7 @@
 	import TopBar from '$lib/components/TopBar.svelte';
 	import { focusMode } from '$lib/stores/focus-mode';
 	import IconDefs from '$lib/components/IconDefs.svelte';
+	import Logo from '$lib/components/Logo.svelte';
 	import { onMount } from 'svelte';
 	import { appearance, applyAppearance } from '$lib/stores/appearance';
 	import { initFloating } from '$lib/actions/floating';
@@ -33,9 +34,11 @@
 					: ''}"
 			>
 				<a href="/" class="md:hidden" aria-label="Retour à l'accueil">
-					<img src="/logo/logo-horizontal-light.svg" alt="ChantierBot" class="h-7 w-auto {isDashboard ? '' : 'dark:hidden'}" />
-					{#if !isDashboard}
-						<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" class="hidden h-7 w-auto dark:block" />
+					{#if isDashboard}
+						<Logo tone="dark" size="sm" />
+					{:else}
+						<span class="dark:hidden"><Logo tone="light" size="sm" /></span>
+						<span class="hidden dark:inline"><Logo tone="dark" size="sm" /></span>
 					{/if}
 				</a>
 				<div class="ml-auto">

@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { browserSupabase } from '$lib/services/auth';
 	import { toast } from '$lib/stores/toast';
+	import Logo from '$lib/components/Logo.svelte';
 
 	let mode: 'login' | 'signup' = 'login';
 	let email = '';
@@ -98,7 +99,7 @@
 			<div class="visual-glow"></div>
 			<div class="brand-row">
 				<div class="brand-stack">
-					<img src="/logo/chantierbot-3d.svg" alt="ChantierBot" class="brand-logo" />
+					<Logo tone="dark" size="lg" tagline />
 				</div>
 			</div>
 
@@ -121,7 +122,7 @@
 			<button type="button" class="close-button" aria-label="Fermer" on:click={() => goto('/')}>×</button>
 			<div class="form-top">
 				<div class="mobile-logo">
-					<img src="/logo/logo-horizontal-dark.svg" alt="ChantierBot" />
+					<Logo tone="dark" size="sm" />
 				</div>
 				<div class="secure-badge"><span></span> Espace sécurisé</div>
 			</div>
@@ -285,7 +286,7 @@
 		box-sizing: border-box;
 		background:
 			linear-gradient(110deg, rgba(3,11,24,.06), rgba(3,11,24,.14)),
-			url('/assets/backgrounds/chantierbot-reference.webp') center center / cover no-repeat;
+			url('/assets/backgrounds/chantier-general.webp?v=2') center center / cover no-repeat;
 		font-family: inherit;
 		color: #f7f9fc;
 	}
@@ -397,15 +398,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2px;
-	}
-
-	.brand-logo {
-		width: 285px;
-		height: auto;
-		max-height: 78px;
-		object-fit: contain;
-		object-position: left center;
-		filter: brightness(1.08) drop-shadow(0 7px 16px rgba(0,0,0,.25));
 	}
 
 	.brand-stack span {
@@ -867,8 +859,7 @@
 		.visual-panel { display: none; }
 		.form-panel { padding: 30px 26px; }
 		.mobile-logo { display: block; }
-		.mobile-logo img { width: 165px; }
-		.bottom-tag { display: none; }
+			.bottom-tag { display: none; }
 	}
 
 	@media (max-width: 480px) {
