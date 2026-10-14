@@ -459,14 +459,14 @@
 
 	.visual-copy p { display: none; }
 
+	/* Sous la citation, au milieu du panneau (et non plus collée en bas). */
 	.feature-list {
-		position: absolute;
+		position: relative;
 		z-index: 6;
-		left: 38px;
-		bottom: 42px;
 		display: grid;
-		gap: 10px;
-		margin: 0;
+		gap: 12px;
+		width: fit-content;
+		margin: clamp(36px, 8vh, 72px) auto 0;
 	}
 
 	.feature-list div {
@@ -491,12 +491,11 @@
 	}
 
 	.handwritten {
-		position: absolute;
+		position: relative;
 		z-index: 7;
-		left: 50%;
-		bottom: 10px;
 		width: 170px;
-		transform: translateX(-20%) rotate(-7deg);
+		margin: clamp(28px, 6vh, 52px) auto 0;
+		transform: rotate(-7deg);
 		font-family: "Comic Sans MS", "Bradley Hand", cursive;
 		font-size: 16px;
 		font-style: italic;
