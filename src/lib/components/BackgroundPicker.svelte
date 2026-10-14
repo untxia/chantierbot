@@ -6,9 +6,9 @@
 		{ id: 'plombier', label: 'Plombier', subtitle: 'Plomberie', icon: '🔧', src: '/assets/backgrounds/plombier.webp?v=2' },
 		{ id: 'paysagiste', label: 'Paysagiste', subtitle: 'Extérieurs', icon: '🌿', src: '/assets/backgrounds/paysagiste.webp?v=2' },
 		{ id: 'macon', label: 'Maçon', subtitle: 'Gros œuvre', icon: '🧱', src: '/assets/backgrounds/macon.webp?v=2' },
-		{ id: 'electricien', label: 'Électricien', subtitle: 'Électricité', icon: '⚡', src: '/assets/backgrounds/electricien.webp' },
+		{ id: 'electricien', label: 'Électricien', subtitle: 'Électricité', icon: '⚡', src: '/assets/backgrounds/electricien.webp?v=2' },
 		{ id: 'peintre', label: 'Peintre', subtitle: 'Peinture', icon: '🎨', src: '/assets/backgrounds/peintre.webp?v=2' },
-		{ id: 'carreleur', label: 'Carreleur', subtitle: 'Carrelage', icon: '◻️', src: '/assets/backgrounds/carreleur.webp' },
+		{ id: 'carreleur', label: 'Carreleur', subtitle: 'Carrelage', icon: '◻️', src: '/assets/backgrounds/carreleur.webp?v=2' },
 		{ id: 'couvreur', label: 'Couvreur', subtitle: 'Toiture', icon: '🏠', src: '/assets/backgrounds/couvreur.webp' },
 		{ id: 'charpentier', label: 'Charpentier', subtitle: 'Structure bois', icon: '🪵', src: '/assets/backgrounds/charpentier.webp' },
 		{ id: 'plaquiste', label: 'Plaquiste', subtitle: 'Cloisons & plafonds', icon: '🧱', src: '/assets/backgrounds/plaquiste.webp' }

@@ -7,9 +7,9 @@
 		plombier: '/assets/backgrounds/plombier.webp?v=2',
 		paysagiste: '/assets/backgrounds/paysagiste.webp?v=2',
 		macon: '/assets/backgrounds/macon.webp?v=2',
-		electricien: '/assets/backgrounds/electricien.webp',
+		electricien: '/assets/backgrounds/electricien.webp?v=2',
 		peintre: '/assets/backgrounds/peintre.webp?v=2',
-		carreleur: '/assets/backgrounds/carreleur.webp',
+		carreleur: '/assets/backgrounds/carreleur.webp?v=2',
 		couvreur: '/assets/backgrounds/couvreur.webp',
 		charpentier: '/assets/backgrounds/charpentier.webp',
 		plaquiste: '/assets/backgrounds/plaquiste.webp'
