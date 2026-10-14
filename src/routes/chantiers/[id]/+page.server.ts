@@ -31,5 +31,23 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		return { ...photo, image_url: signed?.signedUrl ?? null };
 	}));
 
-	return { chantier, client: clientResult.data, clients: clients ?? [], photos: photosWithUrls };
+	const { data: mesures } = await supabase
+		.from('mesures')
+		.select('id, label, kind, value, method, created_at')
+		.eq('chantier_id', params.id)
+		.order('created_at', { ascending: false });
+
+	return {
+		chantier,
+		client: clientResult.data,
+		clients: clients ?? [],
+		photos: photosWithUrls,
+		mesures: (mesures ?? []).map((m) => ({
+			id: m.id as string,
+			label: m.label as string | null,
+			kind: m.kind as 'longueur' | 'surface',
+			value: Number(m.value),
+			method: m.method as 'ar' | 'photo'
+		}))
+	};
 };

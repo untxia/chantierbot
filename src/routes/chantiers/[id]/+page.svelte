@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatValue } from '$lib/measure';
 	import { invalidateAll } from '$app/navigation';
 	import PhotoUpload from '$lib/components/photoUpload.svelte';
 	import DeleteChantierButton from '$lib/components/DeleteChantierButton.svelte';
@@ -6,6 +7,9 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	const fmtMesure = (v: number, kind: 'longueur' | 'surface') => formatValue(v, kind);
+	$: surfaceTotal = data.mesures.filter((m) => m.kind === 'surface').reduce((sum, m) => sum + m.value, 0);
 	let editing = false;
 	let saving = false;
 	let updatingStatus = false;
@@ -71,6 +75,28 @@
 		<section class="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><div class="card"><p class="text-xs font-bold uppercase tracking-wide text-ink-secondary">Client</p><p class="mt-2 font-bold">{data.client?.name ?? 'Non renseigné'}</p>{#if data.client?.phone}<p class="mt-1 text-sm text-ink-secondary">📞 {data.client.phone}</p>{/if}</div><div class="card"><p class="text-xs font-bold uppercase tracking-wide text-ink-secondary">Dates</p><p class="mt-2 font-semibold">{formatDate(data.chantier.start_date)} → {formatDate(data.chantier.end_date)}</p></div><div class="card"><p class="text-xs font-bold uppercase tracking-wide text-ink-secondary">Budget</p><p class="mt-2 text-xl font-extrabold">{formatBudget(data.chantier.budget)}</p></div><div class="card"><p class="text-xs font-bold uppercase tracking-wide text-ink-secondary">Photos</p><p class="mt-2 text-xl font-extrabold">{data.photos.length}</p></div></section>
 		<section class="card mb-6 p-6"><h2 class="mb-3 text-lg font-bold">📍 Informations</h2>{#if data.chantier.description}<p class="whitespace-pre-line text-sm leading-6">{data.chantier.description}</p>{:else}<p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">Ajoute une description pour garder les informations importantes du chantier au même endroit.</p>{/if}{#if data.chantier.address}<p class="mt-4 text-sm font-semibold">📍 {data.chantier.address}</p>{/if}</section>
 	{/if}
+
+	<section class="card mb-6 p-6" aria-labelledby="mesures-chantier">
+		<div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+			<h2 id="mesures-chantier" class="text-lg font-bold">📏 Mesures</h2>
+			<a href="/mesures?chantier={data.chantier.id}" class="btn-primary px-4 py-2 text-sm">Mesurer sur ce chantier</a>
+		</div>
+		{#if data.mesures.length === 0}
+			<p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">Aucune mesure. Utilisez la réalité augmentée ou une photo pour relever des longueurs et des surfaces.</p>
+		{:else}
+			<ul class="divide-y divide-black/5 dark:divide-white/10">
+				{#each data.mesures as m (m.id)}
+					<li class="flex items-center justify-between gap-3 py-2 text-sm">
+						<span class="min-w-0 truncate">{m.label ?? (m.kind === 'surface' ? 'Surface' : 'Longueur')}<span class="ml-2 text-xs text-ink-secondary dark:text-ink-dark-secondary">{m.method === 'ar' ? 'AR' : 'Photo'}</span></span>
+						<strong>{fmtMesure(m.value, m.kind)}</strong>
+					</li>
+				{/each}
+			</ul>
+			{#if surfaceTotal > 0}
+				<p class="mt-3 border-t border-black/5 pt-3 text-sm font-semibold dark:border-white/10">Surface cumulée : {formatValue(surfaceTotal, 'surface')}</p>
+			{/if}
+		{/if}
+	</section>
 
 	<section class="mb-6"><div class="mb-4 flex flex-wrap items-end justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-primary">Suivi terrain</p><h2 class="text-xl font-extrabold">Photos & analyses IA</h2></div><span class="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">{data.photos.length} photo{data.photos.length > 1 ? 's' : ''}</span></div><div class="card mb-5 p-5"><PhotoUpload chantierId={data.chantier.id} /></div>
 		{#if data.photos.length === 0}<div class="card p-10 text-center"><p class="text-lg font-bold">Aucune photo pour le moment 📸</p><p class="mt-1 text-sm text-ink-secondary dark:text-ink-dark-secondary">Ajoute une photo du chantier pour lancer le suivi et l’analyse.</p></div>{:else}<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{#each data.photos as photo (photo.id)}<article class="card overflow-hidden p-0">{#if photo.image_url}<img src={photo.image_url} alt={photo.description ?? 'Photo du chantier'} class="aspect-[4/3] w-full object-cover" />{/if}<div class="space-y-3 p-5">{#if photo.error}<p class="font-semibold text-danger">{photo.error}</p>{:else}<p class="text-sm leading-6">{photo.description ?? 'Analyse disponible.'}</p>{#if photo.issues?.length}<div><p class="text-xs font-bold uppercase tracking-wide text-danger">Problèmes</p><p class="mt-1 text-sm">{photo.issues.join(' · ')}</p></div>{/if}{#if photo.materials?.length}<div><p class="text-xs font-bold uppercase tracking-wide text-primary">Matériaux</p><p class="mt-1 text-sm">{photo.materials.join(' · ')}</p></div>{/if}{#if photo.progress_estimate}<div><p class="text-xs font-bold uppercase tracking-wide text-ink-secondary">Estimation IA</p><p class="mt-1 text-sm">{photo.progress_estimate}</p></div>{/if}{/if}</div></article>{/each}</div>{/if}

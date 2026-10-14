@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { toast } from '$lib/stores/toast';
 	import { formatValue, type Kind } from '$lib/measure';
 	import ArMeasure from '$lib/components/ArMeasure.svelte';
@@ -18,7 +19,9 @@
 
 	let result: { value: number; kind: Kind; method: 'ar' | 'photo' } | null = null;
 	let label = '';
-	let chantierId = '';
+	// Présélection depuis la fiche chantier (/mesures?chantier=<id>), si l'id existe bien.
+	const requested = $page.url.searchParams.get('chantier') ?? '';
+	let chantierId = data.chantiers.some((c) => c.id === requested) ? requested : '';
 	let saving = false;
 
 	onMount(async () => {
