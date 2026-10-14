@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -76,11 +76,62 @@
 		filter: brightness(1.05);
 	}
 
+	/* Cartes « flottantes » : profondeur, reflet haut, halo. L'inclinaison vient de initFloating(). */
 	.card {
-		@apply rounded-lg border border-black/5 bg-surface p-6 shadow-card transition-all duration-normal dark:border-border-dark dark:bg-surface-dark;
+		@apply relative rounded-lg border border-black/5 bg-surface p-6 dark:border-border-dark dark:bg-surface-dark;
+		transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+		transition: transform 0.18s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.7),
+			0 2px 4px rgba(15, 23, 42, 0.05),
+			0 14px 28px -10px rgba(15, 23, 42, 0.18),
+			0 30px 50px -24px rgba(88, 101, 242, 0.28);
 	}
 	.card:hover {
-		@apply -translate-y-0.5 shadow-card-hover;
+		--lift: -4px;
+		border-color: rgb(88 101 242 / 0.35);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.8),
+			0 4px 8px rgba(15, 23, 42, 0.06),
+			0 22px 40px -12px rgba(15, 23, 42, 0.24),
+			0 40px 64px -26px rgba(88, 101, 242, 0.4);
+	}
+	.dark .card {
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.07),
+			0 0 0 1px rgba(124, 140, 255, 0.1),
+			0 16px 32px -12px rgba(0, 0, 0, 0.6),
+			0 30px 56px -26px rgba(88, 101, 242, 0.5);
+	}
+	.dark .card:hover {
+		border-color: rgb(124 140 255 / 0.55);
+		box-shadow:
+			inset 0 1px 0 rgba(255, 255, 255, 0.1),
+			0 0 0 1px rgba(124, 140, 255, 0.35),
+			0 22px 40px -12px rgba(0, 0, 0, 0.7),
+			0 0 38px -6px rgba(88, 101, 242, 0.55);
+	}
+
+	/* Scène de fond : halos + grille légère. */
+	.ar-stage {
+		background-color: #f4f6fd;
+		background-image:
+			radial-gradient(60rem 28rem at 88% -8%, rgba(124, 140, 255, 0.22), transparent 62%),
+			radial-gradient(44rem 26rem at -8% 108%, rgba(139, 92, 246, 0.16), transparent 60%),
+			linear-gradient(rgba(88, 101, 242, 0.055) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(88, 101, 242, 0.055) 1px, transparent 1px);
+		background-size: auto, auto, 44px 44px, 44px 44px;
+		background-attachment: fixed;
+	}
+	.dark .ar-stage {
+		background-color: #070b17;
+		background-image:
+			radial-gradient(60rem 28rem at 88% -8%, rgba(88, 101, 242, 0.32), transparent 62%),
+			radial-gradient(44rem 26rem at -8% 108%, rgba(139, 92, 246, 0.24), transparent 60%),
+			linear-gradient(rgba(124, 140, 255, 0.07) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(124, 140, 255, 0.07) 1px, transparent 1px);
+		background-size: auto, auto, 44px 44px, 44px 44px;
+		background-attachment: fixed;
 	}
 
 	.input {
@@ -95,10 +146,17 @@
 	}
 
 	.card-glass {
-		@apply rounded-xl border border-white/15 bg-white/10 p-5 text-white shadow-glass backdrop-blur-xl transition-all duration-normal;
+		@apply rounded-xl border border-white/15 bg-white/10 p-5 text-white shadow-glass transition-all duration-normal;
+		-webkit-backdrop-filter: blur(var(--cb-blur, 4px));
+		backdrop-filter: blur(var(--cb-blur, 4px));
+	}
+	.card-glass {
+		transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+		transition: transform 0.18s ease-out, background-color 0.25s ease;
 	}
 	.card-glass:hover {
-		@apply -translate-y-0.5 bg-white/15;
+		--lift: -4px;
+		@apply bg-white/15;
 	}
 
 	.ai-orb {

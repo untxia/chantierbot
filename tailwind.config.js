@@ -31,7 +31,8 @@ export default {
 				}
 			},
 			fontFamily: {
-				sans: ['Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+				sans: ['Plus Jakarta Sans', 'Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+				display: ['Poppins', 'Plus Jakarta Sans', 'sans-serif']
 			},
 			borderRadius: {
 				sm: '8px',

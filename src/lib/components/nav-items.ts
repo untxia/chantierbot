@@ -1,7 +1,7 @@
 export interface NavItem {
 	href: string;
 	label: string;
-	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'more';
+	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'more';
 	soon?: boolean;
 }
 
@@ -11,6 +11,7 @@ export const navItems: NavItem[] = [
 	{ href: '/clients', label: 'Clients', icon: 'users' },
 	{ href: '/analyses', label: 'Stocks', icon: 'box' },
 	{ href: '/planning', label: 'Planning', icon: 'calendar' },
+	{ href: '/mesures', label: 'Mesures', icon: 'ruler' },
 	{ href: '/fournisseurs', label: 'Fournisseurs', icon: 'truck' },
 	{ href: '/commandes', label: 'Commandes', icon: 'box' },
 	{ href: '/relances', label: 'Relances', icon: 'phone' },

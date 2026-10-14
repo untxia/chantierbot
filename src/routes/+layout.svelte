@@ -6,6 +6,13 @@
 	import ToastHost from '$lib/components/ToastHost.svelte';
 	import TopBar from '$lib/components/TopBar.svelte';
 	import { focusMode } from '$lib/stores/focus-mode';
+	import IconDefs from '$lib/components/IconDefs.svelte';
+	import { onMount } from 'svelte';
+	import { appearance, applyAppearance } from '$lib/stores/appearance';
+	import { initFloating } from '$lib/actions/floating';
+
+	$: applyAppearance($appearance);
+	onMount(() => initFloating());
 
 	$: isDashboard = $page.url.pathname === '/';
 	$: isAuth = $page.url.pathname === '/connexion';
@@ -16,7 +23,7 @@
 		<slot />
 	</main>
 {:else}
-	<div class="flex min-h-screen bg-background dark:bg-background-dark">
+	<div class="ar-stage flex min-h-screen">
 		<Sidebar />
 
 		<div class="min-w-0 flex-1">
@@ -45,6 +52,7 @@
 	<BottomNav />
 {/if}
 
+<IconDefs />
 <ToastHost />
 
 <style>

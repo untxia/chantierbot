@@ -4,6 +4,7 @@
 	import { toast } from '$lib/stores/toast';
 	import { browserSupabase } from '$lib/services/auth';
 	import { TRADE_PROFILES } from '$lib/config/trades';
+	import { appearance, APPEARANCE_DEFAULTS } from '$lib/stores/appearance';
 
 	let displayName = '';
 	let companyName = '';
@@ -62,5 +63,32 @@
 			<div class="mt-6 flex flex-wrap justify-between gap-3"><button class="btn-secondary" type="button" on:click={logout} disabled={loggingOut}>{loggingOut ? 'Déconnexion...' : 'Se déconnecter'}</button><button class="btn-primary" type="button" on:click={save} disabled={saving}>{saving ? 'Enregistrement...' : 'Enregistrer le profil'}</button></div>
 		{/if}
 	</section>
+	<section class="card mt-6 p-6" aria-labelledby="apparence-title">
+		<div class="mb-4 flex items-start justify-between gap-3">
+			<div>
+				<h2 id="apparence-title" class="text-lg font-bold">Apparence</h2>
+				<p class="mt-1 text-sm text-ink-secondary dark:text-ink-dark-secondary">Réglages enregistrés sur cet appareil.</p>
+			</div>
+			<button type="button" class="btn-secondary px-3 py-1.5 text-sm" on:click={() => appearance.set({ ...APPEARANCE_DEFAULTS })}>Réinitialiser</button>
+		</div>
+		<div class="grid gap-5">
+			<div>
+				<label for="ap-blur" class="mb-1 flex justify-between text-sm font-semibold"><span>Flou des surfaces vitrées</span><span class="text-ink-secondary dark:text-ink-dark-secondary">{$appearance.blur} px</span></label>
+				<input id="ap-blur" type="range" min="0" max="24" step="1" class="w-full accent-primary" bind:value={$appearance.blur} />
+				<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">0 = net. Concerne les cartes et barres translucides posées sur la photo.</p>
+			</div>
+			<div>
+				<label for="ap-veil" class="mb-1 flex justify-between text-sm font-semibold"><span>Voile sombre sur la photo</span><span class="text-ink-secondary dark:text-ink-dark-secondary">{$appearance.veil} %</span></label>
+				<input id="ap-veil" type="range" min="0" max="80" step="5" class="w-full accent-primary" bind:value={$appearance.veil} />
+				<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">Moins de voile = photo plus nette et plus claire derrière l’en-tête.</p>
+			</div>
+			<div>
+				<label for="ap-float" class="mb-1 flex justify-between text-sm font-semibold"><span>Effet flottant des cartes</span><span class="text-ink-secondary dark:text-ink-dark-secondary">{$appearance.float === 0 ? 'désactivé' : $appearance.float + ' %'}</span></label>
+				<input id="ap-float" type="range" min="0" max="100" step="10" class="w-full accent-primary" bind:value={$appearance.float} />
+				<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">Inclinaison 3D au passage de la souris. Désactivée automatiquement si votre système réduit les animations.</p>
+			</div>
+		</div>
+	</section>
+
 	<div class="mt-6 flex gap-3"><a href="/clients" class="btn-secondary">👥 Gérer mes clients</a><a href="/projets" class="btn-secondary">🚧 Mes chantiers</a></div>
 </div>

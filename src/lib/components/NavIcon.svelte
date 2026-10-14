@@ -3,28 +3,70 @@
 	export let icon: NavItem['icon'];
 </script>
 
-{#if icon === 'home'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9" /></svg>
-{:else if icon === 'folder'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3.5 6a1 1 0 0 1 1-1h4.5l2 2.5h9a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1h-15.5a1 1 0 0 1-1-1V6Z" /></svg>
-{:else if icon === 'users'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20" /><circle cx="9.5" cy="7.5" r="3.5" /><path d="M16 11a3.5 3.5 0 1 0 0-7" /><path d="M21 20v-1.5a4 4 0 0 0-3-3.87" /></svg>
-{:else if icon === 'box'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3.5 8 12 4l8.5 4-8.5 4-8.5-4Z" /><path d="M3.5 8v8l8.5 4 8.5-4V8" /><path d="M12 12v8" /></svg>
-{:else if icon === 'calendar'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><rect x="3.5" y="5" width="17" height="16" rx="2" /><path d="M3.5 10h17M8 3v4M16 3v4" /></svg>
-{:else if icon === 'truck'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M2.5 6h11v10h-11z" /><path d="M13.5 10h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" /></svg>
-{:else if icon === 'phone'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M5 4h3.5l1.5 4-2 1.5a12 12 0 0 0 6.5 6.5l1.5-2 4 1.5V19a2 2 0 0 1-2 2C10.5 21 3 13.5 3 6a2 2 0 0 1 2-2Z" /></svg>
-{:else if icon === 'report'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M6 3h9l3 3v15H6z" /><path d="M15 3v3h3M9 12h6M9 16h6" /></svg>
-{:else if icon === 'sparkles'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" /></svg>
-{:else if icon === 'chart'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M4 20V10M12 20V4M20 20v-7" /></svg>
-{:else if icon === 'settings'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><circle cx="12" cy="12" r="3" /><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3H9.8l-.4 2.6a7 7 0 0 0-2 1.2l.4 2.6h4.4l.4-2.6a7 7 0 0 0 2-1.2l2.3.9 2-3.4-2-1.5c.07-.4.1-.8.1-1.2Z" /></svg>
-{:else if icon === 'more'}
-	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" /><circle cx="19" cy="12" r="1.2" fill="currentColor" stroke="none" /></svg>
-{/if}
+<!-- Icônes « 3D » : dégradés + reflet + ombre portée (voir IconDefs.svelte et .icon-3d). -->
+<svg viewBox="0 0 24 24" class="icon-3d h-6 w-6 shrink-0" aria-hidden="true">
+	{#if icon === 'home'}
+		<rect x="5" y="10.5" width="14" height="10" rx="2" fill="url(#g-white)" />
+		<path d="M2.2 11.8 12 3l9.8 8.8c.4.4.1 1.2-.5 1.2H2.7c-.6 0-.9-.8-.5-1.2Z" fill="url(#g-red)" />
+		<path d="M5 10.6 12 4.4" stroke="#fff" stroke-opacity=".55" stroke-width="1" stroke-linecap="round" />
+		<rect x="10" y="14.5" width="4" height="6" rx="1" fill="url(#g-blue)" />
+	{:else if icon === 'folder'}
+		<path d="M3 6.5a2 2 0 0 1 2-2h4.2l2 2.3H19a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6.5Z" fill="url(#g-amber-dark)" />
+		<path d="M3 10.2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7.8Z" fill="url(#g-amber)" />
+		<path d="M4.5 9.6h15" stroke="#fff" stroke-opacity=".6" stroke-width="1" stroke-linecap="round" />
+	{:else if icon === 'users'}
+		<circle cx="16.2" cy="8" r="3" fill="url(#g-violet)" />
+		<path d="M11.4 20v-1.4a4.6 4.6 0 0 1 4.6-4.6h.5a4.6 4.6 0 0 1 4.6 4.6V20Z" fill="url(#g-violet)" />
+		<circle cx="9" cy="9" r="3.5" fill="url(#g-blue)" />
+		<path d="M2.4 20.6v-1.8A4.8 4.8 0 0 1 7.2 14h3.6a4.8 4.8 0 0 1 4.8 4.8v1.8Z" fill="url(#g-blue)" />
+		<ellipse cx="7.9" cy="7.7" rx="1.3" ry=".8" fill="#fff" fill-opacity=".5" />
+	{:else if icon === 'box'}
+		<path d="M12 2.8 20.6 7.4 12 12 3.4 7.4Z" fill="#FFDC85" />
+		<path d="M3.4 7.4 12 12v9.2L3.4 16.6Z" fill="#FFB020" />
+		<path d="M20.6 7.4 12 12v9.2l8.6-4.6Z" fill="#DE8500" />
+		<path d="M12 12v9.2" stroke="#fff" stroke-opacity=".35" stroke-width=".8" />
+	{:else if icon === 'calendar'}
+		<rect x="3" y="5" width="18" height="16" rx="3" fill="url(#g-white)" />
+		<path d="M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2H3V8Z" fill="url(#g-red)" />
+		<rect x="7" y="2.6" width="2.2" height="4.4" rx="1.1" fill="url(#g-slate)" />
+		<rect x="14.8" y="2.6" width="2.2" height="4.4" rx="1.1" fill="url(#g-slate)" />
+		<circle cx="8" cy="14" r="1.2" fill="url(#g-blue)" /><circle cx="12" cy="14" r="1.2" fill="url(#g-blue)" /><circle cx="16" cy="14" r="1.2" fill="url(#g-blue)" />
+		<circle cx="8" cy="17.5" r="1.2" fill="url(#g-blue)" /><circle cx="12" cy="17.5" r="1.2" fill="url(#g-amber)" />
+	{:else if icon === 'truck'}
+		<rect x="1.8" y="6" width="12" height="10.5" rx="1.8" fill="url(#g-blue)" />
+		<path d="M13.8 9.5h4.2l3.4 3.6v3.4h-7.6Z" fill="url(#g-violet)" />
+		<path d="M15.4 10.9h2.2l1.9 2h-4.1Z" fill="#fff" fill-opacity=".7" />
+		<circle cx="7" cy="17.6" r="2.4" fill="#2A3350" /><circle cx="7" cy="17.6" r="1" fill="url(#g-slate)" />
+		<circle cx="17" cy="17.6" r="2.4" fill="#2A3350" /><circle cx="17" cy="17.6" r="1" fill="url(#g-slate)" />
+	{:else if icon === 'phone'}
+		<path d="M5.4 3.5h3.2c.5 0 .9.3 1 .8l.8 3c.1.4 0 .8-.3 1.1L8.6 9.7a12 12 0 0 0 5.7 5.7l1.3-1.5c.3-.3.7-.4 1.1-.3l3 .8c.5.1.8.5.8 1v3.2a2 2 0 0 1-2.1 2C10.7 20.200 3.700 13.200 3.400 5.600a2 2 0 0 1 2-2.100Z" fill="url(#g-green)" />
+		<path d="M6 4.4h2.4" stroke="#fff" stroke-opacity=".6" stroke-width="1" stroke-linecap="round" />
+	{:else if icon === 'sparkles'}
+		<path d="M10 2.6 12.1 8l5.400 2.100L12.100 12.200 10 17.600 7.900 12.200 2.500 10.100 7.900 8Z" fill="url(#g-amber)" />
+		<path d="M18.200 12.800l1.100 2.700 2.700 1.100-2.700 1.100-1.100 2.700-1.100-2.700-2.700-1.100 2.700-1.100Z" fill="url(#g-violet)" />
+		<path d="M10 5.600l.9 2.300" stroke="#fff" stroke-opacity=".6" stroke-width="1" stroke-linecap="round" />
+	{:else if icon === 'chart'}
+		<rect x="3.5" y="12" width="4.6" height="8.5" rx="1.4" fill="url(#g-blue)" />
+		<rect x="9.7" y="5" width="4.6" height="15.5" rx="1.4" fill="url(#g-violet)" />
+		<rect x="15.9" y="9" width="4.6" height="11.5" rx="1.4" fill="url(#g-green)" />
+	{:else if icon === 'report'}
+		<path d="M6 2.8h8.200L19 7.600V19a2.200 2.200 0 0 1-2.200 2.200H6A2.200 2.200 0 0 1 3.800 19V5A2.200 2.200 0 0 1 6 2.800Z" transform="translate(.6 0)" fill="url(#g-white)" />
+		<path d="M14.800 2.800v3.600a1.200 1.200 0 0 0 1.200 1.200h3.600Z" fill="url(#g-slate)" />
+		<rect x="7.800" y="11" width="8.400" height="1.800" rx=".9" fill="url(#g-blue)" />
+		<rect x="7.800" y="14.500" width="8.400" height="1.800" rx=".9" fill="url(#g-blue)" />
+		<rect x="7.800" y="18" width="5" height="1.800" rx=".9" fill="url(#g-amber)" />
+	{:else if icon === 'settings'}
+		<path d="M10.300 2.600h3.400l.5 2.300 1.700.7 2-1.300 2.400 2.400-1.300 2 .7 1.700 2.300.5v3.400l-2.300.5-.7 1.700 1.300 2-2.400 2.400-2-1.300-1.700.7-.5 2.300h-3.400l-.5-2.300-1.700-.7-2 1.300-2.400-2.400 1.300-2-.7-1.700-2.300-.5v-3.400l2.300-.5.7-1.700-1.300-2 2.400-2.400 2 1.300 1.700-.7Z" fill="url(#g-slate)" />
+		<circle cx="12" cy="12" r="3.300" fill="url(#g-white)" /><circle cx="12" cy="12" r="1.500" fill="url(#g-blue)" />
+	{:else if icon === 'ruler'}
+		<g transform="rotate(-40 12 12)">
+			<rect x="1.200" y="8.200" width="21.600" height="7.600" rx="2" fill="url(#g-amber)" />
+			<path d="M4.500 8.200v3.200M7.500 8.200v2.200M10.500 8.200v3.200M13.500 8.200v2.200M16.500 8.200v3.200M19.500 8.200v2.200" stroke="#7A4A00" stroke-width="1" stroke-linecap="round" />
+			<path d="M2.500 9.400h19" stroke="#fff" stroke-opacity=".55" stroke-width=".8" stroke-linecap="round" />
+		</g>
+	{:else if icon === 'more'}
+		<circle cx="5" cy="12" r="2.200" fill="url(#g-slate)" />
+		<circle cx="12" cy="12" r="2.200" fill="url(#g-slate)" />
+		<circle cx="19" cy="12" r="2.200" fill="url(#g-slate)" />
+	{/if}
+</svg>
