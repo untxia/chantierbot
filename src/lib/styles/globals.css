@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -16,8 +16,26 @@
 		font-feature-settings: 'cv11', 'ss01';
 	}
 
+	/* Titres façon signalétique de chantier : condensé, majuscules pour les h1. */
 	h1, h2, h3, h4, h5, h6 {
-		@apply tracking-tight;
+		font-family: theme('fontFamily.display');
+		letter-spacing: 0.01em;
+	}
+
+	h1 {
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+	}
+
+	/* Liseré de balisage sous les titres de page (pas dans le bandeau du tableau de bord). */
+	.page-shell h1::after {
+		content: '';
+		display: block;
+		width: 64px;
+		height: 6px;
+		margin-top: 8px;
+		border-radius: 2px;
+		background: repeating-linear-gradient(-45deg, #ffb020 0 8px, #1b1f2a 8px 16px);
 	}
 
 	::selection {

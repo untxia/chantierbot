@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { photoPublicUrl } from '$lib/services/supabase';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -20,7 +19,7 @@
 	<ul class="flex flex-col gap-4">
 		{#each data.activity as item (item.id)}
 			<li class="card flex flex-col gap-3 sm:flex-row">
-				<img src={photoPublicUrl(item.imagePath)} alt={item.description ?? ''} class="h-32 w-full rounded-md object-cover sm:w-40" />
+				<img src={item.imageUrl ?? ''} alt={item.description ?? ''} class="h-32 w-full rounded-md object-cover sm:w-40" />
 				<div class="flex-1 text-sm">
 					<div class="mb-1 flex items-center justify-between gap-2">
 						{#if item.chantier}

@@ -31,8 +31,8 @@ export default {
 				}
 			},
 			fontFamily: {
-				sans: ['Plus Jakarta Sans', 'Manrope', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-				display: ['Poppins', 'Plus Jakarta Sans', 'sans-serif']
+				sans: ['Barlow', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+				display: ['Barlow Condensed', 'Barlow', 'sans-serif']
 			},
 			borderRadius: {
 				sm: '8px',
