@@ -124,6 +124,18 @@ Production en ligne : **https://chantierbot.vercel.app**
 
 ---
 
+## 2026-10-14 — Mesure AR, style flottant, typographie chantier, rattrapage de la base
+
+- **`/mesures`** : mesure de longueurs et surfaces. AR en direct via WebXR (hit-test + dom-overlay) sur Android/Chrome ; repli « sur photo » avec étalonnage par objet de référence pour iPhone (Safari iOS n'a pas WebXR) et desktop. Table `mesures` (RLS par utilisateur). Géométrie dans `lib/measure.ts`, testée (aire, longueur, projection d'écran). **Le mode AR n'a pas été testé sur un vrai téléphone.**
+- **Design** : icônes 3D (`NavIcon` + `IconDefs`), cartes flottantes avec inclinaison au survol (`lib/actions/floating.ts`), scène de fond, typographie Barlow / Barlow Condensed. Réglages dans Paramètres > Apparence (flou, voile, effet flottant ; `lib/stores/appearance.ts`).
+- **Constat** : les migrations `20260910_*` n'avaient jamais été appliquées en production et leur ordre alphabétique n'est pas l'ordre des dépendances (`auth_profiles_rls` supprime toutes les politiques, donc doit passer avant `admin_roles`). Le code attendait `user_id`, `start_at`, `designation`… absents de la base : création de chantier et planning en erreur.
+- **Rattrapage** : `20261014_rattrapage_schema.sql`, migration unique et ordonnée qui remplace les 7 anciennes en production. Réconcilie aussi mon schéma du 09-09 (`scheduled_at` → `start_at`/`end_at`, `item` → `designation`, statuts de commandes/relances remappés). Appliquée à la main dans le SQL Editor (tables vides, aucun risque). Comptes : le plus ancien devient admin.
+- **Piège découvert au test** : dans une politique `storage.objects`, `name` non qualifié désigne `chantiers.name` (portée la plus proche) et non le nom du fichier → upload refusé même pour le propriétaire. Toujours écrire `objects.name`. Corrigé dans le fichier ; politiques de stockage à recréer en base (voir ci-dessous).
+- **Vérifié en conditions réelles** (compte de test, base de production, données nettoyées) : création chantier / client / fournisseur / rendez-vous / commande+ligne / relance / mesure / stock, mise à jour de progression, 12 pages en 200, anonyme bloqué en lecture et écriture, auto-promotion admin refusée, `/api/admin/users` en 403 pour un non-admin.
+- **À régler dans le dashboard Supabase** : Site URL = `https://chantierbot.vercel.app` (le lien de confirmation par mail redirige sinon vers une adresse locale) ; activer la protection contre les mots de passe compromis.
+
+---
+
 ## Roadmap ouverte
 
 - [ ] Authentification / notion de compte artisan — une table `profiles` liée à `auth.users` existe déjà côté Supabase, à exploiter. Condition pour resserrer les policies RLS actuellement publiques
