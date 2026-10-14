@@ -32,6 +32,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
 export const POST: RequestHandler = async ({ locals, request }) => {
   if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
+  const userId = locals.user.id;
   const body = await request.json().catch(() => null);
   if (!body?.fournisseur_id) return json({ error: 'Le fournisseur est obligatoire' }, { status: 400 });
   if (!(await ownsChantier(locals.supabase, locals.user.id, body.chantier_id ?? null))) return json({ error: 'Chantier non autorisé' }, { status: 403 });
@@ -54,7 +55,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
   }).select('*').single();
   if (error) return json({ error: error.message }, { status: 500 });
   if (cleanLines.length) {
-    const { error: lineError } = await locals.supabase.from('commande_lignes').insert(cleanLines.map((l: any) => ({ ...l, commande_id: order.id, user_id: locals.user.id, total_ht: l.quantity * l.unit_price_ht })));
+    const { error: lineError } = await locals.supabase.from('commande_lignes').insert(cleanLines.map((l: any) => ({ ...l, commande_id: order.id, user_id: userId, total_ht: l.quantity * l.unit_price_ht })));
     if (lineError) return json({ error: lineError.message }, { status: 500 });
   }
   return json({ commande: order }, { status: 201 });
@@ -62,6 +63,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 export const PATCH: RequestHandler = async ({ locals, request }) => {
   if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
+  const userId = locals.user.id;
   const body = await request.json().catch(() => null);
   if (!body?.id) return json({ error: 'Commande introuvable' }, { status: 400 });
   const { data: existing, error: findError } = await locals.supabase.from('commandes').select('*').eq('id', body.id).single();
@@ -86,7 +88,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
   const { error: deleteError } = await locals.supabase.from('commande_lignes').delete().eq('commande_id', body.id);
   if (deleteError) return json({ error: deleteError.message }, { status: 500 });
   if (cleanLines.length) {
-    const { error: lineError } = await locals.supabase.from('commande_lignes').insert(cleanLines.map((l: any) => ({ ...l, commande_id: body.id, user_id: locals.user.id, total_ht: l.quantity * l.unit_price_ht })));
+    const { error: lineError } = await locals.supabase.from('commande_lignes').insert(cleanLines.map((l: any) => ({ ...l, commande_id: body.id, user_id: userId, total_ht: l.quantity * l.unit_price_ht })));
     if (lineError) return json({ error: lineError.message }, { status: 500 });
   }
   return json({ commande: order });

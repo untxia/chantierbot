@@ -25,7 +25,7 @@ function normalizeEstimate(value: unknown, trade: string): WorkEstimate {
 		const l = (line && typeof line === 'object' ? line : {}) as Record<string, unknown>;
 		const quantity = Number(l.quantity) || 0;
 		const unitPrice = Number(l.unitPrice) || 0;
-		return { description: String(l.description ?? 'Poste à préciser'), quantity, unit: String(l.unit ?? 'u'), unitPrice, total: Number(l.total) || quantity * unitPrice, type: l.type === 'labor' ? 'labor' : 'material' };
+		return { description: String(l.description ?? 'Poste à préciser'), quantity, unit: String(l.unit ?? 'u'), unitPrice, total: Number(l.total) || quantity * unitPrice, type: (l.type === 'labor' ? 'labor' : 'material') as EstimateLine['type'] };
 	}).filter((line) => line.quantity > 0 && line.unitPrice >= 0);
 	const totalMaterials = lines.filter((l) => l.type === 'material').reduce((sum, l) => sum + l.total, 0);
 	const totalLabor = lines.filter((l) => l.type === 'labor').reduce((sum, l) => sum + l.total, 0);
