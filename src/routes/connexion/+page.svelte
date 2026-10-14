@@ -490,30 +490,35 @@
 		font-weight: 900;
 	}
 
+	/* Grand message manuscrit : occupe tout le bas du panneau gauche. */
 	.handwritten {
 		position: relative;
 		z-index: 7;
-		width: 170px;
-		margin: clamp(28px, 6vh, 52px) auto 0;
-		transform: rotate(-7deg);
+		width: 100%;
+		margin: auto 0 0;
+		padding-top: clamp(24px, 5vh, 48px);
+		padding-bottom: 8px;
+		text-align: center;
+		transform: rotate(-4deg);
 		font-family: "Comic Sans MS", "Bradley Hand", cursive;
-		font-size: 16px;
+		font-size: clamp(34px, 4.4vw, 62px);
 		font-style: italic;
-		line-height: 1.05;
-		color: rgba(255,255,255,.88);
-		text-shadow: 0 2px 12px rgba(0,0,0,.4);
+		font-weight: 700;
+		line-height: 1.08;
+		color: rgba(255,255,255,.95);
+		text-shadow: 0 3px 18px rgba(0,0,0,.5);
 	}
 
 	.handwritten::after {
 		content: '';
 		display: block;
-		width: 105px;
-		height: 3px;
-		margin: 7px 0 0 34px;
+		width: 62%;
+		height: 5px;
+		margin: 12px auto 0;
 		background: #ffad25;
-		transform: rotate(-3deg);
+		transform: rotate(-2deg);
 		border-radius: 50%;
-		box-shadow: 0 0 12px rgba(255,173,37,.45);
+		box-shadow: 0 0 16px rgba(255,173,37,.5);
 	}
 
 	.form-panel {
