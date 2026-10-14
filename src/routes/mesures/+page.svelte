@@ -17,6 +17,22 @@
 	let checked = false;
 	let ar: ArMeasure;
 
+	// Diagnostic affiché quand l'AR n'est pas détectée (aide à comprendre pourquoi).
+	let diag = { secure: true, hasXr: false, probe: '', browser: '', standalone: false };
+	let lastError = '';
+
+	function detectBrowser(ua: string): string {
+		const has = (...parts: string[]) => parts.some((p) => ua.includes(p));
+		if (has('SamsungBrowser')) return 'Samsung Internet';
+		if (has('Firefox', 'FxiOS')) return 'Firefox';
+		if (has('EdgA', 'EdgiOS', 'Edg/')) return 'Edge';
+		if (has('OPR/')) return 'Opera';
+		if (has('; wv)', 'FBAN', 'FBAV', 'Instagram', 'LinkedInApp')) return 'navigateur intégré à une application';
+		if (has('Chrome/')) return 'Chrome';
+		if (has('Safari')) return 'Safari';
+		return 'inconnu';
+	}
+
 	let result: { value: number; kind: Kind; method: 'ar' | 'photo' } | null = null;
 	let label = '';
 	// Présélection depuis la fiche chantier (/mesures?chantier=<id>), si l'id existe bien.
@@ -26,12 +42,23 @@
 
 	onMount(async () => {
 		isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+		diag.secure = window.isSecureContext;
+		diag.browser = detectBrowser(navigator.userAgent);
+		diag.standalone = window.matchMedia('(display-mode: standalone)').matches;
 		try {
 			const xr = (navigator as any).xr;
-			arSupported = !!xr && (await xr.isSessionSupported('immersive-ar'));
-		} catch {
+			diag.hasXr = !!xr;
+			if (!xr) {
+				diag.probe = 'WebXR absent de ce navigateur';
+			} else {
+				arSupported = !!(await xr.isSessionSupported('immersive-ar'));
+				diag.probe = arSupported ? 'immersive-ar pris en charge' : 'immersive-ar non pris en charge (ARCore manquant ou appareil incompatible)';
+			}
+		} catch (err) {
 			arSupported = false;
+			diag.probe = 'erreur : ' + (err instanceof Error ? err.message : String(err));
 		}
+		diag = diag;
 		if (arSupported) tab = 'ar';
 		checked = true;
 	});
@@ -153,6 +180,31 @@
 					{/if}
 					Utilisez l’onglet « Sur photo » : même résultat avec un objet de référence.
 				</p>
+
+				{#if !isIos}
+					<div class="mt-4 rounded-lg bg-black/[0.04] p-3 text-xs leading-relaxed dark:bg-white/[0.06]">
+						<p class="mb-1 font-semibold">Diagnostic</p>
+						<ul class="list-inside list-disc">
+							<li>Navigateur : {diag.browser}{diag.standalone ? ' (application installée)' : ''}</li>
+							<li>Connexion sécurisée : {diag.secure ? 'oui' : 'non'}</li>
+							<li>WebXR : {diag.probe}</li>
+						</ul>
+						{#if diag.browser !== 'Chrome' || diag.standalone}
+							<p class="mt-2">
+								Ouvrez <strong>chantierbot.vercel.app/mesures</strong> directement dans l’application <strong>Chrome</strong>
+								(pas depuis une application installée ni un navigateur intégré).
+							</p>
+						{/if}
+						<p class="mt-2">
+							Il faut aussi « Services Google Play pour la RA » :
+							<a class="font-semibold underline" href="https://play.google.com/store/apps/details?id=com.google.ar.core" target="_blank" rel="noopener">installer / mettre à jour</a>.
+						</p>
+					</div>
+					<div class="mt-3 flex flex-wrap items-center gap-2">
+						<button type="button" class="btn-secondary" on:click={() => { lastError = ''; ar.start(); }}>Essayer quand même</button>
+						{#if lastError}<span class="text-xs text-danger">{lastError}</span>{/if}
+					</div>
+				{/if}
 			{/if}
 		{:else}
 			<PhotoMeasure {kind} on:done={onDone('photo')} />
@@ -161,7 +213,7 @@
 {/if}
 
 <!-- Toujours monté : son overlay doit exister avant le démarrage de la session. -->
-<ArMeasure bind:this={ar} {kind} on:done={onDone('ar')} on:error={(e) => toast.error(e.detail)} />
+<ArMeasure bind:this={ar} {kind} on:done={onDone('ar')} on:error={(e) => { lastError = e.detail; toast.error(e.detail); }} />
 
 <h2 class="mb-3 font-semibold">Mesures enregistrées</h2>
 {#if data.mesures.length === 0}
