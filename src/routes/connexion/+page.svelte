@@ -31,7 +31,7 @@
 
 	async function submit() {
 		const normalizedEmail = email.trim().toLowerCase();
-		const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/;
+		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 		if (!normalizedEmail || !password) {
 			toast.error('Renseigne ton adresse e-mail et ton mot de passe.');
 			return;
