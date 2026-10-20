@@ -59,6 +59,7 @@
 <div class="mb-8 flex flex-col gap-2">
 	<label for="photo-input" class="font-semibold">Ajouter une photo de chantier <span class="badge-ai ml-1 align-middle">✨ IA</span></label>
 	<div class="flex items-center gap-3"><Mascot state={mascotState} /><input id="photo-input" type="file" accept="image/*" on:change={handleFileChange} disabled={loading} aria-busy={loading} class="input flex-1 file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:font-semibold file:text-white disabled:opacity-50" /></div>
+	<p class="mt-2 text-xs text-ink-secondary dark:text-ink-dark-secondary">Évitez de photographier des personnes identifiables sans leur accord. <a href="/confidentialite" class="underline">En savoir plus</a></p>
 	<p class="min-h-[1.2em] text-sm text-ink-secondary dark:text-ink-dark-secondary" aria-live="polite">{statusMessage}</p>
 </div>
 

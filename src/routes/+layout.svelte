@@ -17,10 +17,15 @@
 
 	$: isDashboard = $page.url.pathname === '/';
 	$: isAuth = $page.url.pathname === '/connexion';
+	$: isLegal = ['/confidentialite', '/mentions-legales', '/conditions'].includes($page.url.pathname);
 </script>
 
 {#if isAuth}
 	<main class="auth-shell">
+		<slot />
+	</main>
+{:else if isLegal}
+	<main class="ar-stage min-h-screen">
 		<slot />
 	</main>
 {:else}

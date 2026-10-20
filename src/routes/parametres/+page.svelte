@@ -14,6 +14,33 @@
 	let loading = true;
 	let saving = false;
 	let loggingOut = false;
+
+	// Suppression de compte (RGPD) : confirmation par un mot à saisir.
+	const CONFIRM_WORD = 'SUPPRIMER';
+	let deleteOpen = false;
+	let deleteConfirm = '';
+	let deleting = false;
+
+	async function deleteAccount() {
+		if (deleteConfirm !== CONFIRM_WORD) return;
+		deleting = true;
+		try {
+			const res = await fetch('/api/account/delete', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ confirm: deleteConfirm })
+			});
+			const body = await res.json().catch(() => ({}));
+			if (!res.ok) throw new Error(body.error ?? 'Suppression impossible.');
+			await browserSupabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+			toast.success('Votre compte et vos données ont été supprimés.');
+			goto('/connexion');
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : 'Erreur.');
+		} finally {
+			deleting = false;
+		}
+	}
 	const trades = Object.values(TRADE_PROFILES);
 
 	onMount(async () => {
@@ -87,6 +114,40 @@
 				<input id="ap-float" type="range" min="0" max="100" step="10" class="w-full accent-primary" bind:value={$appearance.float} />
 				<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">Inclinaison 3D au passage de la souris. Désactivée automatiquement si votre système réduit les animations.</p>
 			</div>
+		</div>
+	</section>
+
+	<section class="card mt-6 p-6" aria-labelledby="donnees-title">
+		<h2 id="donnees-title" class="text-lg font-bold">Mes données et confidentialité</h2>
+		<p class="mt-1 text-sm text-ink-secondary dark:text-ink-dark-secondary">
+			Vous gardez la maîtrise de vos données : vous pouvez les récupérer ou supprimer votre compte à tout moment.
+		</p>
+		<div class="mt-4 flex flex-wrap gap-3">
+			<a href="/api/account/export" download class="btn-secondary">⬇ Exporter mes données (JSON)</a>
+			<a href="/confidentialite" class="btn-ghost">Politique de confidentialité</a>
+			<a href="/mentions-legales" class="btn-ghost">Mentions légales</a>
+		</div>
+
+		<div class="mt-6 rounded-xl border border-danger/30 bg-danger/5 p-4">
+			<h3 class="font-bold text-danger">Supprimer mon compte</h3>
+			<p class="mt-1 text-sm">
+				Cette action est <strong>définitive</strong> : votre compte, vos chantiers, clients, commandes, mesures et photos sont effacés.
+				Pensez à exporter vos données avant.
+			</p>
+			{#if !deleteOpen}
+				<button type="button" class="btn-danger mt-3" on:click={() => (deleteOpen = true)}>Supprimer mon compte…</button>
+			{:else}
+				<form class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end" on:submit|preventDefault={deleteAccount}>
+					<div class="flex flex-1 flex-col gap-1">
+						<label for="delete-confirm" class="text-sm font-semibold">Tapez {CONFIRM_WORD} pour confirmer</label>
+						<input id="delete-confirm" class="input" bind:value={deleteConfirm} autocomplete="off" autocapitalize="characters" />
+					</div>
+					<button type="submit" class="btn-danger" disabled={deleting || deleteConfirm !== CONFIRM_WORD}>
+						{deleting ? 'Suppression…' : 'Supprimer définitivement'}
+					</button>
+					<button type="button" class="btn-secondary" on:click={() => { deleteOpen = false; deleteConfirm = ''; }}>Annuler</button>
+				</form>
+			{/if}
 		</div>
 	</section>
 

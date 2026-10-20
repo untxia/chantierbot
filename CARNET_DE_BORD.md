@@ -136,12 +136,25 @@ Production en ligne : **https://chantierbot.vercel.app**
 
 ---
 
+## 2026-10-20 — RGPD de l'application : export, suppression de compte, pages légales
+
+- **Pages** `/confidentialite`, `/mentions-legales`, `/conditions` : accessibles sans connexion (hooks), habillage dédié sans menu. Les liens « conditions » et « confidentialité » de la page d'inscription existaient mais menaient à des pages inexistantes (redirigées vers la connexion).
+- **Informations de l'éditeur** : à saisir dans `src/lib/config/legal.ts`. Tant qu'un champ est vide, un repère « à compléter » apparaît dans le texte et un bandeau signale que le document est en cours de finalisation. Les textes sont des **projets à faire relire** par un juriste ; trois points sont marqués à vérifier (garanties de transfert hors UE, conditions de Groq sur la réutilisation des données, délais de purge des sauvegardes).
+- **Export** `GET /api/account/export` : JSON complet (profil, clients, chantiers, notes, photos avec lien temporaire de 7 jours, fournisseurs, commandes + lignes, relances, rendez-vous, stocks, mesures). **Chaque requête est filtrée sur `user_id`** : sans cela, un administrateur exporterait les données de tous les comptes (politiques `admin_all`).
+- **Suppression** `POST /api/account/delete` (mot de confirmation SUPPRIMER) : essai à blanc de la fonction SQL `delete_my_account(dry_run)` AVANT d'effacer quoi que ce soit, puis suppression des fichiers du stockage, puis du compte (cascade sur toutes les tables via `user_id`). Refus du dernier administrateur. Choix d'une fonction SQL `security definer` plutôt que d'une clé `service_role` côté serveur : aucun secret supplémentaire à gérer ; la fonction ne peut supprimer que `auth.uid()`.
+- **Migration** `20261020_rgpd_suppression_compte.sql` : à exécuter dans le SQL Editor (l'application automatique est refusée par les permissions). Tant qu'elle n'est pas appliquée, la suppression répond 503 et **ne supprime rien** (vérifié).
+- **Interface** : Paramètres > « Mes données et confidentialité » (export, suppression avec confirmation), liens légaux dans la barre latérale, rappel sur les photos de personnes à l'envoi d'une photo.
+- **Vérifié** : pages publiques en 200 sans menu, export avec une vraie photo (lien téléchargeable), refus sans confirmation / avec mauvais mot, aucune donnée perdue lors du refus 503. **Pas encore vérifié** : la suppression effective (fonction non installée au moment du test).
+- Piège de test : en PowerShell, `Del` est un alias de `Remove-Item` ; ne jamais nommer une fonction de test ainsi.
+
+---
+
 ## Roadmap ouverte (mise à jour 2026-10-20)
 
 Fait depuis la dernière version de cette liste : authentification et rôles, pages Planning / Fournisseurs / Commandes / Relances / Clients branchées, fonds photo HD (8 métiers sur 10), logo robot animé, mesure AR / photo, rattrapage du schéma de production.
 
 ### Avant d'ouvrir à de vrais utilisateurs
-- [ ] **RGPD de l'application** : politique de confidentialité, mentions légales, bouton « exporter mes données », bouton « supprimer mon compte » (la suppression en cascade existe déjà en base), information sur les photos de personnes, vérification des sous-traitants (Supabase Francfort, Vercel, Groq = États-Unis).
+- [~] **RGPD de l'application** : code livré (pages légales, export, suppression, rappel photos). Reste : (1) exécuter la migration \`20261020_rgpd_suppression_compte.sql\` ; (2) renseigner \`src/lib/config/legal.ts\` ; (3) faire relire les textes ; (4) vérifier les garanties de transfert (Vercel, Groq) ; (5) tester la suppression effective avec un compte jetable.
 - [ ] **Réglages Supabase (dashboard)** : Site URL = https://chantierbot.vercel.app (le lien de confirmation par e-mail renvoie sinon vers une adresse locale) ; protection contre les mots de passe compromis (peut exiger une formule payante).
 - [ ] **Tester la mesure AR sur un vrai Android** (Chrome, pas l'application installée) et lire le bloc « Diagnostic » de /mesures. Jamais exécutée sur appareil.
 - [ ] **Changer le mot de passe du compte de test** (exposé dans les conversations) ou supprimer le compte.

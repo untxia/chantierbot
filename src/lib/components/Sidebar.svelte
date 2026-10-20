@@ -49,6 +49,11 @@
 			<p class="text-sm font-bold">Passer en mode Focus chantier</p>
 			<p class="mt-1 text-xs leading-relaxed text-ink-dark-secondary">Masque l'interface pour voir uniquement l'essentiel.</p>
 		</button>
+
+		<p class="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-ink-dark-secondary">
+			<a href="/mentions-legales" class="hover:text-white hover:underline">Mentions légales</a>
+			<a href="/confidentialite" class="hover:text-white hover:underline">Confidentialité</a>
+		</p>
 	</aside>
 {:else}
 	<button

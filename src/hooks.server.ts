@@ -1,7 +1,7 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { getServerAuth } from '$lib/services/auth';
 
-const PUBLIC_PATHS = ['/connexion'];
+const PUBLIC_PATHS = ['/connexion', '/confidentialite', '/mentions-legales', '/conditions'];
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const publicPath = PUBLIC_PATHS.some((path) => event.url.pathname === path || event.url.pathname.startsWith(`${path}/`));
