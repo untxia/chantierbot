@@ -136,15 +136,30 @@ Production en ligne : **https://chantierbot.vercel.app**
 
 ---
 
-## Roadmap ouverte
+## Roadmap ouverte (mise à jour 2026-10-20)
 
-- [ ] Authentification / notion de compte artisan — une table `profiles` liée à `auth.users` existe déjà côté Supabase, à exploiter. Condition pour resserrer les policies RLS actuellement publiques
-- [ ] Brancher les pages Planning / Fournisseurs / Relances / Rapports sur le schéma désormais prêt (`rendez_vous`, `fournisseurs`, `commandes`, `commande_lignes`, `relances`, `clients`)
-- [ ] Vrai moteur de recommandations IA actionnables (pas juste un flux passif d'analyses)
-- [ ] Assistant IA conversationnel (la barre de prompt sur le tableau de bord est un point d'entrée visuel, pas encore branché)
-- [ ] i18n complet (EN/ES/EU) — sélecteur déjà en place, juste désactivé
-- [ ] Fond héro : remplacer le SVG stylisé par une vraie photo si l'utilisateur en fournit une avec les droits
-- [ ] Écran de chargement dédié avec mascotte animée (marche/creuse/construit/vérifie/pouce levé) si un flux plus long que l'upload photo l'exige
+Fait depuis la dernière version de cette liste : authentification et rôles, pages Planning / Fournisseurs / Commandes / Relances / Clients branchées, fonds photo HD (8 métiers sur 10), logo robot animé, mesure AR / photo, rattrapage du schéma de production.
+
+### Avant d'ouvrir à de vrais utilisateurs
+- [ ] **RGPD de l'application** : politique de confidentialité, mentions légales, bouton « exporter mes données », bouton « supprimer mon compte » (la suppression en cascade existe déjà en base), information sur les photos de personnes, vérification des sous-traitants (Supabase Francfort, Vercel, Groq = États-Unis).
+- [ ] **Réglages Supabase (dashboard)** : Site URL = https://chantierbot.vercel.app (le lien de confirmation par e-mail renvoie sinon vers une adresse locale) ; protection contre les mots de passe compromis (peut exiger une formule payante).
+- [ ] **Tester la mesure AR sur un vrai Android** (Chrome, pas l'application installée) et lire le bloc « Diagnostic » de /mesures. Jamais exécutée sur appareil.
+- [ ] **Changer le mot de passe du compte de test** (exposé dans les conversations) ou supprimer le compte.
+
+### Produit
+- [ ] **Assistant IA conversationnel** branché sur les données de l'utilisateur (outils / lecture des tables, pas de RAG). La barre de prompt du tableau de bord est encore visuelle.
+- [ ] **Devis** : intégrer les mesures du chantier, PDF propre, envoi au client. Le menu « Rapports » est en réalité le Devis IA ; renommer le libellé.
+- [ ] **RAG sécurité** (Code du travail en données ouvertes, pgvector dans Supabase, citations obligatoires, relecture par un préventeur) puis collection RGPD. Isoler d'abord le fournisseur d'IA dans un seul fichier.
+- [ ] **Édition complète** des rendez-vous, commandes et relances après création.
+- [ ] Relances automatiques par e-mail / SMS, synchro Google Agenda, tableau de bord chiffré, mode hors connexion.
+- [ ] Idée drone : mode « photo aérienne » (mesure de toiture avec pente) pour tester la demande avant tout partenariat. Vérifier d'abord auprès de 5 à 10 couvreurs / charpentiers.
+- [ ] i18n (EN / ES / EU) : sélecteur présent mais désactivé.
+
+### Contenu et finitions
+- [ ] Fonds photo manquants en HD : couvreur, charpentier, plaquiste (fichiers de 1 à 2 Ko, flous).
+- [ ] Animations du robot : seules les poses simples existent (flottement, clignement, salut). Marche / creuse / construit non dessinées.
+- [ ] Nettoyer le `stash@{1}` (ancien travail avant réécriture d'historique) et `stash@{0}` (CRUD remplacé par la version de main) s'ils ne servent plus.
+- [ ] Avertissements svelte-check d'accessibilité (clics sur des div) dans fournisseurs / relances.
 
 ## Décisions à ne pas oublier
 
