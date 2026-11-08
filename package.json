@@ -11,7 +11,11 @@
     "test": "npm run test:metre && npm run test:assistant && npm run test:tarifs",
     "test:tarifs": "esbuild src/lib/tarifs/tarifs.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/tarifs.test.cjs && node .svelte-kit/tarifs.test.cjs",
     "test:assistant": "esbuild src/lib/assistant/assistant.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/assistant.test.cjs && node .svelte-kit/assistant.test.cjs",
-    "test:metre": "esbuild src/lib/metre/metre.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/metre.test.cjs && node .svelte-kit/metre.test.cjs"
+    "test:metre": "esbuild src/lib/metre/metre.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/metre.test.cjs && node .svelte-kit/metre.test.cjs",
+    "test:e2e": "node tests/e2e/api.mjs && node tests/e2e/navigateur.mjs",
+    "test:e2e:api": "node tests/e2e/api.mjs",
+    "test:e2e:navigateur": "node tests/e2e/navigateur.mjs",
+    "test:prod": "node tests/e2e/production.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
@@ -24,6 +28,7 @@
     "@sveltejs/kit": "^2.15.3",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "autoprefixer": "^10.5.5",
+    "playwright-core": "1.64.1",
     "postcss": "^8.5.28",
     "svelte": "^4.2.0",
     "svelte-check": "^4.7.6",
