@@ -149,30 +149,51 @@ Production en ligne : **https://chantierbot.vercel.app**
 
 ---
 
-## Roadmap ouverte (mise à jour 2026-10-20)
+## 2026-11-08 — Bibliothèque de métré, assistant sans IA, devis chiffré, confidentialité
 
-Fait depuis la dernière version de cette liste : authentification et rôles, pages Planning / Fournisseurs / Commandes / Relances / Clients branchées, fonds photo HD (8 métiers sur 10), logo robot animé, mesure AR / photo, rattrapage du schéma de production.
+- **Incident** : « fetch failed » à la connexion = projet Supabase **mis en pause** (formule gratuite, inactivité). Redémarré, données intactes. Prévention : `/api/cron/keepalive` + `vercel.json` (tâche Vercel quotidienne à 7 h UTC). Facultatif : définir `CRON_SECRET` sur Vercel pour réserver l'appel à la tâche planifiée.
+- **Bibliothèque de métré** (`src/lib/metre`, sans IA) : constat préalable, il n'existe pas de base ouverte des quantités ni des prix des matériaux en France ; les **règles de consommation** viennent des fiches techniques fabricants (sources citées dans `sources.ts`, affichées dans l'interface). Les **prix ne sont pas dans la bibliothèque** : ils changent et dépendent du fournisseur de chaque artisan.
+  - Carrelage : sol collé (colle selon surface du carreau, formule du joint (A+B)/(A×B)×e×j×1,6, croisillons, plinthes, primaire, ragréage 1,5 kg/m²/mm), faïence, ragréage seul.
+  - Peinture (rendement modifiable, impression marquée « estimation » faute de source), cloison 72/48 BA13 (ratios Placo / Samse), semis de gazon, plantation de haie. Couvre-sols **écartés** : aucune densité fiable trouvée.
+  - Quantité de référence par ouvrage (m² ou ml) pour l'affichage et la main-d'œuvre. 55 tests (`npm run test:metre`).
+- **Page `/metre`** : formulaire généré depuis la bibliothèque, besoins avec pertes, unités à acheter, détail du calcul, sources, copie, impression ; liens « Calculer les fournitures » depuis les surfaces mesurées.
+- **Chiffrage → Devis** : prix de l'artisan par unité d'achat (clé fourniture + unité, pour ne jamais appliquer un prix « au carton » à des m²), main-d'œuvre par unité de référence, mémorisés sur l'appareil (localStorage) ; bouton « Créer le brouillon de devis » vers la page Devis IA (mention « Calculé par le métré »).
+- **Assistant du tableau de bord** (`src/lib/assistant`, `/api/assistant`), **sans IA externe** : compréhension par règles + extraction des nombres ; répond avec les données de l'utilisateur (relances, planning, commandes, chantiers) et le moteur de métré. 33 tests (`npm run test:assistant`). `npm test` lance tout.
+- **Confidentialité** : les politiques `*_admin_all` donnent à un admin l'accès à toutes les lignes ; sans filtre, toutes les pages d'un admin mélangeaient les données de tous les comptes. Filtre `user_id` ajouté sur toutes les lectures (pages et API GET), fiche chantier en 404 si elle n'appartient pas à l'utilisateur, recherche clients neutralisée contre l'injection de filtres. **Décision à prendre** : supprimer ces politiques `admin_all` (la console d'administration utilise la clé de service et n'en a pas besoin) pour une protection au niveau de la base.
+- **Divers** : « Rapports » renommé « Devis IA » ; entrée « Administration » visible des seuls admins (`+layout.server.ts`) ; 0 avertissement svelte-check (8 auparavant) ; modales fermables avec Échap.
+- **Suppression de compte** testée dans un bloc SQL annulé : dernier admin refusé, compte + profil + chantiers + mesures supprimés en cascade, puis rollback vérifié.
+- **Vérifié dans Chrome** (playwright-core + Chrome installé, hors projet) : connexion par le formulaire, assistant, métré chiffré, mémorisation des prix, brouillon de devis, nouveaux métiers, version mobile, aucune erreur JavaScript.
+- Pièges : en PowerShell, `H` et `Del` sont des alias (Get-History, Remove-Item) ; Playwright : attendre `networkidle` avant de remplir un formulaire Svelte, et `waitUntil: 'commit'` pour une navigation côté client.
 
-### Avant d'ouvrir à de vrais utilisateurs
-- [~] **RGPD de l'application** : code livré (pages légales, export, suppression, rappel photos). Reste : (1) exécuter la migration \`20261020_rgpd_suppression_compte.sql\` ; (2) renseigner \`src/lib/config/legal.ts\` ; (3) faire relire les textes ; (4) vérifier les garanties de transfert (Vercel, Groq) ; (5) tester la suppression effective avec un compte jetable.
-- [ ] **Réglages Supabase (dashboard)** : Site URL = https://chantierbot.vercel.app (le lien de confirmation par e-mail renvoie sinon vers une adresse locale) ; protection contre les mots de passe compromis (peut exiger une formule payante).
-- [ ] **Tester la mesure AR sur un vrai Android** (Chrome, pas l'application installée) et lire le bloc « Diagnostic » de /mesures. Jamais exécutée sur appareil.
-- [ ] **Changer le mot de passe du compte de test** (exposé dans les conversations) ou supprimer le compte.
+---
 
-### Produit
-- [ ] **Assistant IA conversationnel** branché sur les données de l'utilisateur (outils / lecture des tables, pas de RAG). La barre de prompt du tableau de bord est encore visuelle.
-- [ ] **Devis** : intégrer les mesures du chantier, PDF propre, envoi au client. Le menu « Rapports » est en réalité le Devis IA ; renommer le libellé.
-- [ ] **RAG sécurité** (Code du travail en données ouvertes, pgvector dans Supabase, citations obligatoires, relecture par un préventeur) puis collection RGPD. Isoler d'abord le fournisseur d'IA dans un seul fichier.
-- [ ] **Édition complète** des rendez-vous, commandes et relances après création.
-- [ ] Relances automatiques par e-mail / SMS, synchro Google Agenda, tableau de bord chiffré, mode hors connexion.
-- [ ] Idée drone : mode « photo aérienne » (mesure de toiture avec pente) pour tester la demande avant tout partenariat. Vérifier d'abord auprès de 5 à 10 couvreurs / charpentiers.
-- [ ] i18n (EN / ES / EU) : sélecteur présent mais désactivé.
+## Roadmap ouverte (mise à jour 2026-11-08)
 
-### Contenu et finitions
-- [ ] Fonds photo manquants en HD : couvreur, charpentier, plaquiste (fichiers de 1 à 2 Ko, flous).
-- [ ] Animations du robot : seules les poses simples existent (flottement, clignement, salut). Marche / creuse / construit non dessinées.
-- [ ] Nettoyer le `stash@{1}` (ancien travail avant réécriture d'historique) et `stash@{0}` (CRUD remplacé par la version de main) s'ils ne servent plus.
-- [ ] Avertissements svelte-check d'accessibilité (clics sur des div) dans fournisseurs / relances.
+### À faire par l'utilisateur (aucune action possible de mon côté)
+- [ ] **Supabase → Site URL** = https://chantierbot.vercel.app (sinon les nouveaux inscrits tombent sur une page inaccessible après confirmation).
+- [ ] **Informations d'éditeur** dans `src/lib/config/legal.ts` (nom/raison sociale, forme juridique, adresse, e-mail de contact, directeur de publication, SIRET), puis **relecture juridique** des 3 pages (3 points marqués « à vérifier »).
+- [ ] **Tester la mesure AR** sur Android, dans l'application Chrome, et transmettre le bloc « Diagnostic ».
+- [ ] **Mot de passe du compte de test** à changer, ou compte à supprimer.
+- [ ] **Abonnement Supabase Pro** au lancement (le réveil quotidien suffit pendant les tests).
+- [ ] Photos HD pour les fonds couvreur, charpentier, plaquiste.
+- [ ] Faire valider les règles de métré par des artisans de chaque métier.
+
+### Décisions à prendre
+- [ ] Supprimer les politiques RLS `*_admin_all` (protection en base ; le code filtre déjà).
+- [ ] Choix d'un hébergeur d'IA européen si le RGPD l'exige (Groq = États-Unis) ; isoler alors le fournisseur dans un seul fichier.
+
+### Produit (suite)
+- [ ] Métré : autres métiers (maçonnerie, isolation, couverture, électricité…), import du tarif fournisseur (CSV), prix stockés en base plutôt que sur l'appareil.
+- [ ] « Apprentissage » sans IA : saisir la consommation réelle en fin de chantier pour ajuster les taux de perte de chaque artisan.
+- [ ] Devis : PDF propre, envoi au client, numérotation ; lien commande fournisseur depuis le métré.
+- [ ] RAG sécurité (Code du travail en données ouvertes, pgvector, citations), puis collection RGPD.
+- [ ] Relances automatiques (e-mail / SMS), synchro Google Agenda, tableau de bord chiffré, mode hors connexion, i18n.
+- [ ] Drone : mode « photo aérienne » pour mesurer les toitures, après enquête auprès de 5 à 10 couvreurs / charpentiers.
+
+### Fait (n'est plus à faire)
+- [x] Édition des rendez-vous, commandes, relances, fournisseurs, clients (existait déjà, l'ancienne liste était erronée).
+- [x] Assistant du tableau de bord, renommage Devis IA, avertissements d'accessibilité, réveil Supabase, suppression de compte testée.
+- [ ] Ménage git : `stash@{0}` et `stash@{1}` conservés volontairement (suppression irréversible, à décider).
 
 ## Décisions à ne pas oublier
 
