@@ -230,6 +230,7 @@
 				</div>
 				<div class="flex items-center gap-3">
 					<span class="text-xl font-extrabold">{formatValue(m.value, m.kind)}</span>
+					{#if m.kind === 'surface'}<a href="/metre?surface={m.value}" class="btn-secondary px-3 py-1 text-sm">Métré</a>{/if}
 					<button type="button" class="btn-secondary px-3 py-1 text-sm" on:click={() => remove(m.id)}>Supprimer</button>
 				</div>
 			</li>

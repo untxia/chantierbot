@@ -88,7 +88,7 @@
 				{#each data.mesures as m (m.id)}
 					<li class="flex items-center justify-between gap-3 py-2 text-sm">
 						<span class="min-w-0 truncate">{m.label ?? (m.kind === 'surface' ? 'Surface' : 'Longueur')}<span class="ml-2 text-xs text-ink-secondary dark:text-ink-dark-secondary">{m.method === 'ar' ? 'AR' : 'Photo'}</span></span>
-						<strong>{fmtMesure(m.value, m.kind)}</strong>
+						<span class="flex items-center gap-3"><strong>{fmtMesure(m.value, m.kind)}</strong>{#if m.kind === 'surface'}<a href="/metre?surface={m.value}&chantier={data.chantier.id}" class="text-xs font-semibold text-primary hover:underline">Calculer les fournitures</a>{/if}</span>
 					</li>
 				{/each}
 			</ul>

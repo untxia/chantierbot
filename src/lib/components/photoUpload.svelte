@@ -66,7 +66,7 @@
 {#if latest}
 	<section class="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-secondary/[0.08] p-5 shadow-card" aria-label="Résultat de l'analyse IA">
 		<div class="flex flex-col gap-5 lg:flex-row">
-			<img src={latest.imageUrl} alt="Photo analysée" class="h-48 w-full rounded-xl object-cover lg:w-64" />
+			<img src={latest.imageUrl} alt={latest.description || 'Chantier analysé par l’IA'} class="h-48 w-full rounded-xl object-cover lg:w-64" />
 			<div class="min-w-0 flex-1"><div class="mb-3 flex flex-wrap items-center justify-between gap-2"><div><p class="text-xs font-bold uppercase tracking-[0.16em] text-primary">Copilote IA · {latest.estimate.trade}</p><h2 class="text-xl font-extrabold">{latest.estimate.title}</h2></div><span class="rounded-full bg-white/80 px-3 py-1 text-xs font-bold dark:bg-surface-dark">Confiance : {latest.estimate.confidence}</span></div><p class="text-sm leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">{latest.description}</p>
 			{#if latest.detectedWorks.length}<div class="mt-3"><p class="text-sm font-bold">Travaux détectés</p><div class="mt-1 flex flex-wrap gap-2">{#each latest.detectedWorks as work}<span class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">{work}</span>{/each}</div></div>{/if}
 			{#if latest.quantities.length}<div class="mt-3"><p class="text-sm font-bold">Quantités estimées</p><div class="mt-1 flex flex-wrap gap-2">{#each latest.quantities as q}<span class="rounded-lg border border-black/5 bg-white/70 px-2.5 py-1 text-xs dark:border-white/10 dark:bg-surface-dark/70">{q.item} · <strong>{q.quantity} {q.unit}</strong></span>{/each}</div></div>{/if}</div>

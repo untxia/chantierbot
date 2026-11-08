@@ -64,6 +64,14 @@
 			<path d="M4.500 8.200v3.200M7.500 8.200v2.200M10.500 8.200v3.200M13.500 8.200v2.200M16.500 8.200v3.200M19.500 8.200v2.200" stroke="#7A4A00" stroke-width="1" stroke-linecap="round" />
 			<path d="M2.500 9.400h19" stroke="#fff" stroke-opacity=".55" stroke-width=".8" stroke-linecap="round" />
 		</g>
+	{:else if icon === 'calc'}
+		<rect x="4.5" y="2.5" width="15" height="19" rx="3" fill="url(#g-slate)" />
+		<rect x="6.8" y="5" width="10.4" height="4.2" rx="1.2" fill="#1B2438" />
+		<rect x="13.2" y="6.2" width="3" height="1.8" rx=".6" fill="#6EE79A" />
+		<rect x="6.8" y="11" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="10.6" y="11" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="14.4" y="11" width="2.8" height="2.4" rx=".8" fill="url(#g-amber)" />
+		<rect x="6.8" y="14.6" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="10.6" y="14.6" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="14.4" y="14.6" width="2.8" height="6" rx=".8" fill="url(#g-blue)" />
+		<rect x="6.8" y="18.2" width="6.6" height="2.4" rx=".8" fill="url(#g-white)" />
+		<path d="M6 3.8h12" stroke="#fff" stroke-opacity=".6" stroke-width=".8" stroke-linecap="round" />
 	{:else if icon === 'more'}
 		<circle cx="5" cy="12" r="2.200" fill="url(#g-slate)" />
 		<circle cx="12" cy="12" r="2.200" fill="url(#g-slate)" />

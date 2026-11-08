@@ -400,9 +400,6 @@
 		gap: 2px;
 	}
 
-	.brand-stack span {
-		margin-left: 0;
-	}
 
 	.close-button {
 		position: absolute;

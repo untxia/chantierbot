@@ -9,7 +9,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = auth.user;
 	event.locals.supabase = auth.client;
 
-	if (!publicPath && !auth.user && !event.url.pathname.startsWith('/api/auth/')) {
+	// /api/cron/ : tâches planifiées Vercel, protégées par CRON_SECRET dans leur propre code.
+	if (!publicPath && !auth.user && !event.url.pathname.startsWith('/api/auth/') && !event.url.pathname.startsWith('/api/cron/')) {
 		throw redirect(303, `/connexion?redirect=${encodeURIComponent(event.url.pathname)}`);
 	}
 

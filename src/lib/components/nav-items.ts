@@ -1,7 +1,7 @@
 export interface NavItem {
 	href: string;
 	label: string;
-	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'more';
+	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'calc' | 'more';
 	soon?: boolean;
 }
 
@@ -12,11 +12,12 @@ export const navItems: NavItem[] = [
 	{ href: '/analyses', label: 'Stocks', icon: 'box' },
 	{ href: '/planning', label: 'Planning', icon: 'calendar' },
 	{ href: '/mesures', label: 'Mesures', icon: 'ruler' },
+	{ href: '/metre', label: 'Métré', icon: 'calc' },
 	{ href: '/fournisseurs', label: 'Fournisseurs', icon: 'truck' },
 	{ href: '/commandes', label: 'Commandes', icon: 'box' },
 	{ href: '/relances', label: 'Relances', icon: 'phone' },
 	{ href: '/ia', label: 'Assistant IA', icon: 'sparkles' },
-	{ href: '/rapports', label: 'Rapports', icon: 'report', soon: true },
+	{ href: '/rapports', label: 'Devis IA', icon: 'report' },
 	{ href: '/parametres', label: 'Paramètres', icon: 'settings' },
 	{ href: '/admin', label: 'Administration', icon: 'settings' }
 ];
