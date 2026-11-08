@@ -72,6 +72,12 @@
 		<rect x="6.8" y="14.6" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="10.6" y="14.6" width="2.8" height="2.4" rx=".8" fill="url(#g-white)" /><rect x="14.4" y="14.6" width="2.8" height="6" rx=".8" fill="url(#g-blue)" />
 		<rect x="6.8" y="18.2" width="6.6" height="2.4" rx=".8" fill="url(#g-white)" />
 		<path d="M6 3.8h12" stroke="#fff" stroke-opacity=".6" stroke-width=".8" stroke-linecap="round" />
+	{:else if icon === 'tag'}
+		<path d="M3.2 12.6V4.4A1.2 1.2 0 0 1 4.4 3.2h8.2a1.6 1.6 0 0 1 1.1.5l7 7a1.6 1.6 0 0 1 0 2.3l-8.2 8.2a1.6 1.6 0 0 1-2.3 0l-7-7a1.6 1.6 0 0 1-.5-1.1Z" fill="url(#g-amber)" />
+		<path d="M13.7 3.7l7 7a1.6 1.6 0 0 1 0 2.3l-8.2 8.2a1.6 1.6 0 0 1-1.2.5" fill="url(#g-amber-dark)" />
+		<circle cx="7.6" cy="7.6" r="1.8" fill="url(#g-white)" />
+		<path d="M10 14.6l4.6-4.6M11.4 16l3.4-3.4" stroke="#7A4A00" stroke-width="1.2" stroke-linecap="round" />
+		<path d="M4.6 4.8h7" stroke="#fff" stroke-opacity=".6" stroke-width=".8" stroke-linecap="round" />
 	{:else if icon === 'more'}
 		<circle cx="5" cy="12" r="2.200" fill="url(#g-slate)" />
 		<circle cx="12" cy="12" r="2.200" fill="url(#g-slate)" />

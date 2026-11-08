@@ -1,8 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	let draft: any = null;
+	// TVA facturée au client : 20 % (taux normal), 10 % (travaux de rénovation d'un logement de plus de 2 ans), 5,5 % (rénovation énergétique).
+	const TAUX_TVA = [20, 10, 5.5];
+	let tvaClient = 20;
+	$: montantTva = Math.round((Number(draft?.estimate?.total) || 0) * tvaClient) / 100;
+	$: totalTtc = (Number(draft?.estimate?.total) || 0) + montantTva;
+	function changerTva(v: string) {
+		tvaClient = Number(v);
+		if (!draft) return;
+		draft = { ...draft, tvaClient };
+		try { window.localStorage.setItem('chantierbot-draft-quote', JSON.stringify(draft)); } catch { /* stockage indisponible */ }
+	}
 	onMount(() => {
 		try { draft = JSON.parse(window.localStorage.getItem('chantierbot-draft-quote') || 'null'); } catch { draft = null; }
+		tvaClient = Number(draft?.tvaClient) || 20;
 	});
 	function money(value: number) { return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(value || 0); }
 	function printQuote() { window.print(); }
@@ -21,7 +33,7 @@
 		{#if draft.description}<section class="py-6"><h3 class="mb-2 font-bold">Analyse du chantier</h3><p class="text-sm leading-relaxed text-ink-secondary dark:text-ink-dark-secondary">{draft.description}</p></section>{/if}
 		{#if draft.detectedWorks?.length}<section class="pb-6"><h3 class="mb-2 font-bold">Travaux identifiés</h3><ul class="grid gap-2 sm:grid-cols-2">{#each draft.detectedWorks as work}<li class="rounded-lg bg-primary/5 px-3 py-2 text-sm">✓ {work}</li>{/each}</ul></section>{/if}
 		<section><h3 class="mb-3 font-bold">Détail estimatif</h3><div class="overflow-hidden rounded-xl border border-black/10 dark:border-white/10"><table class="w-full text-sm"><thead><tr class="border-b border-black/10 bg-black/[0.02] text-left text-xs uppercase dark:border-white/10 dark:bg-white/[0.02]"><th class="px-4 py-3">Désignation</th><th class="px-4 py-3">Qté</th><th class="px-4 py-3">PU HT</th><th class="px-4 py-3 text-right">Total HT</th></tr></thead><tbody>{#each draft.estimate?.lines || [] as line}<tr class="border-b border-black/5 last:border-0 dark:border-white/10"><td class="px-4 py-3"><span class="mr-2 text-[10px] font-bold text-primary">{line.type === 'labor' ? 'MO' : 'MAT'}</span>{line.description}</td><td class="px-4 py-3">{line.quantity} {line.unit}</td><td class="px-4 py-3">{money(line.unitPrice)}</td><td class="px-4 py-3 text-right font-semibold">{money(line.total)}</td></tr>{/each}</tbody></table></div></section>
-		<div class="mt-6 ml-auto max-w-sm space-y-2 border-t border-black/10 pt-4 text-sm dark:border-white/10"><div class="flex justify-between"><span>Matériaux</span><strong>{money(draft.estimate?.totalMaterials)}</strong></div><div class="flex justify-between"><span>Main-d'œuvre</span><strong>{money(draft.estimate?.totalLabor)}</strong></div><div class="flex justify-between border-t pt-2 text-lg dark:border-white/10"><span class="font-bold">Total HT</span><strong class="text-primary">{money(draft.estimate?.total)}</strong></div></div>
+		<div class="mt-6 ml-auto max-w-sm space-y-2 border-t border-black/10 pt-4 text-sm dark:border-white/10"><div class="flex justify-between"><span>Matériaux</span><strong>{money(draft.estimate?.totalMaterials)}</strong></div><div class="flex justify-between"><span>Main-d'œuvre</span><strong>{money(draft.estimate?.totalLabor)}</strong></div><div class="flex justify-between border-t pt-2 text-lg dark:border-white/10"><span class="font-bold">Total HT</span><strong class="text-primary">{money(draft.estimate?.total)}</strong></div><div class="flex items-center justify-between"><label for="tva-client">TVA <select id="tva-client" class="ml-1 rounded border border-black/10 bg-transparent px-1 py-0.5 text-sm print:hidden dark:border-white/10" value={String(tvaClient)} on:change={(e) => changerTva(e.currentTarget.value)}>{#each TAUX_TVA as t}<option value={String(t)}>{String(t).replace('.', ',')} %</option>{/each}</select><span class="hidden print:inline">{String(tvaClient).replace('.', ',')} %</span></label><strong>{money(montantTva)}</strong></div><div class="flex justify-between border-t pt-2 text-lg dark:border-white/10"><span class="font-bold">Total TTC</span><strong>{money(totalTtc)}</strong></div><p class="text-xs text-ink-secondary dark:text-ink-dark-secondary print:hidden">10 % : rénovation d’un logement de plus de 2 ans ; 5,5 % : rénovation énergétique. Une attestation du client peut être exigée.</p></div>
 		<div class="mt-8 rounded-xl bg-amber-500/10 p-4 text-xs leading-relaxed print:bg-transparent print:p-0"><strong>Important :</strong> {draft.source === 'metre' ? 'ce document est un brouillon calculé à partir du métré et de vos prix.' : 'ce document est un brouillon généré par IA.'} Les dimensions, quantités, prix fournisseurs, taux de main-d'œuvre, TVA et contraintes techniques doivent être contrôlés par l'artisan avant transmission au client.</div>
 	</article>
 {/if}

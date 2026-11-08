@@ -120,7 +120,65 @@
 		mainOeuvre = { ...mainOeuvre, [code]: Math.max(0, Number(valeur) || 0) };
 		ecrire(MO_KEY, mainOeuvre);
 	}
-	$: chiffrage = resultat ? chiffrer(resultat, reference, prix, mainOeuvre[code] ?? 0) : null;
+	// Prix venant des tarifs fournisseurs importés : ils priment sur les prix saisis à la main.
+	type Association = (typeof data.associations)[number];
+	let liens: Association[] = data.associations;
+	$: lienDe = (cle: string) => liens.find((a) => a.cle === cle);
+	$: prixEffectifs = { ...prix, ...Object.fromEntries(liens.map((a) => [a.cle, a.prixHT])) };
+	$: chiffrage = resultat ? chiffrer(resultat, reference, prixEffectifs, mainOeuvre[code] ?? 0) : null;
+	/** Achats TTC : TVA de la ligne de tarif, sinon 20 %. */
+	$: achatsTTC = chiffrage
+		? chiffrage.lignes
+				.filter((l) => l.type === 'material')
+				.reduce((s, l) => s + l.total * (1 + (lienDe(clePrix(l.code, l.unite))?.tva ?? 20) / 100), 0)
+		: 0;
+
+	// Recherche d'une ligne de tarif pour une fourniture
+	let rechercheCle: string | null = null;
+	let rechercheQ = '';
+	let rechercheRes: { id: string; designation: string; reference: string | null; unite: string | null; prix_ht: number; tva: number; tarifs: { fournisseur: string; date_tarif: string | null; created_at: string } | null }[] = [];
+	let minuterie: ReturnType<typeof setTimeout>;
+	function ouvrirRecherche(cle: string, designation: string) {
+		rechercheCle = rechercheCle === cle ? null : cle;
+		rechercheQ = designation.split(/[(\d]/)[0].trim().split(' ').slice(0, 2).join(' ');
+		rechercheRes = [];
+		lancerRecherche();
+	}
+	function lancerRecherche() {
+		clearTimeout(minuterie);
+		minuterie = setTimeout(async () => {
+			if (rechercheQ.trim().length < 2) return (rechercheRes = []);
+			const res = await fetch(`/api/tarifs/recherche?q=${encodeURIComponent(rechercheQ)}`);
+			rechercheRes = res.ok ? (await res.json()).lignes : [];
+		}, 250);
+	}
+	async function relier(cle: string, l: (typeof rechercheRes)[number]) {
+		const res = await fetch('/api/tarifs/associations', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ code_fourniture: cle, tarif_ligne_id: l.id })
+		});
+		if (!res.ok) return toast.error('Association impossible.');
+		liens = [
+			...liens.filter((a) => a.cle !== cle),
+			{
+				cle,
+				ligneId: l.id,
+				designation: l.designation,
+				prixHT: Number(l.prix_ht),
+				tva: Number(l.tva),
+				fournisseur: l.tarifs?.fournisseur ?? '',
+				dateTarif: l.tarifs?.date_tarif ?? l.tarifs?.created_at ?? null
+			}
+		];
+		rechercheCle = null;
+		toast.success('Prix repris de votre tarif.');
+	}
+	async function delier(cle: string) {
+		const res = await fetch('/api/tarifs/associations', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code_fourniture: cle }) });
+		if (!res.ok) return toast.error('Opération impossible.');
+		liens = liens.filter((a) => a.cle !== cle);
+	}
 	const euros = (x: number) => x.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 
 	function creerDevis() {
@@ -291,13 +349,48 @@
 					</p>
 					<ul class="space-y-2 text-sm">
 						{#each chiffrage.lignes.filter((l) => l.type === 'material') as l (l.code)}
+							{@const cle = clePrix(l.code, l.unite)}
+							{@const lien = lienDe(cle)}
 							<li class="flex flex-wrap items-center justify-between gap-2">
-								<span class="min-w-0 flex-1">{l.description} <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">({l.unite.includes(' ') ? `${nf(l.quantite)} × ${l.unite}` : `${nf(l.quantite)} ${l.unite}`})</span></span>
+								<span class="min-w-0 flex-1">
+									{l.description} <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">({l.unite.includes(' ') ? `${nf(l.quantite)} × ${l.unite}` : `${nf(l.quantite)} ${l.unite}`})</span>
+									{#if lien}
+										<span class="block text-xs text-primary">
+											Tarif {lien.fournisseur} : {lien.designation}
+											<button type="button" class="ml-1 underline print:hidden" on:click={() => delier(cle)}>délier</button>
+										</span>
+									{:else if data.tarifsDisponibles}
+										<button type="button" class="block text-xs text-primary underline print:hidden" on:click={() => ouvrirRecherche(cle, l.description)}>
+											{rechercheCle === cle ? 'Fermer' : 'Prendre le prix dans mes tarifs'}
+										</button>
+									{/if}
+								</span>
 								<label class="flex items-center gap-1 text-xs">
 									<span class="sr-only">Prix HT de {l.description}</span>
-									<input type="number" min="0" step="0.01" inputmode="decimal" class="input w-24 py-1 text-right" value={l.prixUnitaire || ''} placeholder="0,00" on:change={(e) => fixerPrix(clePrix(l.code, l.unite), e.currentTarget.value)} /> €
+									<input type="number" min="0" step="0.01" inputmode="decimal" class="input w-24 py-1 text-right" value={l.prixUnitaire || ''} placeholder="0,00" disabled={!!lien} on:change={(e) => fixerPrix(cle, e.currentTarget.value)} /> €
 								</label>
 								<span class="w-24 text-right font-semibold">{euros(l.total)}</span>
+								{#if rechercheCle === cle}
+									<div class="w-full rounded-lg bg-black/[0.03] p-3 dark:bg-white/[0.04]">
+										<label for="recherche-{l.code}" class="sr-only">Chercher dans mes tarifs</label>
+										<input id="recherche-{l.code}" class="input w-full py-1.5 text-sm" placeholder="Désignation ou référence" bind:value={rechercheQ} on:input={lancerRecherche} />
+										{#if rechercheRes.length}
+											<ul class="mt-2 max-h-56 divide-y divide-black/5 overflow-y-auto dark:divide-white/10">
+												{#each rechercheRes as r (r.id)}
+													<li>
+														<button type="button" class="flex w-full justify-between gap-2 py-1.5 text-left text-xs hover:bg-black/5 dark:hover:bg-white/5" on:click={() => relier(cle, r)}>
+															<span>{r.designation}<span class="block text-ink-secondary dark:text-ink-dark-secondary">{r.tarifs?.fournisseur ?? ''}{r.unite ? ` · ${r.unite}` : ''}</span></span>
+															<strong class="whitespace-nowrap">{euros(Number(r.prix_ht))} HT</strong>
+														</button>
+													</li>
+												{/each}
+											</ul>
+										{:else if rechercheQ.trim().length >= 2}
+											<p class="mt-2 text-xs text-ink-secondary dark:text-ink-dark-secondary">Aucun article. <a href="/tarifs" class="underline">Importer un tarif</a></p>
+										{/if}
+										<p class="mt-2 text-xs text-ink-secondary dark:text-ink-dark-secondary">Choisissez l’article vendu à l’unité indiquée : {l.unite}.</p>
+									</div>
+								{/if}
 							</li>
 						{/each}
 						<li class="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-2 dark:border-white/5">
@@ -313,6 +406,7 @@
 						<div class="text-sm">
 							<p>Matériaux : <strong>{euros(chiffrage.totalMateriaux)}</strong> · Main-d’œuvre : <strong>{euros(chiffrage.totalMainOeuvre)}</strong></p>
 							<p class="text-lg">Total HT : <strong class="text-primary">{euros(chiffrage.total)}</strong></p>
+							<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">Achats de fournitures TTC : {euros(achatsTTC)} (TVA du tarif, 20 % sinon)</p>
 							{#if chiffrage.sansPrix > 0}<p class="text-xs text-warning">{chiffrage.sansPrix} fourniture{chiffrage.sansPrix > 1 ? 's' : ''} sans prix.</p>{/if}
 						</div>
 						<button type="button" class="btn-primary print:hidden" on:click={creerDevis}>Créer le brouillon de devis</button>

@@ -1,7 +1,7 @@
 export interface NavItem {
 	href: string;
 	label: string;
-	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'calc' | 'more';
+	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'calc' | 'tag' | 'more';
 	soon?: boolean;
 	/** Visible seulement pour les administrateurs. */
 	adminOnly?: boolean;
@@ -15,6 +15,7 @@ export const navItems: NavItem[] = [
 	{ href: '/planning', label: 'Planning', icon: 'calendar' },
 	{ href: '/mesures', label: 'Mesures', icon: 'ruler' },
 	{ href: '/metre', label: 'Métré', icon: 'calc' },
+	{ href: '/tarifs', label: 'Tarifs', icon: 'tag' },
 	{ href: '/fournisseurs', label: 'Fournisseurs', icon: 'truck' },
 	{ href: '/commandes', label: 'Commandes', icon: 'box' },
 	{ href: '/relances', label: 'Relances', icon: 'phone' },
