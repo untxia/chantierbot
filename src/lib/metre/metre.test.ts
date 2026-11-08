@@ -3,7 +3,7 @@
  *   npx esbuild src/lib/metre/metre.test.ts --bundle --platform=node --outfile=<tmp>/metre.test.cjs && node <tmp>/metre.test.cjs
  * Les valeurs attendues sont calculées à la main à partir des règles des fiches techniques.
  */
-import { calculer, chiffrer, clePrix, versBrouillonDevis, ErreurMetre, parametresParDefaut, trouverOuvrage, OUVRAGES } from './index';
+import { calculer, chiffrer, clePrix, versBrouillonDevis, ErreurMetre, parametresParDefaut, pretACalculer, referenceDe, trouverOuvrage, OUVRAGES } from './index';
 import { consommationJoint, consommationColle } from './ouvrages/carrelage';
 
 let echecs = 0;
@@ -77,10 +77,10 @@ try {
 	inconnu = e instanceof ErreurMetre;
 }
 verifier('ouvrage inconnu refusé', inconnu);
-verifier('3 ouvrages dans la bibliothèque', OUVRAGES.length === 3);
+verifier('7 ouvrages dans la bibliothèque', OUVRAGES.length === 7, String(OUVRAGES.length));
 
 // Chiffrage : 8 sacs de colle à 18,50 €, 20 cartons à 32 €, pose 35 €/m² sur 25 m²
-const ch = chiffrer(r, 25, { [clePrix('colle-c2', 'sac de 25 kg')]: 18.5, [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 35);
+const ch = chiffrer(r, { valeur: 25, unite: 'm²' }, { [clePrix('colle-c2', 'sac de 25 kg')]: 18.5, [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 35);
 const C = (code: string) => ch.lignes.find((x) => x.code === code)!;
 verifier('chiffrage : colle 8 × 18,50 = 148 €', C('colle-c2').total === 148 && C('colle-c2').unite === 'sac de 25 kg');
 verifier('chiffrage : carreaux 20 cartons × 32 = 640 €', C('carreaux').total === 640);
@@ -88,14 +88,60 @@ verifier('chiffrage : plinthes facturées à la pièce (36 u)', C('plinthes').qu
 verifier('chiffrage : main-d’œuvre 25 × 35 = 875 €', ch.totalMainOeuvre === 875);
 verifier('chiffrage : total = 148 + 640 + 875 = 1 663 €', ch.total === 1663, String(ch.total));
 verifier('chiffrage : lignes sans prix signalées', ch.sansPrix === r.lignes.length - 2, String(ch.sansPrix));
-const brouillon = versBrouillonDevis({ resultat: r, surface: 25, chiffrage: ch, chantierId: null, metier: 'Carrelage', avertissements: r.avertissements });
+const brouillon = versBrouillonDevis({ resultat: r, reference: { valeur: 25, unite: 'm²' }, chiffrage: ch, chantierId: null, metier: 'Carrelage', avertissements: r.avertissements });
 verifier('brouillon de devis au format de la page Devis IA', brouillon.estimate.total === 1663 && brouillon.estimate.lines.length === ch.lignes.length && brouillon.source === 'metre');
-const sansMo = chiffrer(r, 25, {}, 0);
+const sansMo = chiffrer(r, { valeur: 25, unite: 'm²' }, {}, 0);
 // Un prix « au carton » n'est pas réutilisé quand les carreaux sont comptés au m²
 const r10 = calculer('carrelage-sol', parametresParDefaut(o, { surface: 10 }));
-const ch10 = chiffrer(r10, 10, { [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 0);
+const ch10 = chiffrer(r10, { valeur: 10, unite: 'm²' }, { [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 0);
 verifier('prix au carton non appliqué à des m²', ch10.lignes.find((l) => l.code === 'carreaux')!.prixUnitaire === 0);
 verifier('sans main-d’œuvre : pas de ligne MO', !sansMo.lignes.some((l) => l.type === 'labor') && sansMo.total === 0);
+
+// --- Peinture : 40 m², 2 couches à 9 m²/L, impression à 8 m²/L
+const pe = trouverOuvrage('peinture-murs')!;
+const rp = calculer('peinture-murs', parametresParDefaut(pe, { surface: 40 }));
+const P = (c: string) => rp.lignes.find((x) => x.code === c)!;
+verifier('peinture : impression 40 / 8 × 1,05 = 5,25 L → 1 pot de 10 L', proche(P('impression').quantiteAvecPerte, 5.25) && P('impression').achat?.nombre === 1);
+verifier('peinture : finition 80 / 9 × 1,05 = 9,33 L → 1 pot', proche(P('peinture-finition').quantiteAvecPerte, 9.33, 0.01) && P('peinture-finition').achat?.nombre === 1);
+const rp2 = calculer('peinture-murs', parametresParDefaut(pe, { surface: 40, pot: 2.5 }));
+verifier('peinture : en pots de 2,5 L → 4 pots de finition', rp2.lignes.find((x) => x.code === 'peinture-finition')!.achat?.nombre === 4);
+
+// --- Cloison 72/48 : 4 m × 2,50 m − 1,7 m² de porte = 8,3 m²
+const cl = trouverOuvrage('cloison-72-48')!;
+const pc = parametresParDefaut(cl, { longueur: 4, hauteur: 2.5, ouvertures: 1.7 });
+const rc = calculer('cloison-72-48', pc);
+const Cl = (c: string) => rc.lignes.find((x) => x.code === c)!;
+verifier('cloison : référence 8,3 m²', proche(referenceDe(cl, pc).valeur, 8.3) && referenceDe(cl, pc).unite === 'm²');
+verifier('cloison : 16,6 m² × 1,05 = 17,43 m² → 6 plaques', proche(Cl('plaques-ba13').quantiteAvecPerte, 17.43) && Cl('plaques-ba13').achat?.nombre === 6);
+verifier('cloison : rails 8,4 ml → 3 rails de 3 m', Cl('rails-48').achat?.nombre === 3);
+verifier('cloison : montants 4 / 0,6 → 7 + 1 = 8', Cl('montants-48').achat?.nombre === 8);
+verifier('cloison : vis 200,9 → 1 boîte', proche(Cl('vis-ttpc').quantiteAvecPerte, 200.86) && Cl('vis-ttpc').achat?.nombre === 1);
+verifier('cloison : bande 24,4 ml → 1 rouleau', proche(Cl('bande-joint').quantiteAvecPerte, 24.4, 0.01) && Cl('bande-joint').achat?.nombre === 1);
+verifier('cloison : isolant 8,72 m²', proche(Cl('isolant-45').quantiteAvecPerte, 8.72, 0.01));
+verifier('cloison incomplète : pas prête à calculer', !pretACalculer(cl, parametresParDefaut(cl, {})));
+let errCl = '';
+try { calculer('cloison-72-48', parametresParDefaut(cl, { longueur: 1, hauteur: 2.5, ouvertures: 5 })); } catch (e) { errCl = e instanceof ErreurMetre ? e.message : 'autre'; }
+verifier('cloison : ouvertures trop grandes refusées', errCl.startsWith('Les ouvertures'), errCl);
+
+// --- Gazon : 200 m² en création, 5 cm de terre
+const gz = trouverOuvrage('semis-gazon')!;
+const rg = calculer('semis-gazon', parametresParDefaut(gz, { surface: 200, terre: 5 }));
+verifier('gazon : 200 × 35 g × 1,1 = 7,7 kg → 2 sacs de 5 kg', proche(rg.lignes[0].quantiteAvecPerte, 7.7) && rg.lignes[0].achat?.nombre === 2);
+verifier('gazon : terre 10 m³ × 1,15 = 11,5 m³', proche(rg.lignes.find((x) => x.code === 'terre-vegetale')!.quantiteAvecPerte, 11.5));
+const rg2 = calculer('semis-gazon', parametresParDefaut(gz, { surface: 200, travaux: 'regarnissage' }));
+verifier('gazon : regarnissage 20 g/m² → 4,4 kg', proche(rg2.lignes[0].quantiteAvecPerte, 4.4));
+
+// --- Haie : 30 m, plants tous les 60 cm
+const hi = trouverOuvrage('plantation-haie')!;
+const ph = parametresParDefaut(hi, { longueur: 30 });
+const rh = calculer('plantation-haie', ph);
+verifier('haie : 51 plants + 5 % → 54', rh.lignes[0].achat?.nombre === 54, String(rh.lignes[0].achat?.nombre));
+verifier('haie : paillage 30 × 1 × 0,15 × 1,1 = 4,95 m³', proche(rh.lignes.find((x) => x.code === 'paillage')!.quantiteAvecPerte, 4.95));
+verifier('haie : référence 30 ml', referenceDe(hi, ph).valeur === 30 && referenceDe(hi, ph).unite === 'ml');
+const rh2 = calculer('plantation-haie', parametresParDefaut(hi, { longueur: 30, rangs: '2' }));
+verifier('haie 2 rangs : 102 + 5 % → 108 plants, paillage 7,43 m³', rh2.lignes[0].achat?.nombre === 108 && proche(rh2.lignes[1].quantiteAvecPerte, 7.43, 0.01));
+const chh = chiffrer(rh, referenceDe(hi, ph), {}, 12);
+verifier('haie : main-d’œuvre au mètre linéaire (30 ml × 12 € = 360 €)', chh.totalMainOeuvre === 360 && chh.lignes.at(-1)!.unite === 'ml');
 
 console.log(echecs === 0 ? '\nTous les tests passent.' : `\n${echecs} test(s) en échec.`);
 if (echecs > 0) process.exit(1);

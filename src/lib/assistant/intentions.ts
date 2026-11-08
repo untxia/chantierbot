@@ -5,7 +5,7 @@
  */
 
 export type Intention =
-	| { type: 'metre'; ouvrage: 'carrelage-sol' | 'faience-murale' | 'ragreage-sol'; params: Record<string, number | string> }
+	| { type: 'metre'; ouvrage: string; params: Record<string, number | string> }
 	| { type: 'relances'; retardSeulement: boolean }
 	| { type: 'planning'; periode: 'aujourdhui' | 'demain' | 'semaine' }
 	| { type: 'commandes' }
@@ -51,9 +51,51 @@ export function extraireMm(t: string): number | null {
 	return m ? nombreFr(m[1]) : null;
 }
 
+/** Longueur en mètres : « 30 m », « 12,5 ml », « 4 metres » (pas « m2 »). */
+export function extraireMetres(t: string): number | null {
+	const m = t.match(/(\d+(?:[.,]\d+)?)\s*(?:ml|m|metres?|metres? lineaires?)(?![a-z0-9])/);
+	return m ? nombreFr(m[1]) : null;
+}
+
 export function interpreter(texteBrut: string): Intention {
 	const t = normaliser(texteBrut);
 	if (!t) return { type: 'aide' };
+
+	// 0. Autres métiers de la bibliothèque : peinture, cloison, gazon, haie.
+	if (contient(t, ['peindre', 'peinture', 'repeindre'])) {
+		const params: Record<string, number | string> = {};
+		const surface = extraireSurface(t);
+		if (surface !== null) params.surface = surface;
+		const couches = t.match(/(\d)\s*couches?/);
+		if (couches) params.couches = Number(couches[1]);
+		return { type: 'metre', ouvrage: 'peinture-murs', params };
+	}
+	if (contient(t, ['cloison', 'placo', 'plaque de platre', 'plaques de platre', 'ba13'])) {
+		const params: Record<string, number | string> = {};
+		const dims = t.match(/(\d+(?:[.,]\d+)?)\s*m?\s*[x×*]\s*(\d+(?:[.,]\d+)?)\s*m?(?![a-z0-9])/);
+		if (dims) {
+			params.longueur = nombreFr(dims[1]);
+			params.hauteur = nombreFr(dims[2]);
+		} else {
+			const longueur = extraireMetres(t);
+			if (longueur !== null) params.longueur = longueur;
+		}
+		return { type: 'metre', ouvrage: 'cloison-72-48', params };
+	}
+	if (contient(t, ['gazon', 'pelouse', 'semis', 'semer', 'engazonn'])) {
+		const params: Record<string, number | string> = {};
+		const surface = extraireSurface(t);
+		if (surface !== null) params.surface = surface;
+		if (contient(t, ['regarn'])) params.travaux = 'regarnissage';
+		return { type: 'metre', ouvrage: 'semis-gazon', params };
+	}
+	if (contient(t, ['haie'])) {
+		const params: Record<string, number | string> = {};
+		const longueur = extraireMetres(t);
+		if (longueur !== null) params.longueur = longueur;
+		if (contient(t, ['2 rangs', 'deux rangs', 'double rang'])) params.rangs = '2';
+		return { type: 'metre', ouvrage: 'plantation-haie', params };
+	}
 
 	// 1. Métré : la demande parle de carrelage, faïence, ragréage ou de quantités de fournitures.
 	const motsMetre = ['carrel', 'carreau', 'faience', 'ragreage', 'ragreer', 'colle', 'joint', 'fourniture', 'metre ', 'metrer', 'combien de sac', 'combien de carton'];

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { interpreter } from '$lib/assistant/intentions';
-import { ErreurMetre, parametresParDefaut, trouverOuvrage } from '$lib/metre';
+import { ErreurMetre, minusculeInitiale, parametresParDefaut, pretACalculer, referenceDe, trouverOuvrage } from '$lib/metre';
 
 interface Reponse {
 	intention: string;
@@ -21,7 +21,8 @@ const AIDE: Reponse = {
 	reponse: 'Je peux vous aider sur vos chantiers. Essayez par exemple :',
 	details: [
 		'« Carrelage 25 m² en 60x60 » → fournitures à acheter',
-		'« Ragréage 20 m² sur 3 mm »',
+		'« Ragréage 20 m² sur 3 mm », « Peinture 40 m² en 2 couches »',
+		'« Cloison placo 4 m x 2,5 m », « Gazon 200 m² », « Haie de 30 m »',
 		'« Quelles relances sont en retard ? »',
 		'« Mes rendez-vous de demain »',
 		'« Où en est le chantier Dupont ? »',
@@ -48,11 +49,21 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			const query = new URLSearchParams({ ouvrage: ouvrage.code });
 			for (const [k, v] of Object.entries(intention.params)) query.set(k, String(v));
 			const lien = { label: 'Ouvrir le métré détaillé', href: `/metre?${query}` };
-			if (!intention.params.surface) {
-				return json({ intention: 'metre', reponse: `${ouvrage.designation} : quelle surface ? Précisez-la, par exemple « 25 m² ».`, details: [], liens: [lien] } satisfies Reponse);
+			const params = parametresParDefaut(ouvrage, intention.params);
+			if (!pretACalculer(ouvrage, params)) {
+				const manquants = ouvrage.champs
+					.filter((c) => c.type === 'number' && c.requis && !(Number(params[c.id]) > 0))
+					.map((c) => `${c.label.toLowerCase()}${c.type === 'number' && c.unite ? ` (${c.unite})` : ''}`);
+				return json({
+					intention: 'metre',
+					reponse: `${ouvrage.designation} : précisez ${manquants.join(' et ')}, par exemple « ${ouvrage.reference ? 'cloison 4 m x 2,5 m' : '25 m²'} ».`,
+					details: [],
+					liens: [lien]
+				} satisfies Reponse);
 			}
 			try {
-				const r = ouvrage.calculer(parametresParDefaut(ouvrage, intention.params));
+				const r = ouvrage.calculer(params);
+				const ref = referenceDe(ouvrage, params);
 				const details = r.lignes.map((l) =>
 					l.achat
 						? `${l.designation} : ${l.achat.nombre} ${l.achat.conditionnement === 'à l’unité' ? (l.achat.nombre > 1 ? 'pièces' : 'pièce') : `× ${l.achat.conditionnement}`}`
@@ -60,7 +71,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				);
 				return json({
 					intention: 'metre',
-					reponse: `Pour ${nf(Number(intention.params.surface))} m² — ${ouvrage.designation.toLowerCase()} :`,
+					reponse: `Pour ${nf(ref.valeur)} ${ref.unite} — ${minusculeInitiale(ouvrage.designation)} :`,
 					details: [...details, ...r.avertissements.map((a) => `⚠ ${a}`)],
 					liens: [lien]
 				} satisfies Reponse);

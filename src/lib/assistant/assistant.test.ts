@@ -34,6 +34,13 @@ const cas: [string, (i: Intention) => boolean][] = [
 	['chantier de la rue des Lilas', (i) => i.type === 'chantier' && i.recherche === 'rue des lilas'],
 	['Mes chantiers en cours', (i) => i.type === 'chantiers'],
 	['Je veux mesurer une pièce', (i) => i.type === 'mesure'],
+	['Peinture 40 m² en 2 couches', (i) => i.type === 'metre' && i.ouvrage === 'peinture-murs' && i.params.surface === 40 && i.params.couches === 2],
+	['Repeindre le salon, 35 m2', (i) => i.type === 'metre' && i.ouvrage === 'peinture-murs' && i.params.surface === 35],
+	['Cloison placo 4 m x 2,5 m', (i) => i.type === 'metre' && i.ouvrage === 'cloison-72-48' && i.params.longueur === 4 && i.params.hauteur === 2.5],
+	['cloison de 6 m', (i) => i.type === 'metre' && i.ouvrage === 'cloison-72-48' && i.params.longueur === 6],
+	['Gazon 200 m²', (i) => i.type === 'metre' && i.ouvrage === 'semis-gazon' && i.params.surface === 200],
+	['regarnir la pelouse 80 m2', (i) => i.type === 'metre' && i.ouvrage === 'semis-gazon' && i.params.travaux === 'regarnissage'],
+	['Haie de 30 m sur deux rangs', (i) => i.type === 'metre' && i.ouvrage === 'plantation-haie' && i.params.longueur === 30 && i.params.rangs === '2'],
 	['Bonjour', (i) => i.type === 'aide'],
 	['', (i) => i.type === 'aide']
 ];

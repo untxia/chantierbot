@@ -1,6 +1,6 @@
 /** Bibliothèque de métré : types partagés (aucune dépendance, testable hors navigateur). */
 
-export type Unite = 'm²' | 'ml' | 'kg' | 'L' | 'u';
+export type Unite = 'm²' | 'ml' | 'kg' | 'L' | 'u' | 'm³';
 
 /** Un champ du formulaire d'un ouvrage (le formulaire est généré à partir de cette liste). */
 export type Champ =
@@ -46,5 +46,7 @@ export interface Ouvrage {
 	designation: string;
 	description: string;
 	champs: Champ[];
+	/** Quantité de référence (pour l'affichage et la main-d'œuvre). Par défaut : le champ « surface » en m². */
+	reference?: (p: Parametres) => { valeur: number; unite: Unite };
 	calculer: (p: Parametres) => ResultatMetre;
 }

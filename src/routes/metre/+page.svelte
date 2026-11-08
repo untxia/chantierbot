@@ -10,6 +10,8 @@
 		chiffrer,
 		clePrix,
 		parametresParDefaut,
+		pretACalculer,
+		referenceDe,
 		trouverOuvrage,
 		versBrouillonDevis,
 		type Parametres,
@@ -41,6 +43,8 @@
 	let params: Parametres = parametresParDefaut(trouverOuvrage(code)!, depuisAdresse());
 
 	$: ouvrage = trouverOuvrage(code)!;
+	$: reference = referenceDe(ouvrage, params);
+	$: aUneSurface = ouvrage.champs.some((c) => c.id === 'surface');
 
 	function changerOuvrage(nouveau: string) {
 		const surface = params.surface;
@@ -59,7 +63,7 @@
 	let erreur = '';
 	$: {
 		try {
-			resultat = Number(params.surface) > 0 ? ouvrage.calculer(params) : null;
+			resultat = pretACalculer(ouvrage, params) ? ouvrage.calculer(params) : null;
 			erreur = '';
 		} catch (e) {
 			resultat = null;
@@ -80,7 +84,7 @@
 			const achat = l.achat ? `${l.achat.nombre} × ${l.achat.conditionnement}` : `${nf(l.quantiteAvecPerte)} ${l.unite}`;
 			return `- ${l.designation} : ${achat} (besoin ${nf(l.quantiteAvecPerte)} ${l.unite})`;
 		});
-		return [`Fournitures — ${resultat.ouvrage}, ${nf(Number(params.surface))} m²${chantier ? ` — ${chantier}` : ''}`, ...lignes].join('\n');
+		return [`Fournitures — ${resultat.ouvrage}, ${nf(reference.valeur)} ${reference.unite}${chantier ? ` — ${chantier}` : ''}`, ...lignes].join('\n');
 	}
 
 	// Prix de l'artisan : mémorisés sur cet appareil (par fourniture, et main-d'œuvre par ouvrage).
@@ -116,7 +120,7 @@
 		mainOeuvre = { ...mainOeuvre, [code]: Math.max(0, Number(valeur) || 0) };
 		ecrire(MO_KEY, mainOeuvre);
 	}
-	$: chiffrage = resultat ? chiffrer(resultat, Number(params.surface), prix, mainOeuvre[code] ?? 0) : null;
+	$: chiffrage = resultat ? chiffrer(resultat, reference, prix, mainOeuvre[code] ?? 0) : null;
 	const euros = (x: number) => x.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 
 	function creerDevis() {
@@ -129,7 +133,7 @@
 		const metier = METIERS.find((m) => m.ouvrages.some((o) => o.code === code))?.label ?? '';
 		ecrire(
 			DEVIS_KEY,
-			versBrouillonDevis({ resultat, surface: Number(params.surface), chiffrage, chantierId: chantierId || null, metier, avertissements: resultat.avertissements })
+			versBrouillonDevis({ resultat, reference, chiffrage, chantierId: chantierId || null, metier, avertissements: resultat.avertissements })
 		);
 		toast.success('Brouillon de devis créé.');
 		goto('/rapports');
@@ -170,7 +174,7 @@
 			<p class="text-xs text-ink-secondary dark:text-ink-dark-secondary">{ouvrage.description}</p>
 		</div>
 
-		{#if data.surfaces.length > 0}
+		{#if aUneSurface && data.surfaces.length > 0}
 			<div class="mb-4 flex flex-col gap-1">
 				<label for="mesure" class="text-sm font-semibold">Reprendre une surface mesurée</label>
 				<select id="mesure" class="input" on:change={(e) => reprendreMesure(e.currentTarget.value)}>
@@ -238,9 +242,9 @@
 		{#if erreur}
 			<p class="rounded-lg bg-danger/10 p-3 text-sm text-danger">{erreur}</p>
 		{:else if !resultat}
-			<p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">Indiquez une surface pour lancer le calcul.</p>
+			<p class="text-sm text-ink-secondary dark:text-ink-dark-secondary">Renseignez les dimensions pour lancer le calcul.</p>
 		{:else}
-			<p class="mb-3 text-sm font-semibold">{resultat.ouvrage} — {nf(Number(params.surface))} m²</p>
+			<p class="mb-3 text-sm font-semibold">{resultat.ouvrage} — {nf(reference.valeur)} {reference.unite}</p>
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
@@ -297,10 +301,10 @@
 							</li>
 						{/each}
 						<li class="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-2 dark:border-white/5">
-							<span class="min-w-0 flex-1">Main-d’œuvre (pose) <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">au m²</span></span>
+							<span class="min-w-0 flex-1">Main-d’œuvre <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">par {reference.unite}</span></span>
 							<label class="flex items-center gap-1 text-xs">
-								<span class="sr-only">Prix HT de la main-d’œuvre au m²</span>
-								<input type="number" min="0" step="0.5" inputmode="decimal" class="input w-24 py-1 text-right" value={mainOeuvre[code] || ''} placeholder="0,00" on:change={(e) => fixerMainOeuvre(e.currentTarget.value)} /> €/m²
+								<span class="sr-only">Prix HT de la main-d’œuvre par {reference.unite}</span>
+								<input type="number" min="0" step="0.5" inputmode="decimal" class="input w-24 py-1 text-right" value={mainOeuvre[code] || ''} placeholder="0,00" on:change={(e) => fixerMainOeuvre(e.currentTarget.value)} /> €/{reference.unite}
 							</label>
 							<span class="w-24 text-right font-semibold">{euros(chiffrage.totalMainOeuvre)}</span>
 						</li>
