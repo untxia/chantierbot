@@ -7,6 +7,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const { data, error: queryError } = await locals.supabase
 		.from('chantier_photos')
 		.select('id, image_path, description, issues, materials, progress_estimate, error, created_at, chantiers(id, name)')
+		.eq('user_id', locals.user.id)
 		.order('created_at', { ascending: false })
 		.limit(30);
 

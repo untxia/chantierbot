@@ -5,10 +5,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) throw error(401, 'Authentification requise');
 
 	const [chantiers, mesures] = await Promise.all([
-		locals.supabase.from('chantiers').select('id, name').order('name'),
+		locals.supabase.from('chantiers').select('id, name').eq('user_id', locals.user.id).order('name'),
 		locals.supabase
 			.from('mesures')
 			.select('id, label, kind, value, method, created_at, chantiers(name)')
+			.eq('user_id', locals.user.id)
 			.order('created_at', { ascending: false })
 			.limit(50)
 	]);

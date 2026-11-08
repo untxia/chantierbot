@@ -15,6 +15,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
   let query = locals.supabase
     .from('commandes')
     .select('*, fournisseurs(id,name,email,phone), chantiers(id,name)')
+    .eq('user_id', locals.user.id)
     .order('order_date', { ascending: false });
   if (q) query = query.ilike('notes', `%${q}%`);
   const { data, error } = await query;

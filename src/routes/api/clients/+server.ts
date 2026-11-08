@@ -2,8 +2,10 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
-	const q = url.searchParams.get('q')?.trim() ?? '';
-	let query = locals.supabase.from('clients').select('id, name, email, phone, address, created_at').order('name');
+	if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
+	// Caractères de syntaxe des filtres retirés : la recherche ne peut pas modifier la requête.
+	const q = (url.searchParams.get('q') ?? '').replace(/[,()%*\\:]/g, ' ').trim();
+	let query = locals.supabase.from('clients').select('id, name, email, phone, address, created_at').eq('user_id', locals.user.id).order('name');
 	if (q) query = query.or(`name.ilike.%${q}%,email.ilike.%${q}%,phone.ilike.%${q}%`);
 	const { data, error } = await query;
 	if (error) return json({ error: 'Impossible de charger les clients.' }, { status: 500 });

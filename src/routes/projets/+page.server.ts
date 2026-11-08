@@ -1,10 +1,13 @@
+import { error as httpError } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
+	if (!locals.user) throw httpError(401, 'Authentification requise');
 	const q = url.searchParams.get('q')?.trim() ?? '';
 	let query = locals.supabase
 		.from('chantiers')
 		.select('id, name, status, progress, created_at, chantier_photos(count)')
+		.eq('user_id', locals.user.id)
 		.order('created_at', { ascending: false });
 
 	if (q) query = query.ilike('name', `%${q}%`);

@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ locals, url }) => {
  if (!locals.user) return json({ error: 'Authentification requise' }, { status: 401 });
  const q=url.searchParams.get('q')?.trim()??'';
- let query=locals.supabase.from('fournisseurs').select('*').order('favorite',{ascending:false}).order('name');
+ let query=locals.supabase.from('fournisseurs').select('*').eq('user_id',locals.user.id).order('favorite',{ascending:false}).order('name');
  if(q) query=query.ilike('name',`%${q}%`);
  const {data,error}=await query; if(error)return json({error:'Impossible de charger les fournisseurs.'},{status:500}); return json({fournisseurs:data??[]});
 };

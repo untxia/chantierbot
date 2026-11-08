@@ -9,11 +9,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.from('chantiers')
 		.select('id, name, description, address, client_id, start_date, end_date, budget, status, progress, created_at, updated_at')
 		.eq('id', params.id)
+		.eq('user_id', locals.user.id)
 		.single();
 	if (chantierError || !chantier) throw error(404, 'Chantier introuvable');
 
 	const [{ data: clients }, clientResult] = await Promise.all([
-		supabase.from('clients').select('id, name, email, phone, address').order('name'),
+		supabase.from('clients').select('id, name, email, phone, address').eq('user_id', locals.user.id).order('name'),
 		chantier.client_id
 			? supabase.from('clients').select('id, name, email, phone, address').eq('id', chantier.client_id).single()
 			: Promise.resolve({ data: null })
