@@ -1,7 +1,11 @@
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) throw error(401, 'Authentification requise');
 	const supabase = locals.supabase;
+	// Filtré sur l'utilisateur : un administrateur verrait sinon les données de tous les comptes.
+	const uid = locals.user.id;
 	const [
 		{ count: chantierCount },
 		{ count: activeCount },
@@ -9,17 +13,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 		{ data: recent, error: recentError },
 		{ data: recommendations, error: recoError }
 	] = await Promise.all([
-		supabase.from('chantiers').select('*', { count: 'exact', head: true }),
-		supabase.from('chantiers').select('*', { count: 'exact', head: true }).eq('status', 'en_cours'),
-		supabase.from('chantier_photos').select('*', { count: 'exact', head: true }),
-		supabase.from('chantiers').select('id, name, status, progress, created_at, chantier_photos(count)').order('created_at', { ascending: false }).limit(6),
-		supabase.from('chantier_photos').select('id, image_path, description, issues, chantiers(id, name)').order('created_at', { ascending: false }).limit(15)
+		supabase.from('chantiers').select('*', { count: 'exact', head: true }).eq('user_id', uid),
+		supabase.from('chantiers').select('*', { count: 'exact', head: true }).eq('user_id', uid).eq('status', 'en_cours'),
+		supabase.from('chantier_photos').select('*', { count: 'exact', head: true }).eq('user_id', uid),
+		supabase.from('chantiers').select('id, name, status, progress, created_at, chantier_photos(count)').eq('user_id', uid).order('created_at', { ascending: false }).limit(6),
+		supabase.from('chantier_photos').select('id, image_path, description, issues, chantiers(id, name)').eq('user_id', uid).order('created_at', { ascending: false }).limit(15)
 	]);
 
 	if (recentError) throw recentError;
 	if (recoError) throw recoError;
 
-	const { data: lastPhoto } = await supabase.from('chantier_photos').select('created_at').order('created_at', { ascending: false }).limit(1).maybeSingle();
+	const { data: lastPhoto } = await supabase.from('chantier_photos').select('created_at').eq('user_id', uid).order('created_at', { ascending: false }).limit(1).maybeSingle();
 
 	const recommendationRows = (recommendations ?? []).filter((r) => ((r.issues as string[]) ?? []).length > 0).slice(0, 3);
 	const recommendationData = await Promise.all(recommendationRows.map(async (r) => {

@@ -10,10 +10,22 @@
 
 	// Point de départ : ?ouvrage=…&surface=…&chantier=… (lien depuis une mesure ou un chantier)
 	const q = $page.url.searchParams;
-	const surfaceDepart = Number(q.get('surface'));
 	let code = trouverOuvrage(q.get('ouvrage') ?? '')?.code ?? 'carrelage-sol';
 	let chantierId = data.chantiers.some((c) => c.id === q.get('chantier')) ? (q.get('chantier') as string) : '';
-	let params: Parametres = parametresParDefaut(trouverOuvrage(code)!, surfaceDepart > 0 ? { surface: surfaceDepart } : {});
+
+	/** Paramètres passés dans l'adresse (lien depuis une mesure ou depuis l'assistant). */
+	function depuisAdresse(): Parametres {
+		const depart: Parametres = {};
+		for (const c of trouverOuvrage(code)!.champs) {
+			const v = q.get(c.id);
+			if (v === null || v === '') continue;
+			if (c.type === 'number' && Number.isFinite(Number(v))) depart[c.id] = Number(v);
+			else if (c.type === 'select' && c.options.some((o) => o.valeur === v)) depart[c.id] = v;
+			else if (c.type === 'boolean') depart[c.id] = v === 'true';
+		}
+		return depart;
+	}
+	let params: Parametres = parametresParDefaut(trouverOuvrage(code)!, depuisAdresse());
 
 	$: ouvrage = trouverOuvrage(code)!;
 

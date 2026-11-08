@@ -8,6 +8,8 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "npm run test:metre && npm run test:assistant",
+    "test:assistant": "esbuild src/lib/assistant/assistant.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/assistant.test.cjs && node .svelte-kit/assistant.test.cjs",
     "test:metre": "esbuild src/lib/metre/metre.test.ts --bundle --platform=node --log-level=warning --outfile=.svelte-kit/metre.test.cjs && node .svelte-kit/metre.test.cjs"
   },
   "dependencies": {
