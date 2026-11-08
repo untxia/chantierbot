@@ -1,7 +1,20 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { toast } from '$lib/stores/toast';
-	import { METIERS, SOURCES, ErreurMetre, parametresParDefaut, trouverOuvrage, type Parametres, type ResultatMetre } from '$lib/metre';
+	import {
+		METIERS,
+		SOURCES,
+		ErreurMetre,
+		chiffrer,
+		clePrix,
+		parametresParDefaut,
+		trouverOuvrage,
+		versBrouillonDevis,
+		type Parametres,
+		type ResultatMetre
+	} from '$lib/metre';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -68,6 +81,58 @@
 			return `- ${l.designation} : ${achat} (besoin ${nf(l.quantiteAvecPerte)} ${l.unite})`;
 		});
 		return [`Fournitures — ${resultat.ouvrage}, ${nf(Number(params.surface))} m²${chantier ? ` — ${chantier}` : ''}`, ...lignes].join('\n');
+	}
+
+	// Prix de l'artisan : mémorisés sur cet appareil (par fourniture, et main-d'œuvre par ouvrage).
+	const PRIX_KEY = 'chantierbot-prix-metre';
+	const MO_KEY = 'chantierbot-mo-metre';
+	const DEVIS_KEY = 'chantierbot-draft-quote';
+	let prix: Record<string, number> = {};
+	let mainOeuvre: Record<string, number> = {};
+	const lire = (k: string) => {
+		try {
+			const v = JSON.parse(localStorage.getItem(k) ?? '{}');
+			return v && typeof v === 'object' ? (v as Record<string, number>) : {};
+		} catch {
+			return {};
+		}
+	};
+	const ecrire = (k: string, v: unknown) => {
+		try {
+			localStorage.setItem(k, JSON.stringify(v));
+		} catch {
+			/* stockage indisponible : les prix valent pour la session */
+		}
+	};
+	onMount(() => {
+		prix = lire(PRIX_KEY);
+		mainOeuvre = lire(MO_KEY);
+	});
+	function fixerPrix(cle: string, valeur: string) {
+		prix = { ...prix, [cle]: Math.max(0, Number(valeur) || 0) };
+		ecrire(PRIX_KEY, prix);
+	}
+	function fixerMainOeuvre(valeur: string) {
+		mainOeuvre = { ...mainOeuvre, [code]: Math.max(0, Number(valeur) || 0) };
+		ecrire(MO_KEY, mainOeuvre);
+	}
+	$: chiffrage = resultat ? chiffrer(resultat, Number(params.surface), prix, mainOeuvre[code] ?? 0) : null;
+	const euros = (x: number) => x.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+
+	function creerDevis() {
+		if (!resultat || !chiffrage) return;
+		try {
+			if (localStorage.getItem(DEVIS_KEY) && !confirm('Un brouillon de devis existe déjà. Le remplacer ?')) return;
+		} catch {
+			/* stockage indisponible */
+		}
+		const metier = METIERS.find((m) => m.ouvrages.some((o) => o.code === code))?.label ?? '';
+		ecrire(
+			DEVIS_KEY,
+			versBrouillonDevis({ resultat, surface: Number(params.surface), chiffrage, chantierId: chantierId || null, metier, avertissements: resultat.avertissements })
+		);
+		toast.success('Brouillon de devis créé.');
+		goto('/rapports');
 	}
 
 	async function copier() {
@@ -193,7 +258,7 @@
 									{#if l.fiabilite === 'estimation'}<span class="ml-1 rounded bg-warning/15 px-1.5 text-xs text-warning">estimation</span>{/if}
 									{#if detail}<p class="mt-1 text-xs text-ink-secondary dark:text-ink-dark-secondary">{l.calcul}</p>{/if}
 								</td>
-								<td class="whitespace-nowrap py-2 pr-3">{nf(l.quantiteAvecPerte)} {l.unite}</td>
+								<td class="whitespace-nowrap py-2 pr-3">{l.unite === 'u' ? Math.ceil(l.quantiteAvecPerte - 1e-9) : nf(l.quantiteAvecPerte)} {l.unite}</td>
 								<td class="py-2 font-bold">
 									{#if l.achat}{l.achat.nombre} <span class="font-normal">{l.achat.conditionnement === 'à l’unité' ? (l.achat.nombre > 1 ? 'pièces' : 'pièce') : `× ${l.achat.conditionnement}`}</span>{:else}—{/if}
 								</td>
@@ -211,8 +276,45 @@
 
 			<p class="mt-4 text-xs text-ink-secondary dark:text-ink-dark-secondary">
 				Valeurs usuelles tirées de fiches techniques de fabricants : <strong>vérifiez la fiche du produit choisi</strong> (format, peigne,
-				support). Les prix ne sont pas inclus : ils dépendent de votre fournisseur.
+				support). Les prix ne sont pas inclus : saisissez ceux de votre fournisseur ci-dessous.
 			</p>
+
+			{#if chiffrage}
+				<div class="mt-6 border-t border-black/10 pt-4 dark:border-white/10">
+					<h3 class="mb-1 font-bold">Chiffrage et devis</h3>
+					<p class="mb-3 text-xs text-ink-secondary dark:text-ink-dark-secondary">
+						Vos prix HT par unité d’achat, mémorisés sur cet appareil pour les prochains calculs.
+					</p>
+					<ul class="space-y-2 text-sm">
+						{#each chiffrage.lignes.filter((l) => l.type === 'material') as l (l.code)}
+							<li class="flex flex-wrap items-center justify-between gap-2">
+								<span class="min-w-0 flex-1">{l.description} <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">({l.unite.includes(' ') ? `${nf(l.quantite)} × ${l.unite}` : `${nf(l.quantite)} ${l.unite}`})</span></span>
+								<label class="flex items-center gap-1 text-xs">
+									<span class="sr-only">Prix HT de {l.description}</span>
+									<input type="number" min="0" step="0.01" inputmode="decimal" class="input w-24 py-1 text-right" value={l.prixUnitaire || ''} placeholder="0,00" on:change={(e) => fixerPrix(clePrix(l.code, l.unite), e.currentTarget.value)} /> €
+								</label>
+								<span class="w-24 text-right font-semibold">{euros(l.total)}</span>
+							</li>
+						{/each}
+						<li class="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-2 dark:border-white/5">
+							<span class="min-w-0 flex-1">Main-d’œuvre (pose) <span class="text-xs text-ink-secondary dark:text-ink-dark-secondary">au m²</span></span>
+							<label class="flex items-center gap-1 text-xs">
+								<span class="sr-only">Prix HT de la main-d’œuvre au m²</span>
+								<input type="number" min="0" step="0.5" inputmode="decimal" class="input w-24 py-1 text-right" value={mainOeuvre[code] || ''} placeholder="0,00" on:change={(e) => fixerMainOeuvre(e.currentTarget.value)} /> €/m²
+							</label>
+							<span class="w-24 text-right font-semibold">{euros(chiffrage.totalMainOeuvre)}</span>
+						</li>
+					</ul>
+					<div class="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-black/10 pt-3 dark:border-white/10">
+						<div class="text-sm">
+							<p>Matériaux : <strong>{euros(chiffrage.totalMateriaux)}</strong> · Main-d’œuvre : <strong>{euros(chiffrage.totalMainOeuvre)}</strong></p>
+							<p class="text-lg">Total HT : <strong class="text-primary">{euros(chiffrage.total)}</strong></p>
+							{#if chiffrage.sansPrix > 0}<p class="text-xs text-warning">{chiffrage.sansPrix} fourniture{chiffrage.sansPrix > 1 ? 's' : ''} sans prix.</p>{/if}
+						</div>
+						<button type="button" class="btn-primary print:hidden" on:click={creerDevis}>Créer le brouillon de devis</button>
+					</div>
+				</div>
+			{/if}
 			{#if sourcesUtilisees.length}
 				<details class="mt-2 text-xs print:hidden">
 					<summary class="cursor-pointer font-semibold">Sources des règles de calcul</summary>

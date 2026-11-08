@@ -3,6 +3,8 @@ export interface NavItem {
 	label: string;
 	icon: 'home' | 'folder' | 'users' | 'box' | 'calendar' | 'truck' | 'phone' | 'sparkles' | 'chart' | 'report' | 'settings' | 'ruler' | 'calc' | 'more';
 	soon?: boolean;
+	/** Visible seulement pour les administrateurs. */
+	adminOnly?: boolean;
 }
 
 export const navItems: NavItem[] = [
@@ -19,7 +21,7 @@ export const navItems: NavItem[] = [
 	{ href: '/ia', label: 'Assistant IA', icon: 'sparkles' },
 	{ href: '/rapports', label: 'Devis IA', icon: 'report' },
 	{ href: '/parametres', label: 'Paramètres', icon: 'settings' },
-	{ href: '/admin', label: 'Administration', icon: 'settings' }
+	{ href: '/admin', label: 'Administration', icon: 'settings', adminOnly: true }
 ];
 
 export const mobileNavItems: NavItem[] = [

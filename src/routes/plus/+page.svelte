@@ -1,8 +1,9 @@
 <script lang="ts">
 	import NavIcon from '$lib/components/NavIcon.svelte';
+	import { page } from '$app/stores';
 	import { navItems } from '$lib/components/nav-items';
 
-	const items = navItems.filter((i) => !['/', '/projets', '/ia'].includes(i.href));
+	$: items = navItems.filter((i) => !['/', '/projets', '/ia'].includes(i.href) && (!i.adminOnly || $page.data.isAdmin));
 </script>
 
 <svelte:head>

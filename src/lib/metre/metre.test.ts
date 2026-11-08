@@ -3,7 +3,7 @@
  *   npx esbuild src/lib/metre/metre.test.ts --bundle --platform=node --outfile=<tmp>/metre.test.cjs && node <tmp>/metre.test.cjs
  * Les valeurs attendues sont calculées à la main à partir des règles des fiches techniques.
  */
-import { calculer, ErreurMetre, parametresParDefaut, trouverOuvrage, OUVRAGES } from './index';
+import { calculer, chiffrer, clePrix, versBrouillonDevis, ErreurMetre, parametresParDefaut, trouverOuvrage, OUVRAGES } from './index';
 import { consommationJoint, consommationColle } from './ouvrages/carrelage';
 
 let echecs = 0;
@@ -78,6 +78,24 @@ try {
 }
 verifier('ouvrage inconnu refusé', inconnu);
 verifier('3 ouvrages dans la bibliothèque', OUVRAGES.length === 3);
+
+// Chiffrage : 8 sacs de colle à 18,50 €, 20 cartons à 32 €, pose 35 €/m² sur 25 m²
+const ch = chiffrer(r, 25, { [clePrix('colle-c2', 'sac de 25 kg')]: 18.5, [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 35);
+const C = (code: string) => ch.lignes.find((x) => x.code === code)!;
+verifier('chiffrage : colle 8 × 18,50 = 148 €', C('colle-c2').total === 148 && C('colle-c2').unite === 'sac de 25 kg');
+verifier('chiffrage : carreaux 20 cartons × 32 = 640 €', C('carreaux').total === 640);
+verifier('chiffrage : plinthes facturées à la pièce (36 u)', C('plinthes').quantite === 36 && C('plinthes').unite === 'u');
+verifier('chiffrage : main-d’œuvre 25 × 35 = 875 €', ch.totalMainOeuvre === 875);
+verifier('chiffrage : total = 148 + 640 + 875 = 1 663 €', ch.total === 1663, String(ch.total));
+verifier('chiffrage : lignes sans prix signalées', ch.sansPrix === r.lignes.length - 2, String(ch.sansPrix));
+const brouillon = versBrouillonDevis({ resultat: r, surface: 25, chiffrage: ch, chantierId: null, metier: 'Carrelage', avertissements: r.avertissements });
+verifier('brouillon de devis au format de la page Devis IA', brouillon.estimate.total === 1663 && brouillon.estimate.lines.length === ch.lignes.length && brouillon.source === 'metre');
+const sansMo = chiffrer(r, 25, {}, 0);
+// Un prix « au carton » n'est pas réutilisé quand les carreaux sont comptés au m²
+const r10 = calculer('carrelage-sol', parametresParDefaut(o, { surface: 10 }));
+const ch10 = chiffrer(r10, 10, { [clePrix('carreaux', 'carton de 1,44 m²')]: 32 }, 0);
+verifier('prix au carton non appliqué à des m²', ch10.lignes.find((l) => l.code === 'carreaux')!.prixUnitaire === 0);
+verifier('sans main-d’œuvre : pas de ligne MO', !sansMo.lignes.some((l) => l.type === 'labor') && sansMo.total === 0);
 
 console.log(echecs === 0 ? '\nTous les tests passent.' : `\n${echecs} test(s) en échec.`);
 if (echecs > 0) process.exit(1);

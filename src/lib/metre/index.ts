@@ -5,6 +5,7 @@ import { ErreurMetre } from './outils';
 export * from './types';
 export { SOURCES } from './sources';
 export { ErreurMetre } from './outils';
+export { chiffrer, clePrix, versBrouillonDevis, type Chiffrage, type LigneChiffree } from './chiffrage';
 
 /** Métiers disponibles dans la bibliothèque. Ajouter un métier = ajouter un fichier d'ouvrages. */
 export const METIERS = [{ code: 'carreleur', label: 'Carrelage', ouvrages: OUVRAGES_CARRELAGE }];

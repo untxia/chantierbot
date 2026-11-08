@@ -22,7 +22,7 @@
 		</a>
 
 		<nav class="flex flex-1 flex-col gap-1" aria-label="Navigation principale">
-			{#each navItems as item (item.href)}
+			{#each navItems.filter((i) => !i.adminOnly || $page.data.isAdmin) as item (item.href)}
 				<a
 					href={item.href}
 					aria-current={isActive(item.href) ? 'page' : undefined}
