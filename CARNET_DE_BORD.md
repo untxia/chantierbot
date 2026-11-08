@@ -167,9 +167,22 @@ Production en ligne : **https://chantierbot.vercel.app**
 
 ---
 
+## 2026-11-09 — Tarifs fournisseurs, TVA, skills, tests e2e, audit
+
+- **Tarifs fournisseurs** (`/tarifs`, `src/lib/tarifs`) : import d'un fichier Excel (.xlsx, via `read-excel-file` 9.3.12) ou CSV exporté du compte pro ; colonnes reconnues automatiquement (désignation, référence, unité, prix HT ou TTC, TVA) et modifiables ; aperçu HT / TVA / TTC ; alerte si le tarif a plus de 3 mois ; recherche d'article. Dans le métré, « Prendre le prix dans mes tarifs » relie une fourniture à une ligne de tarif (prix repris automatiquement, en base, donc sur tous les appareils). 26 tests. **Migration `20261108_tarifs_fournisseurs.sql` à exécuter** (application automatique refusée) ; d'ici là la page l'indique et l'import est désactivé.
+- Recherche préalable : pas de flux ouvert et gratuit des prix des enseignes. Pistes légales : flux produits des programmes d'affiliation (ManoMano via Awin confirmé ; Leroy Merlin via Affilae, non confirmé), partenariat négoce (Point.P / Cedeo : un concurrent, Tolteck, récupère déjà les prix négociés), bases payantes. Récupérer les prix en lisant les sites est déconseillé (droit sui generis, conditions d'utilisation, fragilité).
+- **TVA client** sur le devis : 20 / 10 / 5,5 %, montant de TVA et total TTC (mémorisé avec le brouillon) ; achats de fournitures TTC dans le métré.
+- **Skills** (`.claude/skills/`) : `economie-tokens`, `tests-complets`, `audit-chantierbot`.
+- **Tests de bout en bout** dans le dépôt (`tests/e2e`) : `npm run test:e2e` (API + Chrome, 37 vérifications, nettoyage automatique), `npm run test:prod` (lecture seule, 16 vérifications). Identifiants du compte de test dans `.env.local` (`E2E_EMAIL`, `E2E_PASSWORD`), jamais commités.
+- **Audit** (premier passage du skill) : aucun secret versionné, 0 vulnérabilité npm (production), 0 erreur / 0 avertissement de typage. Base : 7 index en double, 2 clés étrangères sans index, règles de `mesures` à optimiser, 43 règles cumulées dues aux politiques `*_admin_all` → migration **`20261109_optimisation_base.sql` préparée, non appliquée** (partie 2 facultative : retrait des `admin_all`). Sécurité Supabase : `is_admin` et `delete_my_account` exécutables par les connectés (voulu) ; protection des mots de passe compromis désactivée. Dépendances : versions majeures en retard (Svelte 4 → 5, SvelteKit 2.15, Tailwind 3 → 4) — migration Svelte 5 = chantier à part, pas urgent.
+- Piège : serveur de dev bloqué par « EPERM » sur `.svelte-kit/types` quand d'anciens processus `vite` tournent encore → les arrêter puis relancer.
+
+---
+
 ## Roadmap ouverte (mise à jour 2026-11-08)
 
 ### À faire par l'utilisateur (aucune action possible de mon côté)
+- [ ] **Exécuter dans le SQL Editor** : `supabase/migrations/20261108_tarifs_fournisseurs.sql`, puis `20261109_optimisation_base.sql` (décider de la partie 2).
 - [ ] **Supabase → Site URL** = https://chantierbot.vercel.app (sinon les nouveaux inscrits tombent sur une page inaccessible après confirmation).
 - [ ] **Informations d'éditeur** dans `src/lib/config/legal.ts` (nom/raison sociale, forme juridique, adresse, e-mail de contact, directeur de publication, SIRET), puis **relecture juridique** des 3 pages (3 points marqués « à vérifier »).
 - [ ] **Tester la mesure AR** sur Android, dans l'application Chrome, et transmettre le bloc « Diagnostic ».
